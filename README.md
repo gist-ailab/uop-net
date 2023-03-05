@@ -17,7 +17,7 @@ This repository contains official implementation of following paper:
 [**Data Generation**](#data-generation)
   * [**1 - Download Public 3D models**](#1-download-public-3d-models)
   * [**2 - Preprocess 3D models**](#2-preprocess-3d-models)
-  * [**4 - Run Data Generation**](#3-run-datagenerator)
+  * [**3 - Run Data Generation**](#3-run-datagenerator)
   
 
 [**Train UOP-Net**](#train-uop-net)
@@ -131,17 +131,7 @@ python data_generator.py --data_type ycb --inspect
 
 
 ## Test and Demo
-
-Simulation Evaluate
-```
-# whole point cloud
-./whole_evaluate.sh
-
-# partial point cloud 
-./partial_evaluate.sh
-```
-Demo (We will release soon)
-
+*We will release soon*
 ## References
 
 
