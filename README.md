@@ -50,11 +50,9 @@ conda activate uop
   * After Install pyrep in your environment install requirments packages
 
 ```
-conda activate pyrep
+conda activate uop
 
-pip install open3d numpy natsort tqdm trimesh
-
-
+pip install open3d numpy natsort tqdm trimesh pyfastnoisesimd opencv-python point_cloud_utils
 
 ```
 
@@ -132,9 +130,17 @@ python data_generator.py --data_type ycb --inspect
 
 
 
-## Test and Inference
+## Test and Demo
 
+Simulation Evaluate
+```
+# whole point cloud
+./whole_evaluate.sh
 
+# partial point cloud 
+./partial_evaluate.sh
+```
+Demo (We will release soon)
 
 ## References
 
