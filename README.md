@@ -1,7 +1,6 @@
 ## UOP : Unseen Object Placement with Large Scale Simulation
 
 ![Main Image](figure/main_image.png)
-**Picture:** Overview of uop project
 
 This repository contains official implementation of following paper:
 > **UOP-Net: Learning to Place Objects Stably using a Large-scale Simulation**<br>
