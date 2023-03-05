@@ -6,7 +6,8 @@
 This repository contains official implementation of following paper:
 > **UOP-Net: Learning to Place Objects Stably using a Large-scale Simulation**<br>
 > **Author**
-> **Abstract:** *Contents of Abstract*
+> **Abstract:** 
+>  Object placement is critical for robots operating in unstructured environments because it allows them to manipulate and arrange objects in a safe and efficient manner. However, existing methods for object placement have limitations such as the need for a complete 3D model of the object or the inability to handle complex object shapes; these limitations restrict the robot's applicability. In this paper, we present an unseen object placement (UOP) method that directly detects the stable planes of an unseen object from a single view and partial point cloud. Our approach is useful for scenarios where the shape and properties of the object are not fully known because it allow the robot to adapt and place the object accurately. We train our model on large-scale simulation data for generalizing over the shape and properties of the stable plane with a 3D point cloud. Our approach is verified through simulation and real-world robot experiments; the proposed approach achieves a state-of-the-art performance for placing single-view and partial objects.
 > [Click here for website and paper.](https://sites.google.com/view/uop-net-iccv-submission/home)
 
 
