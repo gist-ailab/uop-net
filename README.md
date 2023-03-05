@@ -12,8 +12,9 @@ This repository contains official implementation of following paper:
 
 
 ## ToDo
-[ ] Sample Data Download link
-[ ] Release demo and test code
+
+- [ ] Sample Data Download link
+- [ ] Release demo and test code
 
 
 ## Table of Contents
