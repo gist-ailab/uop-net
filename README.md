@@ -16,8 +16,10 @@ This repository contains official implementation of following paper:
 
 [**Data Generation**](#data-generation)
   * [**1 - Download Public 3D models**](#1-download-public-3d-models)
-  * [**2 - Edit Config file**](#2-edit-path-of-data-in-config-file-ex-defaultyaml)
-  * [**3 - Run Data Generation**](#3-run-data_generatorpy)
+  * [**2 - Preprocess 3D models**](#1-download-public-3d-models)
+  * [**3 - Edit Config file**](#2-edit-path-of-data-in-config-file-ex-defaultyaml)
+  * [**4 - Run Data Generation**](#3-run-data_generatorpy)
+  
 
 [**Train UOP-Net**](#train-uop-net)
 
@@ -30,6 +32,15 @@ This repository contains official implementation of following paper:
 
 ## Environment Setting
 
+  * Our code implemented on Ubuntu 20.04 and Conda virtual environment.
+  * Please follow below instruction.
+
+```
+conda create -n uop python=3.8
+conda activate uop
+
+```
+
 
 ### 1. Simulation
 
@@ -37,79 +48,85 @@ This repository contains official implementation of following paper:
 
 ### 2. Python Requirements
 
+  * After Install pyrep in your environment install requirments packages
+
 ```
 conda activate pyrep
 
-pip install open3d
+pip install open3d numpy natsort tqdm trimesh
 
 
 
 ```
 
-
-
-## Data Generation
+## Data Generation with run generator
 
 ### 1. Download public 3D models
 - [YCB Dataset](https://www.ycbbenchmarks.com/object-models/)
 - [3DNet](https://strands.readthedocs.io/en/latest/datasets/three_d_net.html)
 - [ShapeNet](https://shapenet.org/)
+
+After download public data your data folder looks like below
 ```shell
-ycb-tools/models/ycb # ycb data root
-├── 001_chips_can
-├── 002_master_chef_can
-├── ...
-├── 076_timer
-└── 077_rubiks_cube
-ShapeNetCore.v1 # shapenet data root
-├── 02691156
-├── 02691156.csv
-├── 02691156.zip
-├── ...
-├── count-models.sh
-├── get-metadata.sh
-├── jq
-├── README.txt
-└── taxonomy.json
-3DNet_raw/ # 3dnet data_root
-├── Cat10_ModelDatabase
-├── Cat10_TestDatabase
-├── Cat200_ModelDatabase
-├── Cat60_ModelDatabase
-└── Cat60_TestDatabase
+UOPROOT # path to generate uopdata
+├──public_data
+│  ├──ycb-tools/models/ycb # ycb data root
+│  │  ├── 001_chips_can
+│  │  ├── 002_master_chef_can
+│  │  ├── ...
+│  │  ├── 076_timer
+│  │  └── 077_rubiks_cube
+│  ├──ShapeNetCore.v1 # shapenet data root
+│  │  ├── 02691156
+│  │  ├── 02691156.csv
+│  │  ├── 02691156.zip
+│  │  ├── ...
+│  │  ├── count-models.sh
+│  │  ├── get-metadata.sh
+│  │  ├── jq
+│  │  ├── README.txt
+│  │  └── taxonomy.json
+│  └──3DNet_raw/ # 3dnet data_root
+│     ├── Cat10_ModelDatabase
+│     ├── Cat10_TestDatabase
+│     ├── Cat200_ModelDatabase
+│     ├── Cat60_ModelDatabase
+│     └── Cat60_TestDatabase
+└──uop_data # the path uop data generated
+```
+Add following term to your ~/.bashrc file
+```
+export UOPROOT=PATH/TO/GENRATE/UOP/DATA # # uop data root
 ```
 
+### 2. Preprocess 3D models
 
-### 2. Edit path of data in config file (ex. default.yaml)
-```yaml
-########## TODO: EDIT BELOW SETTINGS ###########
-data_type: 'ycb' # raw data type ['ycb', 'shapenet', '3dnet']
-data_root: 'PATH TO RAW MESH DATA' # root of raw mesh data
-save_root: 'PATH TO SAVE GENERATED DATA' # root of save generated data
+First build Manifold to watertight 3D models following the instruction in [Manifold](https://github.com/hjwdzh/Manifold)
 
-########### FIX BELOW SETTINGS ###########
-bbox_size: 0.2 # scene model size
-number_of_points: 5000 # sampling point number
-sampling_method: 'uniform-poisson' # [uniform, poisson, uniform-poisson]
-orientation_grid_size: 8 # checking orientation per each axis
-
-# simulation setting for sampling pose
-table_grid_size: 8 # table num of each axis 
-time_step: 0.005 # simulation time step
-tolerance: 0.001 # threshold of check object stoppness
-max_step: 1000 # max step of check object stoppness
-
-# simulation setting for inspection env
-inspection_tolerance: 18 # threshold of inspectiion of stable pose
-tilt: 10
-min_step: 200 # min step of check stability of pose
+Add following term to your ~/.bashrc file
+```
+export MANIFOLD=PATH/TO/MANIFOLD/BUILD/DIR # ex.) ~/Manifold/build
 ```
 
+And run preprocess.py
 
-### 3. Run `data_generator.py`
+```
+python preprocess.py --data_type ycb # ycb, shapenet, 3dnet, ycb-texture
+```
+
+### 3. Run DataGenerator
 ```shell
-python data_generator.py --config config_file/raeyo_shape.yaml --inspect --split 9
+python data_generator.py --data_type ycb --inspect
 ```
+
+
+
+
+
+
+
+
+
 
 
 ## Train UOP-Net
@@ -155,11 +172,19 @@ python data_generator.py --config config_file/raeyo_shape.yaml --inspect --split
   year={2019}
 }
 ```
+```
+@article{huang2018robust,
+  title={Robust Watertight Manifold Surface Generation Method for ShapeNet Models},
+  author={Huang, Jingwei and Su, Hao and Guibas, Leonidas},
+  journal={arXiv preprint arXiv:1802.01698},
+  year={2018}
+}
+```
 
 
 
 ## License
-See [LICENSE][LICENSE]
+See [LICENSE](LICENSE)
 
 
 

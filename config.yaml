@@ -1,0 +1,13 @@
+orientation_grid_size: 8 # checking orientation per each axis
+
+# simulation setting for sampling pose
+table_grid_size: 8 # table num of each axis 
+time_step: 0.005 # simulation time step
+tolerance: 0.001 # threshold of check object stoppness
+max_step: 1000 # max step of check object stoppness
+
+# simulation setting for inspection env
+inspection_tolerance: 18 # threshold of inspectiion of stable pose
+tilt: 3
+min_step: 200 # min step of check stability of pose
+
