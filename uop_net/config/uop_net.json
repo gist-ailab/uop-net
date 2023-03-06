@@ -1,6 +1,10 @@
 {
     "env" : 
         {
+            "save_dir" : "",
+            "exp_name" : "",
+            "exp_condition" : "default",
+
             "local":
                 {
                     "ckp_dir" : "/media/jun/nsj_stor2tb/uop/checkpoint",
