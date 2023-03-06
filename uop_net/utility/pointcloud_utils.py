@@ -1,436 +1,383 @@
 import torch
-import torch.nn as nn
-import torch.nn.functional as F
-
 import numpy as np
-import os
-import open3d as o3d
 
-from time import time
-from typing import Optional
+class PointcloudToTensor(object):
+    def __call__(self, points):
+        return torch.from_numpy(points).float()
 
-
-
-def timeit(tag, t):
-    print("{}: {}s".format(tag, time() - t))
-    return time()
-
-def pc_normalize(pc):
-    l = pc.shape[0]
-    centroid = np.mean(pc, axis=0)
-    pc = pc - centroid
-    m = np.max(np.sqrt(np.sum(pc**2, axis=1)))
-    pc = pc / m
-    return pc, 1/m
-
-def square_distance(src, dst):
+def angle_axis(angle: float, axis: np.ndarray):
+    r"""Returns a 4x4 rotation matrix that performs a rotation around axis by angle
+    Parameters
+    ----------
+    angle : float
+        Angle to rotate by
+    axis: np.ndarray
+        Axis to rotate about
+    Returns
+    -------
+    torch.Tensor
+        3x3 rotation matrix
     """
-    Calculate Euclid distance between each two points.
-    src^T * dst = xn * xm + yn * ym + zn * zm；
-    sum(src^2, dim=-1) = xn*xn + yn*yn + zn*zn;
-    sum(dst^2, dim=-1) = xm*xm + ym*ym + zm*zm;
-    dist = (xn - xm)^2 + (yn - ym)^2 + (zn - zm)^2
-         = sum(src**2,dim=-1)+sum(dst**2,dim=-1)-2*src^T*dst
-    Input:
-        src: source points, [B, N, C]
-        dst: target points, [B, M, C]
-    Output:
-        dist: per-point square distance, [B, N, M]
-    """
-    B, N, _ = src.shape
-    _, M, _ = dst.shape
-    dist = -2 * (torch.matmul(src, dst.permute(0, 2, 1))+1e-9)
-    dist += (torch.sum(src ** 2, -1).view(B, N, 1)+1e-9)
-    dist += (torch.sum(dst ** 2, -1).view(B, 1, M)+1e-9)
-    return dist
+    u = axis / np.linalg.norm(axis)
+    cosval, sinval = np.cos(angle), np.sin(angle)
+
+    # yapf: disable
+    cross_prod_mat = np.array([[0.0, -u[2], u[1]],
+                                [u[2], 0.0, -u[0]],
+                                [-u[1], u[0], 0.0]])
+
+    R = torch.from_numpy(
+        cosval * np.eye(3)
+        + sinval * cross_prod_mat
+        + (1.0 - cosval) * np.outer(u, u)
+    )
+    # yapf: enable
+    return R.float()    
+
+class PointcloudRotatebyAngle(object):
+    def __init__(self, rotation_angle = 0.0):
+        self.rotation_angle = rotation_angle
+
+    def __call__(self, pc, rotation_angle):
+        self.rotation_angle = rotation_angle
+        normals = pc.size(2) > 3
+        bsize = pc.size()[0]
+        for i in range(bsize):
+            cosval = np.cos(self.rotation_angle)
+            sinval = np.sin(self.rotation_angle)
+            rotation_matrix = np.array([[cosval, 0, sinval],
+                                        [0, 1, 0],
+                                        [-sinval, 0, cosval]])
+            rotation_matrix = torch.from_numpy(rotation_matrix).float().cuda()
+
+            cur_pc = pc[i, :, :]
+            if not normals:
+                cur_pc = cur_pc @ rotation_matrix
+            else:
+                pc_xyz = cur_pc[:, 0:3]
+                pc_normals = cur_pc[:, 3:]
+                cur_pc[:, 0:3] = pc_xyz @ rotation_matrix
+                cur_pc[:, 3:] = pc_normals @ rotation_matrix
+
+            pc[i, :, :] = cur_pc
+
+        return pc
+
+class PointcloudJitter_batch(object):
+    def __init__(self, std=0.01, clip=0.05):
+        self.std, self.clip = std, clip
+
+    def __call__(self, pc):
+        bsize = pc.size()[0]
+        for i in range(bsize):
+            jittered_data = pc.new(pc.size(1), 3).normal_(
+                mean=0.0, std=self.std
+            ).clamp_(-self.clip, self.clip)
+            pc[i, :, 0:3] += jittered_data
+
+        return pc
+
+class PointcloudJitter(object):
+    def __init__(self, std=0.01, clip=0.05):
+        self.std, self.clip = std, clip
+
+    def __call__(self, points):
+        jittered_data = (
+            points.new(points.size(0), 3)
+            .normal_(mean=0.0, std=self.std)
+            .clamp_(-self.clip, self.clip)
+        )
+        points[:, 0:3] += jittered_data
+        return points
+
+class PointcloudScaleAndTranslate(object):
+    def __init__(self, scale_low=2. / 3., scale_high=3. / 2., translate_range=0.2):
+        self.scale_low = scale_low
+        self.scale_high = scale_high
+        self.translate_range = translate_range
+
+    def __call__(self, pc):
+        bsize = pc.size()[0]
+        dim = pc.size()[-1]
+
+        for i in range(bsize):
+            xyz1 = np.random.uniform(low=self.scale_low, high=self.scale_high, size=[dim])
+            xyz2 = np.random.uniform(low=-self.translate_range, high=self.translate_range, size=[dim])
+
+            pc[i, :, 0:3] = torch.mul(pc[i, :, 0:3], torch.from_numpy(xyz1).float().cuda()) + torch.from_numpy(xyz2).float().cuda()
+
+        return pc
 
 
-def index_points(points, idx):
-    """
-    Input:
-        points: input points data, [B, N, C]
-        idx: sample index data, [B, S]
-    Return:
-        new_points:, indexed points data, [B, S, C]
-    """
-    device = points.device
-    B = points.shape[0]
-    view_shape = list(idx.shape)
-    view_shape[1:] = [1] * (len(view_shape) - 1)
-    repeat_shape = list(idx.shape)
-    repeat_shape[0] = 1
-    batch_indices = torch.arange(B, dtype=torch.long).to(device).view(view_shape).repeat(repeat_shape)
-    new_points = points[batch_indices, idx, :]
-    return new_points
+class PointcloudScaleAndTranslate2(object):
+    def __init__(self, scale_low=2. / 3., scale_high=3. / 2., translate_range=0.05):
+        self.scale_low = scale_low
+        self.scale_high = scale_high
+        self.translate_range = translate_range
+
+    def __call__(self, pc):
+        bsize = pc.size()[0]
+        dim = pc.size()[-1]
+
+        for i in range(bsize):
+            xyz1 = np.random.uniform(low=self.scale_low, high=self.scale_high, size=[dim])
+            xyz2 = np.random.uniform(low=-self.translate_range, high=self.translate_range, size=[dim])
+
+            pc[i, :, 0:2] = torch.mul(pc[i, :, 0:2], torch.from_numpy(xyz1).float().cuda()) + torch.from_numpy(
+                xyz2).float().cuda()
+
+        return pc
+
+class PointcloudScale_batch(object):
+    def __init__(self, scale_low=2. / 3., scale_high=3. / 2.):
+        self.scale_low = scale_low
+        self.scale_high = scale_high
+
+    def __call__(self, pc):
+        bsize = pc.size()[0]
+        for i in range(bsize):
+            xyz1 = np.random.uniform(low=self.scale_low, high=self.scale_high, size=[3])
+
+            # pc[i, :, 0:3] = torch.mul(pc[i, :, 0:3], torch.from_numpy(xyz1).float().cuda())
+            pc[i, :, 0:3] = torch.mul(pc[i, :, 0:3], torch.from_numpy(xyz1).float())
+
+        return pc
+
+class PointcloudScale(object):
+    def __init__(self, lo=0.8, hi=1.25):
+        self.lo, self.hi = lo, hi
+
+    def __call__(self, points):
+        scaler = np.random.uniform(self.lo, self.hi)
+        points[:, 0:3] *= scaler
+        return points
+
+class PointcloudTranslate_batch(object):
+    def __init__(self, translate_range=0.1):
+        self.translate_range = translate_range
+
+    def __call__(self, pc):
+        bsize = pc.size()[0]
+        for i in range(bsize):
+            xyz2 = np.random.uniform(low=-self.translate_range, high=self.translate_range, size=[3])
+
+            # pc[i, :, 0:3] = pc[i, :, 0:3] + torch.from_numpy(xyz2).float().cuda()
+            pc[i, :, 0:3] = pc[i, :, 0:3] + torch.from_numpy(xyz2).float()
+
+        return pc
+
+class PointcloudTranslate(object):
+    def __init__(self, translate_range=0.1):
+        self.translate_range = translate_range
+
+    def __call__(self, points):
+        translation = np.random.uniform(-self.translate_range, self.translate_range)
+        points[:, 0:3] += translation
+        return points
 
 
-def farthest_point_sample(xyz, npoint):
-    """
-    Input:
-        xyz: pointcloud data, [B, N, 3]
-        npoint: number of samples
-    Return:
-        centroids: sampled pointcloud index, [B, npoint]
-    """
-    device = xyz.device
-    B, N, C = xyz.shape
-    centroids = torch.zeros(B, npoint, dtype=torch.long).to(device)
-    distance = torch.ones(B, N).long().to(device) 
-    farthest = torch.randint(0, N, (B,), dtype=torch.long).to(device)
-    batch_indices = torch.arange(B, dtype=torch.long).to(device)
-    for i in range(npoint):
-        centroids[:, i] = farthest
-        centroid = xyz[batch_indices, farthest, :].view(B, 1, 3)
-        dist = torch.sum((xyz - centroid) ** 2, -1)
-        mask = dist < distance
-        dist, distance = dist.long(), distance.long()
-        mask = mask.long()
-        distance[mask] = dist[mask]
-        farthest = torch.max(distance, -1)[1]
-    return centroids
+class PointcloudRotate(object):
+    def __init__(self, axis=np.array([0.0, 1.0, 0.0])):
+        self.axis = axis
+
+    def __call__(self, points):
+        rotation_angle = np.random.uniform() * 2 * np.pi
+        rotation_matrix = angle_axis(rotation_angle, self.axis)
+
+        normals = points.size(1) > 3
+        if not normals:
+            return torch.matmul(points, rotation_matrix.t())
+        else:
+            pc_xyz = points[:, 0:3]
+            pc_normals = points[:, 3:]
+            points[:, 0:3] = torch.matmul(pc_xyz, rotation_matrix.t())
+            points[:, 3:] = torch.matmul(pc_normals, rotation_matrix.t())
+
+            return points
+
+class PointcloudRotate_batch(object):
+    def __init__(self):        
+        pass
+
+    def __call__(self, points):
+        bsize = points.size()[0]
+
+        for i in range(bsize):
+            rotation_axis = np.random.rand(3)
+            rotation_axis = rotation_axis/np.linalg.norm(rotation_axis)
+            rotation_angle = np.random.uniform() * 2 * np.pi
+
+            # rotation_matrix = angle_axis(rotation_angle, rotation_axis).cuda()
+            rotation_matrix = angle_axis(rotation_angle, rotation_axis)
+
+            normals = points.size(2) > 3
+            if not normals:
+                points[i, :, 0:3] = torch.matmul(points[i, :, 0:3], rotation_matrix.t())
+            else:
+                pc_xyz = points[i, :, 0:3]
+                pc_normals = points[i, :, 3:]
+                points[i, :, 0:3] = torch.matmul(pc_xyz, rotation_matrix.t())
+                points[i, :, 3:] = torch.matmul(pc_normals, rotation_matrix.t())
+
+        return points
 
 
-def query_ball_point(radius, nsample, xyz, new_xyz):
-    """
-    Input:
-        radius: local region radius
-        nsample: max sample number in local region
-        xyz: all points, [B, N, 3]
-        new_xyz: query points, [B, S, 3]
-    Return:
-        group_idx: grouped points index, [B, S, nsample]
-    """
-    device = xyz.device
-    B, N, C = xyz.shape
-    _, S, _ = new_xyz.shape
-    group_idx = torch.arange(N, dtype=torch.long).to(device).view(1, 1, N).repeat([B, S, 1])
-    sqrdists = square_distance(new_xyz, xyz)
-    group_idx[sqrdists > radius ** 2] = N
-    group_idx = group_idx.sort(dim=-1)[0][:, :, :nsample]
-    group_first = group_idx[:, :, 0].view(B, S, 1).repeat([1, 1, nsample])
-    mask = group_idx == N
-    group_idx[mask] = group_first[mask]
-    return group_idx
+
+class PointcloudRotatePerturbation(object):
+    def __init__(self, angle_sigma=0.06, angle_clip=0.18):
+        self.angle_sigma, self.angle_clip = angle_sigma, angle_clip
+
+    def _get_angles(self):
+        angles = np.clip(
+            self.angle_sigma * np.random.randn(3), -self.angle_clip, self.angle_clip
+        )
+
+        return angles
+
+    def __call__(self, points):
+        angles = self._get_angles()
+        Rx = angle_axis(angles[0], np.array([1.0, 0.0, 0.0]))
+        Ry = angle_axis(angles[1], np.array([0.0, 1.0, 0.0]))
+        Rz = angle_axis(angles[2], np.array([0.0, 0.0, 1.0]))
+
+        rotation_matrix = torch.matmul(torch.matmul(Rz, Ry), Rx)
+
+        normals = points.size(1) > 3
+        if not normals:
+            return torch.matmul(points, rotation_matrix.t())
+        else:
+            pc_xyz = points[:, 0:3]
+            pc_normals = points[:, 3:]
+            points[:, 0:3] = torch.matmul(pc_xyz, rotation_matrix.t())
+            points[:, 3:] = torch.matmul(pc_normals, rotation_matrix.t())
+
+            return points
+
+# class PointcloudRotatePerturbation_batch(object):
+#     def __init__(self, angle_sigma=0.06, angle_clip=0.18):
+#         self.angle_sigma, self.angle_clip = angle_sigma, angle_clip
+
+#     def _get_angles(self):
+#         angles = np.clip(
+#             self.angle_sigma * np.random.randn(3), -self.angle_clip, self.angle_clip
+#         )
+#         #angles = np.random.uniform(size=3) * 2 * np.pi
+
+#         return angles
+
+#     def __call__(self, points):
+#         bsize = points.size()[0]
+#         for i in range(bsize):
+#             angles = self._get_angles()
+#             Rx = angle_axis(angles[0], np.array([1.0, 0.0, 0.0]))
+#             Ry = angle_axis(angles[1], np.array([0.0, 1.0, 0.0]))
+#             Rz = angle_axis(angles[2], np.array([0.0, 0.0, 1.0]))
+
+#             rotation_matrix = torch.matmul(torch.matmul(Rz, Ry), Rx).cuda()
+
+#             normals = points.size(2) > 3
+#             if not normals:
+#                 points[i, :, 0:3] = torch.matmul(points[i, :, 0:3], rotation_matrix.t())
+
+#             else:
+#                 pc_xyz = points[i, :, 0:3]
+#                 pc_normals = points[i, :, 3:]
+#                 points[i, :, 0:3] = torch.matmul(pc_xyz, rotation_matrix.t())
+#                 points[i, :, 3:] = torch.matmul(pc_normals, rotation_matrix.t())
+
+#             return points
+
+class PointcloudRotatePerturbation_batch(object):
+    def __init__(self):
+        import random
+        angle_sigma = random.randint(1, 5)
+        angle_clip = random.randint(1, 10)
+        self.angle_sigma, self.angle_clip = angle_sigma, angle_clip
+
+    def _get_angles(self):
+        angles = np.clip(
+            self.angle_sigma * np.random.randn(3), -self.angle_clip, self.angle_clip
+        )
+    
+        return angles
+
+    def __call__(self, points):
+        bsize = points.size()[0]
+        for i in range(bsize):
+            angles = self._get_angles()
+            Rx = angle_axis(angles[0], np.array([1.0, 0.0, 0.0]))
+            Ry = angle_axis(angles[1], np.array([0.0, 1.0, 0.0]))
+            Rz = angle_axis(angles[2], np.array([0.0, 0.0, 1.0]))
+
+            # rotation_matrix = torch.matmul(torch.matmul(Rz, Ry), Rx).cuda()
+            rotation_matrix = torch.matmul(torch.matmul(Rz, Ry), Rx)
+
+            normals = points.size(2) > 3
+            if not normals:
+                points[i, :, 0:3] = torch.matmul(points[i, :, 0:3], rotation_matrix.t())
+
+            else:
+                pc_xyz = points[i, :, 0:3]
+                pc_normals = points[i, :, 3:]
+                points[i, :, 0:3] = torch.matmul(pc_xyz, rotation_matrix.t())
+                points[i, :, 3:] = torch.matmul(pc_normals, rotation_matrix.t())
+
+            return points
 
 
-def sample_and_group(npoint, radius, nsample, xyz, points, returnfps=False):
-    """
-    Input:
-        npoint:
-        radius:
-        nsample:
-        xyz: input points position data, [B, N, 3]
-        points: input points data, [B, N, D]
-    Return:
-        new_xyz: sampled points position data, [B, npoint, nsample, 3]
-        new_points: sampled points data, [B, npoint, nsample, 3+D]
-    """
-    B, N, C = xyz.shape
-    S = npoint
-    fps_idx = farthest_point_sample(xyz, npoint) # [B, npoint, C]
-    new_xyz = index_points(xyz, fps_idx)
-    idx = query_ball_point(radius, nsample, xyz, new_xyz)
-    grouped_xyz = index_points(xyz, idx) # [B, npoint, nsample, C]
-    grouped_xyz_norm = grouped_xyz - new_xyz.view(B, S, 1, C)
+class PointcloudRandomInputDropout_batch(object):
+    def __init__(self, max_dropout_ratio=0.875):
+        assert max_dropout_ratio >= 0 and max_dropout_ratio < 1
+        self.max_dropout_ratio = max_dropout_ratio
 
-    if points is not None:
-        grouped_points = index_points(points, idx)
-        new_points = torch.cat([grouped_xyz_norm, grouped_points], dim=-1) # [B, npoint, nsample, C+D]
-    else:
-        new_points = grouped_xyz_norm
-    if returnfps:
-        return new_xyz, new_points, grouped_xyz, fps_idx
-    else:
-        return new_xyz, new_points
+    def __call__(self, pc):
+        bsize = pc.size()[0]
+        for i in range(bsize):
+            dropout_ratio = np.random.random() * self.max_dropout_ratio  # 0~0.875
+            drop_idx = np.where(np.random.random((pc.size()[1])) <= dropout_ratio)[0]
+            if len(drop_idx) > 0:
+                cur_pc = pc[i, :, :]
+                cur_pc[drop_idx.tolist(), 0:3] = cur_pc[0, 0:3].repeat(len(drop_idx), 1)  # set to the first point
+                pc[i, :, :] = cur_pc
 
+        return pc
 
-def sample_and_group_all(xyz, points):
-    """
-    Input:
-        xyz: input points position data, [B, N, 3]
-        points: input points data, [B, N, D]
-    Return:
-        new_xyz: sampled points position data, [B, 1, 3]
-        new_points: sampled points data, [B, 1, N, 3+D]
-    """
-    device = xyz.device
-    B, N, C = xyz.shape
-    new_xyz = torch.zeros(B, 1, C).to(device)
-    grouped_xyz = xyz.view(B, 1, N, C)
-    if points is not None:
-        new_points = torch.cat([grouped_xyz, points.view(B, 1, N, -1)], dim=-1)
-    else:
-        new_points = grouped_xyz
-    return new_xyz, new_points
+class PointcloudRandomInputDropout(object):
+    def __init__(self, max_dropout_ratio=0.875):
+        assert max_dropout_ratio >= 0 and max_dropout_ratio < 1
+        self.max_dropout_ratio = max_dropout_ratio
+
+    def __call__(self, pc):
+       #pc = points.numpy()
+
+        dropout_ratio = np.random.random() * self.max_dropout_ratio  # 0~0.875
+        drop_idx = np.where(np.random.random((pc.shape[0])) <= dropout_ratio)[0]
+        if len(drop_idx) > 0:
+            pc[drop_idx] = pc[0]  # set to the first point
+
+        return pc#torch.from_numpy(pc).float() 
 
 
-def nonuniform_sampling(num = 4096, sample_num = 1024):
-    sample = set()
-    loc = np.random.rand()*0.8+0.1
-    while(len(sample)<sample_num):
-        a = int(np.random.normal(loc=loc,scale=0.3)*num)
-        if a<0 or a>=num:
-            continue
-        sample.add(a)
-    return list(sample)
+class GuassNoisePointcloud(object):
+    def __init__(self):
+        pass
+    
+    def __call__(self, pc):
+        guass_noise = torch.normal(0.001, 0.01, size=pc.size())
+        pc += guass_noise
+        
+        return pc
 
-def shuffle_point_cloud_and_gt(batch_data,batch_gt=None):
-    B,N,C = batch_data.shape
+class GuassNoisePointcloud_batch(object): 
+    def __init__(self):
+        pass
 
-    idx = np.arange(N)
-    np.random.shuffle(idx)
-    batch_data = batch_data[:,idx,:]
-    if batch_gt is not None:
-        np.random.shuffle(idx)
-        batch_gt = batch_gt[:,idx,:]
-    return batch_data,batch_gt
+    def __call__(self, pc):
+        bsize = pc.size()[0]
+        for b in range(bsize):
+            guass_noise = torch.normal(0.001, 0.01, size = pc[b, :, :].size())
+            cur_pc = pc[b, :, :]
+            cur_pc += guass_noise
+            pc[b, :, :] = cur_pc
 
-def shuffle_data(data, labels):
-    """ Shuffle data and labels.
-        Input:
-          data: B,N,... numpy array
-          label: B,... numpy array
-        Return:
-          shuffled data, label and shuffle indices
-    """
-    idx = np.arange(len(labels))
-    np.random.shuffle(idx)
-    return data[idx, ...], labels[idx]
-
-def rotate_point_cloud_by_angle_batch(batch_data, rotation_angle):
-  """ Rotate the point cloud along up direction with certain angle.
-    Input:
-      BxNx3 array, original batch of point clouds
-    Return:
-      BxNx3 array, rotated batch of point clouds
-  """
-  rotated_data = np.zeros(batch_data.shape, dtype=np.float32)
-  for k in range(batch_data.shape[0]):
-    #rotation_angle = np.random.uniform() * 2 * np.pi
-    cosval = np.cos(rotation_angle)
-    sinval = np.sin(rotation_angle)
-    rotation_matrix = np.array([[cosval, 0, sinval],
-                  [0, 1, 0],
-                  [-sinval, 0, cosval]])
-    shape_pc = batch_data[k, ...]
-    rotated_data[k, ...] = np.dot(shape_pc.reshape((-1, 3)), rotation_matrix)
-  return rotated_data
-
-def rotate_point_cloud_and_gt(pc,gt=None,y_rotated=True):
-    """ Randomly rotate the point clouds to augument the dataset
-        rotation is per shape based along up direction
-        Input:
-          BxNx3 array, original batch of point clouds
-        Return:
-          BxNx3 array, rotated batch of point clouds
-    """
-    angles = np.random.uniform(size=(3)) * 2 * np.pi
-    Rx = np.array([[1, 0, 0],
-                   [0, np.cos(angles[0]), -np.sin(angles[0])],
-                   [0, np.sin(angles[0]), np.cos(angles[0])]])
-    Ry = np.array([[np.cos(angles[1]), 0, np.sin(angles[1])],
-                   [0, 1, 0],
-                   [-np.sin(angles[1]), 0, np.cos(angles[1])]])
-    Rz = np.array([[np.cos(angles[2]), -np.sin(angles[2]), 0],
-                   [np.sin(angles[2]), np.cos(angles[2]), 0],
-                   [0, 0, 1]])
-    if y_rotated:
-        rotation_matrix = Ry
-    else:
-        rotation_matrix = np.dot(Rz, np.dot(Ry, Rx))
-
-    pc = np.dot(pc, rotation_matrix)
-    if gt is not None:
-        gt = np.dot(gt, rotation_matrix)
-        return pc, gt
-
-    return pc
-
-def jitter_perturbation_point_cloud(pc, sigma=0.01, clip=0.05):
-    """ Randomly jitter points. jittering is per point.
-        Input:
-          BxNx3 array, original batch of point clouds
-        Return:
-          BxNx3 array, jittered batch of point clouds
-    """
-    N, C = pc.shape
-    assert(clip > 0)
-    jittered_data = np.clip(sigma * np.random.randn(N, C), -1*clip, clip)
-    jittered_data += pc
-    return jittered_data
-
-def shift_point_cloud_and_gt(pc, gt = None, shift_range=0.1):
-    """ Randomly shift point cloud. Shift is per point cloud.
-        Input:
-          BxNx3 array, original batch of point clouds
-        Return:
-          BxNx3 array, shifted batch of point clouds
-    """
-    N, C = pc.shape
-    shifts = np.random.uniform(-shift_range, shift_range, (3))
-    pc = pc + shifts
-
-    if gt is not None:
-        gt = gt + shifts
-        return pc, gt
-
-    return pc
-
-def shift_point_cloud(batch_data, shift_range=0.1):
-    """ Randomly shift point cloud. Shift is per point cloud.
-        Input:
-          BxNx3 array, original batch of point clouds
-        Return:
-          BxNx3 array, shifted batch of point clouds
-    """
-    B, N, C = batch_data.shape
-    shifts = np.random.uniform(-shift_range, shift_range, (B,3))
-    for batch_index in range(B):
-        batch_data[batch_index,:,:] += shifts[batch_index,:]
-    return batch_data
-
-
-def translate_pointcloud(pointcloud):
-    xyz1 = np.random.uniform(low=2. / 3., high=3. / 2., size=[3])
-    xyz2 = np.random.uniform(low=-0.2, high=0.2, size=[3])
-
-    translated_pointcloud = np.add(np.multiply(pointcloud, xyz1), xyz2).astype('float32')
-    return translated_pointcloud
-
-def random_scale_point_cloud_and_gt(pc, gt = None, scale_low=0.8, scale_high=1.25):
-    """ Randomly scale the point cloud. Scale is per point cloud.
-        Input:
-            BxNx3 array, original batch of point clouds
-        Return:
-            BxNx3 array, scaled batch of point clouds
-    """
-    N, C = pc.shape
-    scale = np.random.uniform(scale_low, scale_high, 1)
-    pc = pc * scale
-
-    if gt is not None:
-        gt = gt * scale
-        return pc, gt, scale
-
-    return pc,scale
-
-def random_scale_point_cloud(batch_data, scale_low=0.8, scale_high=1.25):
-    """ Randomly scale the point cloud. Scale is per point cloud.
-        Input:
-            BxNx3 array, original batch of point clouds
-        Return:
-            BxNx3 array, scaled batch of point clouds
-    """
-    B, N, C = batch_data.shape
-    scales = np.random.uniform(scale_low, scale_high, B)
-    for batch_index in range(B):
-        batch_data[batch_index,:,:] *= scales[batch_index]
-    return batch_data
-
-
-def rotate_perturbation_point_cloud(pc, angle_sigma=0.06, angle_clip=0.18):
-    """ Randomly perturb the point clouds by small rotations
-        Input:
-          BxNx3 array, original batch of point clouds
-        Return:
-          BxNx3 array, rotated batch of point clouds
-    """
-    N, C = pc.shape
-
-    angles = np.clip(angle_sigma*np.random.randn(3), -angle_clip, angle_clip)
-    Rx = np.array([[1,0,0],
-                   [0,np.cos(angles[0]),-np.sin(angles[0])],
-                   [0,np.sin(angles[0]),np.cos(angles[0])]])
-    Ry = np.array([[np.cos(angles[1]),0,np.sin(angles[1])],
-                   [0,1,0],
-                   [-np.sin(angles[1]),0,np.cos(angles[1])]])
-    Rz = np.array([[np.cos(angles[2]),-np.sin(angles[2]),0],
-                   [np.sin(angles[2]),np.cos(angles[2]),0],
-                   [0,0,1]])
-    R = np.dot(Rz, np.dot(Ry,Rx))
-    pc = np.dot(pc, R)
-
-    return pc
-
-def rotate_2D_point_cloud(pc, angle_sigma=0.06, angle_clip=0.18):
-    """ Randomly perturb the point clouds by small rotations
-        Input:
-          BxNx3 array, original batch of point clouds
-        Return:
-          BxNx3 array, rotated batch of point clouds
-    """
-    N, C = pc.shape
-
-    angles = np.clip(angle_sigma*np.random.randn(3), -angle_clip, angle_clip)
-    R = np.array([
-                   [np.cos(angles[0]),-np.sin(angles[0])],
-                   [np.sin(angles[0]),np.cos(angles[0])]])
-    pc = np.dot(pc, R)
-
-    return pc
-
-def scale_2D_point_cloud(pc, scale_low=0.95, scale_high=1.05):
-    """ Randomly scale the point cloud. Scale is per point cloud.
-        Input:
-            BxNx3 array, original batch of point clouds
-        Return:
-            BxNx3 array, scaled batch of point clouds
-    """
-    N, C = pc.shape
-    scale = np.random.uniform(scale_low, scale_high, 1)
-    pc = pc * scale
-
-    return pc
-
-def guass_noise_point_cloud(batch_data, sigma=0.005, mu=0.00):
-    """ Add guassian noise in per point.
-        Input:
-          BxNx3 array, original batch of point clouds
-        Return:
-          BxNx3 array, jittered batch of point clouds
-    """
-    batch_data += np.random.normal(mu, sigma, batch_data.shape)
-    return batch_data
-
-def rotate_point_cloud_by_angle(self, data, rotation_angle):
-    """
-    Rotate the point cloud along up direction with certain angle.
-    :param batch_data: Nx3 array, original batch of point clouds
-    :param rotation_angle: range of rotation
-    :return:  Nx3 array, rotated batch of point clouds
-    """
-    cosval = np.cos(rotation_angle)
-    sinval = np.sin(rotation_angle)
-    rotation_matrix = np.array([[cosval, 0, sinval],
-                                [0, 1, 0],
-                                [-sinval, 0, cosval]])
-    rotated_data = np.dot(data, rotation_matrix)
-
-    return rotated_data
-
-# def jitter_point_cloud(batch_data, sigma=0.01, clip=0.05):
-#     """ Randomly jitter points. jittering is per point.
-#         Input:
-#           BxNx3 array, original batch of point clouds
-#         Return:
-#           BxNx3 array, jittered batch of point clouds
-#     """
-#     B, N, C = batch_data.shape
-#     assert(clip > 0)
-#     jittered_data = np.clip(sigma * np.random.randn(B, N, C), -1*clip, clip)
-#     jittered_data += batch_data
-#     return jittered_data
-
-def jitter_point_cloud(batch_data, sigma=0.01, clip=0.05):
-    """ Randomly jitter points. jittering is per point.
-        Input:
-          BxNx3 array, original batch of point clouds
-        Return:
-          BxNx3 array, jittered batch of point clouds
-    """
-    B, N, C = batch_data.shape
-    assert(clip > 0)
-    jittered_data = np.clip(sigma * np.random.randn(B, N, C), -1*clip, clip)
-    batch_data += jittered_data
-    return batch_data
-
+        return 

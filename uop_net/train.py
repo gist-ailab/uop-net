@@ -1,7 +1,7 @@
 import os
 import datetime
 from re import U
-from cv2 import split
+from cv2 import split, transform
 import numpy as np
 import argparse
 import random
@@ -15,22 +15,29 @@ import torch.optim as optim
 import sys
 sys.path.append("uop_net")
 
-
 from torch.utils.data import DataLoader
+from torchvision import transforms
 from warmup_scheduler import GradualWarmupScheduler
 
 from collections import defaultdict
 
 from data.load_data import load_data
 from utility.config import *
-from utility.pointcloud_utils import *
+from utility import pointcloud_utils as pcu
 
 from module.model.uop_net import UOPNet
 from module.losses.plane_loss import PlaneLoss
 from module.losses.stability_loss import StabilityLoss
 
 def train(opt, device):
-    pass
+    def selectured_aug():
+        tr_transform = transforms.Compose(
+            [
+                pcu.PointcloudRotate_batch(), 
+                pcu.PointcloudRotatePerturbation_batch(),
+                pcu.PointcloudJitter_batch()
+            ]
+        )
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
