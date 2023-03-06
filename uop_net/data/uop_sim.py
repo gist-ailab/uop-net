@@ -10,7 +10,7 @@ import copy
 
 from utility.file_utils import *
 from utility.open3d_utils import *
-from capture_points_from_mesh import MeshCapture
+from utility.mesh_utils import MeshCapture
 
 class UOPSim(data.Dataset):
 
