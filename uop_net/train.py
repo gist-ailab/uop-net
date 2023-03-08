@@ -30,16 +30,16 @@ from module.losses.plane_loss import PlaneLoss
 from module.losses.stability_loss import StabilityLoss
 
 def train(opt, device):
-    def select_aug():
-        tr_transform = transforms.Compose(
-            [
-                pcu.PointcloudRotate_batch(), 
-                pcu.PointcloudRotatePerturbation_batch(),
-                pcu.PointcloudJitter_batch()
-            ]
-        )
-        return tr_transform
     
+    tr_transform = transforms.Compose(
+        [
+            pcu.PointcloudRotate_batch(), 
+            pcu.PointcloudRotatePerturbation_batch(),
+            pcu.PointcloudJitter_batch()
+        ]
+    )
+    
+ 
     tr_data, val_data = load_data(opt)
     tr_loader = DataLoader(tr_data,
                            batch_size=opt.config['base'],
@@ -59,11 +59,11 @@ def train(opt, device):
 
     loss_weight = None
     criterion = {}
-    criterion['discriminative'] = PlaneLoss(delta_d=opt.config['base']['loss']['delta_d'],
+    criterion['plane'] = PlaneLoss(delta_d=opt.config['base']['loss']['delta_d'],
                                                      delta_v=opt.config['base']['loss']['delta_v'])
-    criterion['discriminative'].to(device)
-    criterion['nll'] = StabilityLoss(loss_weight)
-    criterion['nll'].to(device)
+    criterion['plane'].to(device)
+    criterion['stab'] = StabilityLoss(loss_weight)
+    criterion['stab'].to(device)
 
 
     best_loss = np.Inf
@@ -74,10 +74,74 @@ def train(opt, device):
         if scheduler is not None:
             scheduler_warmup.step()
         
+        scalars = defaultdict(list)
+
         batch_idx = 0
         for i, data in enumerate(tr_loader):
             model.train()
+            
+            points = data['points']
+            points = tr_transform(points)
 
+            points = points.to(device)
+            labels = data['sem_labels'].to(device)
+            masks = data['ins_labels'].to(device)
+            size = data['size']
+
+            loss = 0
+
+            feat, logits, embedded = model(points)
+            loss_s = criterion['stab'](logits, labels)
+            loss_p = criterion['plane'](embedded, masks, size)
+
+            loss += loss_s * 10 # 10 is a hyper-parameter for scaling loss scalar
+            loss += loss_p * 1  # 1 is a hyper-parameter for scaling loss scalar
+
+            optimizer.zero_grad()
+            loss.backward()
+            optimizer.step()
+
+            scalars['loss'].append(loss)
+
+            batch_idx += 1
+
+        if epoch % 50 == 0:
+            model.eval()
+            with torch.no_grad():
+                v_batch_idx = 0
+                overall_val_loss = []
+                for j, data in enumerate(val_loader):
+                    points = data['points'].to(device)
+                    labels = data['sem_labels'].to(device)
+                    masks = data['ins_labels'].to(device)
+                    size = data['size']
+
+                    val_loss = 0
+                    feat, logits, embedded = model(points)
+                    val_loss_s = criterion['stab'](logits, labels)
+                    val_loss_p = criterion['plane'](embedded, masks, size)
+
+                    val_loss += val_loss_s * 10
+                    val_loss += val_loss_p * 1
+
+                    overall_val_loss.append(val_loss)
+            
+            if (sum(overall_val_loss) / len(overall_val_loss)) < best_loss:
+                ckp_path = os.path.join(ckp_dir, 'ckp')
+                os.makedirs(ckp_path, exist_ok=True)
+
+                model_state_dict = model.state_dict()
+                
+                state = {'model' : model,
+                         'criterion' : criterion,
+                         'save_epoch' : epoch,
+                         'model_state_dict' : model_state_dict,
+                         'optimizer' : optimizer.state_dict(),
+                         'loss_value' : best_loss}
+                save_path = str(ckp_path) + '/ep%03d_model.pth' % epoch
+                torch.save(state, save_path)
+
+                print(">>>>saving model and state to {}...".format(save_path))
 
 
 

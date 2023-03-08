@@ -18,7 +18,8 @@ This repository contains official implementation of following paper:
 
 ## Table of Contents
 
-[**Environment Setting**](#environment-setting)
+[**Environment Setting for UOP-Sim**](#environment-setting)
+[**Environment Setting for Training UOP-Net**](#environment-setting)
 
 [**Data Generation**](#data-generation)
   * [**1 - Download Public 3D models**](#1-download-public-3d-models)
@@ -35,17 +36,27 @@ This repository contains official implementation of following paper:
   * [**License**](#license)
 
 
-## Environment Setting
+## Environment Setting for UOP-Sim
 
   * Our code implemented on Ubuntu 20.04 and Conda virtual environment.
   * Please follow below instruction.
 
 ```
-conda create -n uop python=3.8
-conda activate uop
+conda create -n uop_sim python=3.8
+conda activate uop_sim
 
 ```
 
+## Environment Setting for Training UOP-Net
+
+  * Our code implemented on Ubuntu 20.04 and Conda virtual environment.
+  * Please follow below instruction.
+
+```
+conda create -n uop_net python=3.8
+conda activate uop_net
+
+```
 
 ### 1. Simulation
 
@@ -56,7 +67,7 @@ conda activate uop
   * After Install pyrep in your environment install requirments packages
 
 ```
-conda activate uop
+conda activate uop_sim
 
 pip install open3d numpy natsort tqdm trimesh pyfastnoisesimd opencv-python point_cloud_utils
 
@@ -133,6 +144,12 @@ python data_generator.py --data_type ycb --inspect
 
 
 ## Train UOP-Net
+
+
+
+```shell
+python data_generator.py --data_type ycb --inspect
+```
 
 
 
