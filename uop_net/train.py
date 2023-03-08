@@ -42,25 +42,25 @@ def train(opt, device):
  
     tr_data, val_data = load_data(opt)
     tr_loader = DataLoader(tr_data,
-                           batch_size=opt.config['base'],
-                           num_workers=opt.config['base'],
+                           batch_size=opt.config['base']['train']['batch_size'],
+                           num_workers=opt.config['base']['train']['num_workers'],
                            shuffle=True)
     val_loader = DataLoader(val_data,
-                            batch_size=opt.config['base'],
-                            num_workers=opt.config['base'],
+                            batch_size=opt.config['base']['train']['batch_size'],
+                            num_workers=opt.config['base']['train']['num_workers'],
                             shuffle=False)
 
     model = UOPNet(opt)
     model_params = model.parameters()
 
-    optimizer = optim.Adam(model_params, lr=opt.config['base'])
+    optimizer = optim.Adam(model_params, lr=opt.config['base']['train']['learning_rate'])
     scheduler = optim.lr_scheduler.CosineAnnealingLR(optimizer, T_max=50, eta_min=0)
     scheduler_warmup = GradualWarmupScheduler(optimizer, multiplier=1, total_epoch=5, after_scheduler=scheduler)
 
     loss_weight = None
     criterion = {}
     criterion['plane'] = PlaneLoss(delta_d=opt.config['base']['loss']['delta_d'],
-                                                     delta_v=opt.config['base']['loss']['delta_v'])
+                                   delta_v=opt.config['base']['loss']['delta_v'])
     criterion['plane'].to(device)
     criterion['stab'] = StabilityLoss(loss_weight)
     criterion['stab'].to(device)
@@ -155,7 +155,7 @@ if __name__ == "__main__":
     opt = config(args.config_path)
     opt.get_base_config()
 
-    '''setting base path such as ckp_path'''
+    '''set the USER path to the config file(/config/uop_net.json ////// [save_dir / exp_name / exp_condition]'''
     save_dir = opt.config['base']['env']['save_dir']
     exp_name = opt.config['base']['env']['exp_name']
     exp_condition = opt.config['base']['env']['exp_condition']

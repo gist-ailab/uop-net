@@ -145,16 +145,21 @@ python data_generator.py --data_type ycb --inspect
 
 ## Train UOP-Net
 
-
+befor training UOP-Net, set path and the hyper-parameraters in /config/uop_net.json
 
 ```shell
-python data_generator.py --data_type ycb --inspect
+conda activate uop_net
+# install required packages in conda environment
+
+
+cd uop_net
+python train.py --config_path 
 ```
 
 
 
 ## Test and Demo
-*We will release soon*
+*The code for Test and Demo will be released*
 ## References
 
 

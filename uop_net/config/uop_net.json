@@ -3,95 +3,39 @@
         {
             "save_dir" : "",
             "exp_name" : "",
-            "exp_condition" : "default",
-
-            "local":
-                {
-                    "ckp_dir" : "/media/jun/nsj_stor2tb/uop/checkpoint",
-                    "YCB_path" : "/media/jun/nsj_stor2tb/uop/data/uop_ycb/YCB",
-
-                    "save_root" : "/media/jun/nsj_stor2tb/uop/predict"
-                },
-        
-            "server":
-                {
-                    "lecun" :
-                        {
-                            "save_dir" : "/home/lecun/NAS_AIlab_dataset/personal/noh_sangjun/checkpoint/Ral_sop",
-                            "exp_name" : "dgcnn_g20_ep250_aug",
-                            "exp_condition" : "instance_counter_mse", 
-
-                            "shapenet_root" : "/home/lecun/Workspace/jun/data/sop_watertight_distribute/shapenet",
-                            "3dnet_root" : "/home/lecun/Workspace/jun/data/sop_watertight_distribute/3dnet"
-
-                        }
-                }
+            "exp_condition" : "default"
         },
 
-
-    "data" : 
-        {
-            "data_type" : "uop_data"  
-        },
-    
     "model" :
         {
-            "backbone_type" : "dgcnn",
-            "instance_counter" : true,
-
-            "uop":
-            {
-                "layer_1_channels" : 512,
-                "layer_2_channels" : 256,
-                "layer_3_channels" : 128
-            },
-
             "dgcnn":
             {
                 "k" : 40,
-                "emb_dims" : 1024,
-                "dropout" : 0.5
+                "emb_dims" : 1024
             }
                         
         },
     
     "loss" : 
         {
-            "nll_scale" : 10,
-            "dis_scale" : 1,
-            "mse_scale" : 20,
-
             "delta_d" : 1.5,
             "delta_v" : 0.5
         },
     
     "train" :
         {   
-            "gpu": "0",
-            "camera_info": false,
-            "normals" : false,
 
             "batch_size": 32,
             "num_points": 2048,
-            "total_epochs": 251,
+            "total_epochs": 1001,
 
-            "optimizer": "adam",
 
             "num_classes": 2,
             "embedding_size": 32,
 
             "learning_rate": 0.001,
-            "momentum": 0.9,
-            "weight_decay": 0.005,
-            "num_workers": 16,
+            "num_workers": 16
         
-            "noise_factor": 0.02,
-            "cl_factor": 1,
-
-            "resume": false,
-            "gpu_fraction": 1.0,
-
-            "transform" : true
-
+        
         }
 }
