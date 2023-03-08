@@ -30,7 +30,7 @@ from module.losses.plane_loss import PlaneLoss
 from module.losses.stability_loss import StabilityLoss
 
 def train(opt, device):
-    def selectured_aug():
+    def select_aug():
         tr_transform = transforms.Compose(
             [
                 pcu.PointcloudRotate_batch(), 
@@ -38,6 +38,48 @@ def train(opt, device):
                 pcu.PointcloudJitter_batch()
             ]
         )
+        return tr_transform
+    
+    tr_data, val_data = load_data(opt)
+    tr_loader = DataLoader(tr_data,
+                           batch_size=opt.config['base'],
+                           num_workers=opt.config['base'],
+                           shuffle=True)
+    val_loader = DataLoader(val_data,
+                            batch_size=opt.config['base'],
+                            num_workers=opt.config['base'],
+                            shuffle=False)
+
+    model = UOPNet(opt)
+    model_params = model.parameters()
+
+    optimizer = optim.Adam(model_params, lr=opt.config['base'])
+    scheduler = optim.lr_scheduler.CosineAnnealingLR(optimizer, T_max=50, eta_min=0)
+    scheduler_warmup = GradualWarmupScheduler(optimizer, multiplier=1, total_epoch=5, after_scheduler=scheduler)
+
+    loss_weight = None
+    criterion = {}
+    criterion['discriminative'] = PlaneLoss(delta_d=opt.config['base']['loss']['delta_d'],
+                                                     delta_v=opt.config['base']['loss']['delta_v'])
+    criterion['discriminative'].to(device)
+    criterion['nll'] = StabilityLoss(loss_weight)
+    criterion['nll'].to(device)
+
+
+    best_loss = np.Inf
+    start_epoch = 0
+    total_epochs = opt.config['base']
+    for epoch in range(start_epoch, total_epochs):
+        
+        if scheduler is not None:
+            scheduler_warmup.step()
+        
+        batch_idx = 0
+        for i, data in enumerate(tr_loader):
+            model.train()
+
+
+
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
