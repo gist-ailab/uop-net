@@ -18,7 +18,7 @@ This repository contains official implementation of following paper:
 
 ## Table of Contents
 
-[**Environment Setting for UOP-Sim**](#environment-setting)
+[**Environment Setting for UOP-Sim**](#environment-setting)\
 [**Environment Setting for Training UOP-Net**](#environment-setting)
 
 [**Data Generation**](#data-generation)
