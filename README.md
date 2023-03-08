@@ -14,6 +14,7 @@ This repository contains official implementation of following paper:
 
 - [ ] Sample Data Download link
 - [ ] Release demo and test code
+- [ ] Add pkg requirements for training UOP-Net
 
 
 ## Table of Contents
