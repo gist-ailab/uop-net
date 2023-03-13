@@ -19,7 +19,6 @@ def load_model(partial=True, ckp=None, addon=None):
         ckp = os.path.join(os.path.dirname( os.path.abspath(__file__) ), "{}.pth".format(ckp))
     else:
         pass
-    ckp = '/home/raeyo/Downloads/g6_ep250_model.pth'
     print('>>> Loading model from {}....'.format(ckp))
     model.load_state_dict(torch.load(ckp))
     model.cuda()
