@@ -8,8 +8,8 @@ def load_data(opt):
     root_1 : Custom ShapeNet root
     root_2 : Custom 3DNet root
     """
-    root_1 = opt.config['base']['env']['server']['lecun']['shapenet_root']
-    root_2 = opt.config['base']['env']['server']['lecun']['3dnet_root']
+    root_1 = opt.config['base']['data']['shapenet_root']
+    root_2 = opt.config['base']['data']['3dnet_root']
 
     root_list = [root_1, root_2]
     dataset_list = []

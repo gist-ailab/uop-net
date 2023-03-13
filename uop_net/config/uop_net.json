@@ -5,6 +5,11 @@
             "exp_name" : "",
             "exp_condition" : "default"
         },
+    "data" :
+        {
+            "shapenet_root" : "",
+            "3dnet_root" : ""
+        },
 
     "model" :
         {
