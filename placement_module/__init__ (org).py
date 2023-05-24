@@ -13,8 +13,7 @@ import torch
 #
 from placement_module.uop_module import load_model
 from placement_module.ransac_module import *
-# from dataset import SOPSIM    # : org
-from dataset import UOPSIM
+from dataset import SOPSIM
 from utils.placement_utils import *
 from utils.meanshift.mean_shift_gpu  import  MeanShiftEuc
 from utils.trimesh_utils import get_stable_transform
@@ -135,8 +134,7 @@ class UOPModule(PlacementModule):
         else:
             ins_preds = np.zeros_like(semantics[0])
         
-        # ins_preds = SOPSIM._reorder_label(ins_preds)  # : org
-        ins_preds = UOPSIM._reorder_label(ins_preds)
+        ins_preds = SOPSIM._reorder_label(ins_preds)
         
         return ins_preds, logits, embedded
     
@@ -311,10 +309,8 @@ class PrimitiveFittingModule(PlacementModule):
 
 available_modules = {
     "gt": GTOracle,
-    # "sop": SOPModule,             # : org
-    "sop": UOPModule,
-    # "sop-whole": SOPModuleWhole,  # : org
-    "sop-whole": UOPModuleWhole,
+    "sop": SOPModule,
+    "sop-whole": SOPModuleWhole,
     "trimesh": TrimeshModule,
     "ransac": RansacModule,
     "primitive": PrimitiveFittingModule
