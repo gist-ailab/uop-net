@@ -12,6 +12,7 @@ from uop_sim.environment import EvaluateEnv
 from multiprocessing import Process
 from dataset import eval_split
 
+
 def evaluate(target_obj_dir_list):
     env = EvaluateEnv(headless=True, tilt=int(args.tilt))
     
@@ -45,13 +46,16 @@ def evaluate(target_obj_dir_list):
                     
     env.stop()
 
+
 if __name__=="__main__":
     parser = argparse.ArgumentParser()
     
     parser.add_argument('--module', default='ransac', help='select placement module')
     
-    parser.add_argument('--droot', type=str, help='dir to data')
-    parser.add_argument('--evalto', type=str, help='eval dir')
+    parser.add_argument('--droot', type=str, help='dir to data',
+                        default="/media/ailabktw/Samsung2TBSSD/_AILAB/Workspace/data/uop/uop_data/")
+    parser.add_argument('--evalto', type=str, help='eval dir',
+                        default="/media/ailabktw/Samsung2TBSSD/_AILAB/Workspace/data/uop/eval/test")
     parser.add_argument('--dtype', default='partial')
     parser.add_argument('--trial', type=int, default=100, help='trial per object')
     parser.add_argument('--tilt', type=int, default=0, help='select placement module')
@@ -60,7 +64,8 @@ if __name__=="__main__":
     args = parser.parse_args()
     
     # dataset name
-    dataset_list = ['ycb', '3dnet', 'shapenet']
+    # dataset_list = ['ycb', '3dnet', 'shapenet']   # : rog
+    dataset_list = ['ycb']
     sampling_method = ['random']
     
     data_root = os.path.join(args.droot, args.dtype)
