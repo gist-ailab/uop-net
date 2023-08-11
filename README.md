@@ -1,4 +1,4 @@
-## UOP : Unseen Object Placement with Large Scale Simulation
+# UOP : Unseen Object Placement with Large Scale Simulation
 
 ![Main Image](figure/main_image.png)
 
@@ -6,39 +6,50 @@ This repository contains official implementation of following paper:
 > **UOP-Net: Learning to Place Objects Stably using a Large-scale Simulation**<br>
 > **Author:** *Anonymous*<br>
 > **Abstract:** *Object placement is a crucial task for robots in unstructured environments as it enables them to manipulate and arrange objects safely and efficiently. However, existing methods for object placement have limitations, such as the requirement for a complete 3D model of the object or the inability to handle complex object shapes, which restrict the applicability of robots in unstructured scenarios. In this paper, we propose an Unseen Object Placement(UOP) method that directly detects stable planes of an unseen object from a single-view and partial point cloud. We trained our model on large-scale simulation data to generalize over relationships between the shape and properties of stable planes with a 3D point cloud. We verify our approach through simulations and real-world robot experi-
-ments, demonstrating state-of-the-art performance for placing single-view and partial objects. Our UOP approach enables robots to place objects stably, even when the object’s shape and properties are not fully known, providing a promising solution for object placement in unstructured environments. Our research has potential applications in various domains such as manufacturing, logistics, and home automation*
+ments, demonstrating state-of-the-art performance for placing single-view and partial objects. Our UOP approach enables robots to place objects stably, even when the object’s shape and properties are not fully known, providing a promising solution for object placement in unstructured environments. Our research has potential applications in various domains such as manufacturing, logistics, and home automation*<br>
 > [Click here for website and paper.](https://sites.google.com/view/uop-net-iccv-submission/home)
 
+<br>
+<br>
 
+---
 
-## ToDo
+### ToDo
 
 - [ ] Sample Data Download link
 - [ ] Release demo and test code
 - [ ] Add pkg requirements for training UOP-Net
+- [ ] Add 3DNet ref
+- [ ] Add UOP paper citation (with arxiv)
 
+<br>
+
+---
 
 ## Table of Contents
 
-[**Environment Setting for UOP-Sim**](#environment-setting)\
-[**Environment Setting for Training UOP-Net**](#environment-setting)
 
-[**Data Generation**](#data-generation)
-  * [**1 - Download Public 3D models**](#1-download-public-3d-models)
-  * [**2 - Preprocess 3D models**](#2-preprocess-3d-models)
-  * [**3 - Run Data Generation**](#3-run-datagenerator)
-  
+[**0. Environment Setting for UOP-Sim**](#environment-setting)\
+[**0. Environment Setting for Training UOP-Net**](#environment-setting)
 
-[**Train UOP-Net**](#train-uop-net)
+[**1. Data Generation**](#data-generation)
+  * [**1-1. Download Public 3D models**](#1-download-public-3d-models)
+  * [**1-2. Preprocess 3D models**](#2-preprocess-3d-models)
+  * [**1-3. Run Data Generation**](#3-run-datagenerator)
 
-[**Test and Inference**](#test-and-inference)
+[**2. Train UOP-Net**](#train-uop-net)
+
+[**3. Test and Inference**](#test-and-inference)
 
 **Additional Info**
   * [**Reference**](#references)
   * [**License**](#license)
 
+<br>
 
-## Environment Setting for UOP-Sim
+---
+
+## 0. Environment Setting for UOP-Sim
 
   * Our code implemented on Ubuntu 20.04 and Conda virtual environment.
   * Please follow below instruction.
@@ -49,7 +60,9 @@ conda activate uop_sim
 
 ```
 
-## Environment Setting for Training UOP-Net
+<br>
+
+## 0. Environment Setting for Training UOP-Net
 
   * Our code implemented on Ubuntu 20.04 and Conda virtual environment.
   * Please follow below instruction.
@@ -60,24 +73,26 @@ conda activate uop_net
 
 ```
 
-### 1. Simulation
+  ### 0-1. Simulation
 
-  * uop data generation code built in PyRep and CoppeliaSim. Please install pyrep first [PyRep github](https://github.com/stepjam/PyRep)
+    * uop data generation code built in PyRep and CoppeliaSim. Please install pyrep first [PyRep github](https://github.com/stepjam/PyRep)
 
-### 2. Python Requirements
+  ### 0-2. Python Requirements
 
-  * After Install pyrep in your environment install requirments packages
+    * After Install pyrep in your environment install requirments packages
 
-```
-conda activate uop_sim
+  ```
+  conda activate uop_sim
 
-pip install open3d numpy natsort tqdm trimesh pyfastnoisesimd opencv-python point_cloud_utils
+  pip install open3d numpy natsort tqdm trimesh pyfastnoisesimd opencv-python point_cloud_utils
 
-```
+  ```
 
-## Data Generation
+<br>
 
-### 1. Download public 3D models
+## 1. Data Generation
+
+### 1-1. Download public 3D models
 - [YCB Dataset](https://www.ycbbenchmarks.com/object-models/)
 - [3DNet](https://strands.readthedocs.io/en/latest/datasets/three_d_net.html)
 - [ShapeNet](https://shapenet.org/)
@@ -115,7 +130,7 @@ Add following term to your ~/.bashrc file
 export UOPROOT=PATH/TO/GENRATE/UOP/DATA # # uop data root
 ```
 
-### 2. Preprocess 3D models
+### 1-2. Preprocess 3D models
 
 First build Manifold to watertight 3D models following the instruction in [Manifold](https://github.com/hjwdzh/Manifold)
 
@@ -130,22 +145,14 @@ And run preprocess.py
 python preprocess.py --data_type ycb # ycb, shapenet, 3dnet, ycb-texture
 ```
 
-### 3. Run DataGenerator
+### 1-3. Run DataGenerator
 ```shell
 python data_generator.py --data_type ycb --inspect
 ```
 
+<br>
 
-
-
-
-
-
-
-
-
-
-## Train UOP-Net
+## 2. Train UOP-Net
 
 befor training UOP-Net, set path and the hyper-parameraters in /config/uop_net.json
 
@@ -153,15 +160,17 @@ befor training UOP-Net, set path and the hyper-parameraters in /config/uop_net.j
 conda activate uop_net
 # install required packages in conda environment
 
-
 cd uop_net
 python train.py --config_path 
 ```
 
+<br>
 
-
-## Test and Demo
+## 3. Test and Demo
 *The code for Test and Demo will be released*
+
+<br>
+
 ## References
 
 
@@ -174,7 +183,7 @@ python train.py --config_path
 [3] Berk Calli, Arjun Singh, Aaron Walsman, Siddhartha Srinivasa, Pieter Abbeel, and Aaron M. Dollar, The YCB Object and Model Set: Towards Common Benchmarks for Manipulation Research, proceedings of the 2015 IEEE International Conference on Advanced Robotics (ICAR), Istanbul, Turkey, 2015.
 ```
 ### 3DNet
-
+<!-- TODO : check 3DNet reference-->
 
 ### ShapeNet
 ```
@@ -186,7 +195,6 @@ python train.py --config_path
   year        = {2015}
 }
 ```
-
 
 ### Simulation
 ```
@@ -206,16 +214,16 @@ python train.py --config_path
 }
 ```
 
-
+<br>
 
 ## License
 See [LICENSE](LICENSE)
 
-
+<br>
 
 ## Citation
 ```
 
 ```
-
+<!-- TODO : make git page and paper citation info -->
 
