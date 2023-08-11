@@ -1,17 +1,17 @@
 import os
-import numpy as np
+import argparse
+import copy
+import time
+from time import ctime
+from itertools import product
 from logging import warning
 
-from itertools import product
+import numpy as np
 
 from utils.file_utils import *
 from environment import PlacementEnv, InspectionEnv
 from labeling import clustering_sampled_pose, get_instance_label_from_clustered_info
 
-import argparse
-import copy
-import time
-from time import ctime
 
 data_file = {
     # preprocess
@@ -32,7 +32,6 @@ data_file = {
 }
 
 
-
 class UOPDataGenerator():
     def __init__(self, cfg):
         self.logger = get_logger("{} Data Generator".format(cfg['data_type']))
@@ -41,10 +40,11 @@ class UOPDataGenerator():
         # Sampling Stable Pose
         self.orientation_grid_size = cfg['orientation_grid_size'] # grid for each rotation
         self.orientation_list = [
-            (x, y, z) for x,y,z in product(np.linspace(0, 2*np.pi, self.orientation_grid_size),
-                                                                         np.linspace(0, 2*np.pi, self.orientation_grid_size),
-                                                                         np.linspace(0, 2*np.pi, self.orientation_grid_size))
+            (x, y, z) for x, y, z in product(np.linspace(0, 2*np.pi, self.orientation_grid_size),
+                                             np.linspace(0, 2*np.pi, self.orientation_grid_size),
+                                             np.linspace(0, 2*np.pi, self.orientation_grid_size))
         ]
+
         # simulation
         self.time_step = cfg['time_step'] # 5ms
         self.tolerance = cfg['tolerance']
@@ -54,31 +54,32 @@ class UOPDataGenerator():
         self.min_step = cfg['min_step']
         self.table_grid_size = cfg['table_grid_size']
 
-        self.env = PlacementEnv(grid_size=self.table_grid_size, 
-                                                        headless=self.headless,
-                                                        time_step=self.time_step, 
-                                                        tolerance=self.tolerance, 
-                                                        max_step=self.max_step)
+        self.env = PlacementEnv(grid_size=self.table_grid_size,
+                                headless=self.headless,
+                                time_step=self.time_step,
+                                tolerance=self.tolerance,
+                                max_step=self.max_step)
         
     def convert_to_sampling_env(self):
         self.env.stop()
-        self.env = PlacementEnv(grid_size=self.table_grid_size, 
-                                                        headless=self.headless,
-                                                        time_step=self.time_step, 
-                                                        tolerance=self.tolerance, 
-                                                        max_step=self.max_step)
+        self.env = PlacementEnv(grid_size=self.table_grid_size,
+                                headless=self.headless,
+                                time_step=self.time_step,
+                                tolerance=self.tolerance,
+                                max_step=self.max_step)
     
     def convert_to_labeling_env(self):
         self.env.stop()
         self.env = InspectionEnv(headless=self.headless,
-                                                         time_step=self.time_step,
-                                                         tilt=self.tilt,
-                                                         tolerance=self.ins_tolerance,
-                                                         min_step=self.min_step)
+                                 time_step=self.time_step,
+                                 tilt=self.tilt,
+                                 tolerance=self.ins_tolerance,
+                                 min_step=self.min_step)
             
     def _simulate_stability(self, model_path, save_path):
         # for initialize
         assert isinstance(self.env, PlacementEnv), "please inspection to False"
+
         try:
             save_to_pickle({}, save_path)
             
@@ -123,7 +124,6 @@ class UOPDataGenerator():
         else:
             copy_file(mesh_file, mesh_path)
             self.logger.debug("\n>>> Copy raw mesh file {}\t>> {}".format(mesh_file, mesh_path))
-
         print("{:<35} OK!".format('Get raw mesh file:'))
         
         
@@ -134,13 +134,11 @@ class UOPDataGenerator():
             self.logger.debug("\n>>> Already convert CoppeliaSim Model {}".format(model_path))
         else:
             self.logger.debug("\n>>> Convert to CoppeliaSim Model {}\t>> {} ...".format(mesh_path, model_path))
-            mesh_to_pc_scale = self._to_pyrep_model(mesh_file=mesh_file,
-                                                                                            save_path=model_path,
-                                                                                            target_name=object_name)
-
+            mesh_to_pc_scale = self._to_pyrep_model(mesh_file=mesh_file,        # TODO: is used?
+                                                    save_path=model_path,
+                                                    target_name=object_name)
         print("{:<35} OK!".format('Convert to CoppeliaSim Model:'))
         
-
         '''2. Convert to Point Cloud'''
         print("{:<35} ...".format('Convert to Point Cloud:'), end='\r')
         pc_path = join(save_dir, "point_cloud.ply")
@@ -149,8 +147,7 @@ class UOPDataGenerator():
         else:
             self.logger.debug("\n>>> Sampling the Point Cloud {}\t>> {} ...".format(mesh_file, pc_path))
             self._to_point_cloud(mesh_file=mesh_path,
-                                                     save_path=pc_path)
-                    
+                                 save_path=pc_path)
         print("{:<35} OK!".format('Convert to Point Cloud:'))
         
     def sampling(self, object_name, save_dir, force_run=False):
@@ -235,11 +232,11 @@ class UOPDataGenerator():
             else:
                 self.logger.debug("\n>>> Qualifying Stability to {} ...".format(stability_path))
                 self._labeling_stability(pc_path, clustered_info, label_path)
-
             print("{:<35} OK!".format('Qualifying Stability of Object:'))
 
     def stop(self):
         self.env.stop()
+
 
 class GenerateManager():
     log_format = {
@@ -385,15 +382,19 @@ class GenerateManager():
             print("{} | {} >>> {}".format(process_key, len(self.total[process_key]), len(self.success[process_key])))
             fail_case = set(self.total[process_key]) - set(self.success[process_key])
             print("FAIL_CASE: {}".format(fail_case))
-            
+
+
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
 
-    parser.add_argument('--data_type', default='ycb') # ycb, shapenet, 3dnet, ycb-texture
+    parser.add_argument('--data_type', type=str,
+                        default='ycb') # ycb, shapenet, 3dnet, ycb-texture
     parser.add_argument('--vis', action='store_true')
     parser.add_argument('--inspect', action='store_true')
-    parser.add_argument('--under', default=-1, type=int)
-    parser.add_argument('--split', type=int, default=1)
+    parser.add_argument('--under', type=int, 
+                        default=-1)
+    parser.add_argument('--split', type=int, 
+                        default=1)
     
     args = parser.parse_args()
     config_path = 'config.yaml'
