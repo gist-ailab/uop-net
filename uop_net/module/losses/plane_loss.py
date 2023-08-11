@@ -1,6 +1,8 @@
 import torch
 import torch.nn as nn
+
 import numpy as np
+
 
 class PlaneLoss(nn.Module):
     def __init__(self, delta_d, delta_v,
@@ -32,7 +34,6 @@ class PlaneLoss(nn.Module):
         K = masks.size(2)
         x = embedded.unsqueeze(2).expand(-1, -1, K, -1)     # : ([8, 2048, 16, 32])
         masks = masks.unsqueeze(3)                          # : ([8, 2048, 16, 1])
-        
         
         x = x * masks                                       # : torch.Size([8, 2048, 16, 32])
         centroids = []
@@ -74,7 +75,6 @@ class PlaneLoss(nn.Module):
         loss /= batch_size
         return loss
 
-
     def _distance(self, centroids, size):
         batch_size = centroids.size(0)
         loss = 0.0
@@ -107,6 +107,7 @@ class PlaneLoss(nn.Module):
         loss /= batch_size
         return loss
 
+
 if __name__ == '__main__':
     sample = torch.randn(16, 2048, 3)
     embedded = torch.randn(16, 2048, 32)
@@ -114,7 +115,8 @@ if __name__ == '__main__':
     size = (16, 5)
 
     delta_d, delta_v = 1.5, 0.5
-    criterion = DiscriminativeLoss(delta_d, delta_v,)
+    criterion = DiscriminativeLoss(delta_d, delta_v,)   # TODO : is used?
     
     loss = criterion(embedded, masks, size)
     print(loss)
+

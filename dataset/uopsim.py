@@ -1,21 +1,21 @@
+import os
+import re
+import copy
+import random   # TODO : is used?
+
 import torch.utils.data as data
 import torch
 
-import os
 import numpy as np
 from tqdm import tqdm
 import point_cloud_utils as pcu
-import re
-import copy
-import random
 
 from utils.file_utils import *
 from utils.open3d_utils import *
 from utils.capture_points_from_mesh import MeshCapture
 
+
 class UOPSIM(data.Dataset):
-
-
     def __init__(self, root,
                    num_points=2048, under=-1, sampling='random', val=None,
                    partial=True, label_cut=10, seed=None, non_zero=True,
@@ -90,7 +90,7 @@ class UOPSIM(data.Dataset):
         self.max_instances = int(max_instances)
         self.dataset_size = len(self.object_names)
         print("Whole Dataset Size: {}".format(self.dataset_size))
-        
+    
     @staticmethod
     def get_object_cat(object_name):
         idx = -1
@@ -100,7 +100,7 @@ class UOPSIM(data.Dataset):
             return object_name
         else:
             return object_name[:idx]
-        
+    
     @staticmethod
     def check_under(object_name, under):
         idx = -1
@@ -274,7 +274,6 @@ class UOPSIM(data.Dataset):
         
         return filtered
     
-    
     def _partial_sampling_o3d(self, points, labels):
         pcd = convert_numpy_to_point_cloud(points)
         
@@ -345,7 +344,6 @@ class UOPSIM(data.Dataset):
         points = points[target_idx].astype(np.float32)
         labels = labels[target_idx]
         
-        
         # Remove too much cut offed instance labels
         # labels = self.filtering_label(points, labels, cluster)
         # reorder
@@ -361,7 +359,6 @@ class UOPSIM(data.Dataset):
         # semantic label (0 or 1)
         sem_labels = np.where(labels > 0, 1.0, 0.0).astype(np.float32)
         
-        
         return {
             'points': points,
             'sem_labels': sem_labels,
@@ -371,3 +368,4 @@ class UOPSIM(data.Dataset):
             "centroid": centroid,
             "max_value": max_value
         }
+

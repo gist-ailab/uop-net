@@ -44,15 +44,11 @@ class BaseDgcnn(nn.Module):
                                    self.bn6,
                                    nn.LeakyReLU(negative_slope=0.2))
         
-            
-
-
     def forward(self, x):
 
         x = x.transpose(2, 1)
         batch_size = x.size(0)
         num_points = x.size(2)
-
 
         x0 = get_graph_feature(x, k=self.k)     # (batch_size, 3, num_points) -> (batch_size, 3*2, num_points, k)
         t = self.transform_net(x0)              # (batch_size, 3, 3)
@@ -82,6 +78,7 @@ class BaseDgcnn(nn.Module):
         
         return x
 
+
 def knn(x, k):
     inner = -2*torch.matmul(x.transpose(2, 1), x)
     xx = torch.sum(x**2, dim=1, keepdim=True)
@@ -89,7 +86,6 @@ def knn(x, k):
  
     idx = pairwise_distance.topk(k=k, dim=-1)[1]   # (batch_size, num_points, k)
     return idx
-
 
 def get_graph_feature(x, k=20, idx=None, dim9=False):
     batch_size = x.size(0)
@@ -167,3 +163,4 @@ class Transform_Net(nn.Module):
         x = x.view(batch_size, 3, 3)            # (batch_size, 3*3) -> (batch_size, 3, 3)
 
         return x
+

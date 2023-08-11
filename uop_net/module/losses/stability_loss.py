@@ -15,3 +15,4 @@ class StabilityLoss(nn.Module):
         y = y.long()
         loss = self.nll(x, y)
         return loss
+
