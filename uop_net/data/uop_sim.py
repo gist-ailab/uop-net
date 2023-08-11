@@ -1,20 +1,20 @@
+import os
+import re
+import copy
+
 import torch.utils.data as data
 import torch
 
-import os
 import numpy as np
-from tqdm import tqdm
 import point_cloud_utils as pcu
-import re
-import copy
+from tqdm import tqdm
 
 from utility.file_utils import *
 from utility.open3d_utils import *
 from utility.mesh_utils import MeshCapture
 
+
 class UOPSim(data.Dataset):
-
-
     def __init__(self, root,
                    num_points=2048, under=-1, sampling='random', val=None,
                    partial=True, label_cut=10, seed=None, non_zero=True,
@@ -273,7 +273,6 @@ class UOPSim(data.Dataset):
         
         return filtered
     
-    
     def _partial_sampling_o3d(self, points, labels):
         pcd = convert_numpy_to_point_cloud(points)
         
@@ -342,7 +341,6 @@ class UOPSim(data.Dataset):
         points = points[target_idx].astype(np.float32)
         labels = labels[target_idx]
         
-        
         # Remove too much cut offed instance labels
         # labels = self.filtering_label(points, labels, cluster)
         # reorder
@@ -358,7 +356,6 @@ class UOPSim(data.Dataset):
         # semantic label (0 or 1)
         sem_labels = np.where(labels > 0, 1.0, 0.0).astype(np.float32)
         
-        
         return {
             'points': points,
             'sem_labels': sem_labels,
@@ -369,8 +366,8 @@ class UOPSim(data.Dataset):
             "max_value": max_value
         }
 
-class MergeDataset(UOPSim):
 
+class MergeDataset(UOPSim):
     def __init__(self, dataset_list):
         self.dataset_size = 0
     
@@ -389,5 +386,4 @@ class MergeDataset(UOPSim):
             if i < size:
                 return self.dataset_list[idx][i-prev]
             prev = size
-
 

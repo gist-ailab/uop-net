@@ -1,7 +1,8 @@
 import torch
+from torch.utils.data.dataset import random_split
 
 from data.uop_sim import UOPSim, MergeDataset
-from torch.utils.data.dataset import random_split
+
 
 def load_data(opt):
     """
@@ -23,3 +24,4 @@ def load_data(opt):
     tr_data, val_data = random_split(dataset, [round(data_length * 0.8), round(data_length * 0.2)], generator=torch.Generator().manual_seed(777))
 
     return tr_data, val_data
+
