@@ -18,9 +18,10 @@ ments, demonstrating state-of-the-art performance for placing single-view and pa
 
 - [ ] Sample Data Download link
 - [ ] Release demo and test code
-- [ ] Add pkg requirements for training UOP-Net
-- [ ] Add 3DNet ref
-- [ ] Add UOP paper citation (with arxiv)
+<br>
+- [ ] Environment Setting ... Add pkg requirements for training UOP-Net
+- [ ] References ... Add 3DNet ref
+- [ ] Citation ... Add UOP paper citation (with arxiv)
 
 <br>
 
@@ -73,20 +74,21 @@ conda activate uop_net
 
 ```
 
-  ### 0-1. Simulation
+### 0-1. Simulation
 
-    * uop data generation code built in PyRep and CoppeliaSim. Please install pyrep first [PyRep github](https://github.com/stepjam/PyRep)
+  * uop data generation code built in CoppeliaSim and PyRep. Please install CoppeliaSim and pyrep first [PyRep github](https://github.com/stepjam/PyRep)
+  * after install CoppeliaSim, you must open CoppeliaSim program at once. (This step )
 
-  ### 0-2. Python Requirements
+### 0-2. Python Requirements
 
-    * After Install pyrep in your environment install requirments packages
+* After Install pyrep in your environment install requirments packages
 
-  ```
-  conda activate uop_sim
+```
+conda activate uop_sim
 
-  pip install open3d numpy natsort tqdm trimesh pyfastnoisesimd opencv-python point_cloud_utils
+pip install open3d numpy natsort tqdm trimesh pyfastnoisesimd opencv-python point_cloud_utils
 
-  ```
+```
 
 <br>
 
