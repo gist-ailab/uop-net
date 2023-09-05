@@ -5,9 +5,8 @@
 This repository contains official implementation of following paper:
 > **UOP-Net: Learning to Place Objects Stably using a Large-scale Simulation**<br>
 > **Author:** *Anonymous*<br>
-> **Abstract:** *Object placement is a crucial task for robots in unstructured environments as it enables them to manipulate and arrange objects safely and efficiently. However, existing methods for object placement have limitations, such as the requirement for a complete 3D model of the object or the inability to handle complex object shapes, which restrict the applicability of robots in unstructured scenarios. In this paper, we propose an Unseen Object Placement(UOP) method that directly detects stable planes of an unseen object from a single-view and partial point cloud. We trained our model on large-scale simulation data to generalize over relationships between the shape and properties of stable planes with a 3D point cloud. We verify our approach through simulations and real-world robot experi-
-ments, demonstrating state-of-the-art performance for placing single-view and partial objects. Our UOP approach enables robots to place objects stably, even when the object’s shape and properties are not fully known, providing a promising solution for object placement in unstructured environments. Our research has potential applications in various domains such as manufacturing, logistics, and home automation*<br>
-> [Click here for website and paper.](https://sites.google.com/view/uop-net-iccv-submission/home)
+> **Abstract:** *Object placement is a fundamental task for robots, yet it remains challenging for partially observed objects. Existing methods for object placement have limitations, such as the requirement for a complete 3D model of the object or the inability to handle complex shapes and novel objects that restrict the applicability of robots in the real world. Herein, we focus on addressing the \textbf{U}nseen \textbf{O}bject \textbf{P}lacement (\textbf{UOP}) problem. We tackled the UOP problem using two methods: (1) UOP-Sim, a large-scale dataset to accommodate various shapes and novel objects, and (2) UOP-Net, a point cloud segmentation-based approach that directly detects the most stable plane from partial point clouds. Our UOP approach enables robots to place objects stably, even when the object's shape and properties are not fully known, thus providing a promising solution for object placement in various environments. We verify our approach through simulation and real-world robot experiments, demonstrating state-of-the-art performance for placing single-view and partial objects.*<br>
+> [Click here for website and paper.](https://gistailab.github.io/uop/)
 
 <br>
 <br>
@@ -18,12 +17,7 @@ ments, demonstrating state-of-the-art performance for placing single-view and pa
 
 - [ ] Sample Data Download link
 - [ ] Release demo and test code
-<br>
 - [ ] Environment Setting ... Add pkg requirements for training UOP-Net
-- [ ] References ... Add 3DNet ref
-- [ ] Citation ... Add UOP paper citation (with arxiv)
-
-<br>
 
 ---
 
@@ -42,9 +36,9 @@ ments, demonstrating state-of-the-art performance for placing single-view and pa
 
 [**3. Test and Inference**](#test-and-inference)
 
-**Additional Info**
-  * [**Reference**](#references)
-  * [**License**](#license)
+[**4. Reference**](#4-references)
+[**5. License**](#5-license)
+[**6. License**](#6-citation)
 
 <br>
 
@@ -173,10 +167,9 @@ python train.py --config_path
 
 <br>
 
-## References
+## 4. References
 
-
-### YCB
+### 3D Model - YCB
 ```
 [1] Berk Calli, Aaron Walsman, Arjun Singh, Siddhartha Srinivasa, Pieter Abbeel, and Aaron M. Dollar, Benchmarking in Manipulation Research: The YCB Object and Model Set and Benchmarking Protocols, IEEE Robotics and Automation Magazine, pp. 36 – 52, Sept. 2015.
 
@@ -184,10 +177,19 @@ python train.py --config_path
 
 [3] Berk Calli, Arjun Singh, Aaron Walsman, Siddhartha Srinivasa, Pieter Abbeel, and Aaron M. Dollar, The YCB Object and Model Set: Towards Common Benchmarks for Manipulation Research, proceedings of the 2015 IEEE International Conference on Advanced Robotics (ICAR), Istanbul, Turkey, 2015.
 ```
-### 3DNet
-<!-- TODO : check 3DNet reference-->
+### 3D Model - 3DNet
+```
+@inproceedings{wohlkinger20123dnet,
+  title={3dnet: Large-scale object class recognition from cad models},
+  author={Wohlkinger, Walter and Aldoma, Aitor and Rusu, Radu B and Vincze, Markus},
+  booktitle={2012 IEEE international conference on robotics and automation},
+  pages={5384--5391},
+  year={2012},
+  organization={IEEE}
+}
+```
 
-### ShapeNet
+### 3D Model - ShapeNet
 ```
 @techreport{shapenet2015,
   title       = {{ShapeNet: An Information-Rich 3D Model Repository}},
@@ -197,16 +199,7 @@ python train.py --config_path
   year        = {2015}
 }
 ```
-
-### Simulation
-```
-@article{james2019pyrep,
-  title={PyRep: Bringing V-REP to Deep Robot Learning},
-  author={James, Stephen and Freese, Marc and Davison, Andrew J.},
-  journal={arXiv preprint arXiv:1906.11176},
-  year={2019}
-}
-```
+### 3D Model - Watertight Method
 ```
 @article{huang2018robust,
   title={Robust Watertight Manifold Surface Generation Method for ShapeNet Models},
@@ -215,17 +208,30 @@ python train.py --config_path
   year={2018}
 }
 ```
+### Simulation - PyRep
+```
+@article{james2019pyrep,
+  title={PyRep: Bringing V-REP to Deep Robot Learning},
+  author={James, Stephen and Freese, Marc and Davison, Andrew J.},
+  journal={arXiv preprint arXiv:1906.11176},
+  year={2019}
+}
+```
 
 <br>
 
-## License
+## 5. License
 See [LICENSE](LICENSE)
 
 <br>
 
-## Citation
+## 6. Citation
 ```
-
+@article{noh2023learning,
+  title={Learning to Place Unseen Objects Stably using a Large-scale Simulation},
+  author={Noh, Sangjun and Kang, Raeyoung and Kim, Taewon and Back, Seunghyeok and Bak, Seongho and Lee, Kyoobin},
+  journal={arXiv preprint arXiv:2303.08387},
+  year={2023}
+}
 ```
-<!-- TODO : make git page and paper citation info -->
 
