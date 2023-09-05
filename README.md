@@ -27,12 +27,12 @@ This repository contains official implementation of following paper:
 [**0. Environment Setting for UOP-Sim**](#environment-setting)\
 [**0. Environment Setting for Training UOP-Net**](#environment-setting)
 
-[**1. Data Generation**](#data-generation)
+[**1. Data Generation (UOP-Sim)**](#data-generation)
   * [**1-1. Download Public 3D models**](#1-download-public-3d-models)
   * [**1-2. Preprocess 3D models**](#2-preprocess-3d-models)
   * [**1-3. Run Data Generation**](#3-run-datagenerator)
 
-[**2. Train UOP-Net**](#train-uop-net)
+[**2. Train UOP-Net (UOP-Net)**](#train-uop-net)
 
 [**3. Test and Inference**](#test-and-inference)
 
