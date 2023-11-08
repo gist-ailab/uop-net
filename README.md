@@ -52,6 +52,8 @@ This repository contains official implementation of following paper:
 
 ### 0-1. Create conda env & python requirements
 ```shell
+git clone --recursive https://github.com/gist-ailab/uop-net.git
+
 conda create -n uop_net python=3.8
 conda activate uop_net
 
@@ -62,7 +64,7 @@ pip install trimesh pycollada pyglet plotly open3d
 ### 0-2. Build Manifold
 
 ```shell
-cd Manifold
+cd thirdparty/Manifold
 mkdir build
 cd build
 cmake .. -DCMAKE_BUILD_TYPE=Release
@@ -75,6 +77,13 @@ make
   * after install CoppeliaSim, you must open CoppeliaSim program at once. (This step )
 
   * Also follow [CoppeliaSim video compression library issue to solve them](https://github.com/stepjam/PyRep/issues/142)
+  ```shell
+  cd thirdparty/videoRecorder/vvcl
+  mkdir build
+  cd build
+  cmake ..
+  make
+  ```
 
 
 <br>
