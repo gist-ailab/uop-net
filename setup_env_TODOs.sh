@@ -6,6 +6,12 @@ error_flag = 0
 
 
 
+
+# ---- ---- ---- ----      ---- ---- ---- ----
+
+
+
+
 # = check system
 #TODO : check gpu
 #TODO : check file storage
@@ -23,6 +29,11 @@ cd uop-download
 
 
 
+# ---- ---- ---- ----      ---- ---- ---- ----
+
+
+
+
 # = setup conda environment
 
 # conda install
@@ -30,6 +41,9 @@ cd uop-download
 #TODO : check storage space
 #TODO : check linux ubuntu ver
 wget https://repo.anaconda.com/archive/Anaconda3-2023.09-0-Linux-x86_64.sh
+# https://www.anaconda.com/
+# https://www.anaconda.com/download#downloads
+
 ## install
 #TODO : check file exist
 #TODO : check permission ? / chmod +777 ?
@@ -49,7 +63,14 @@ conda activate uop
 
 
 
+
+# ---- ---- ---- ----      ---- ---- ---- ----
+
+
+
+
 # sim install coppelia sim
+## download
 
 # turn on once.
 
@@ -62,7 +83,17 @@ conda activate uop
 
 
 
+# ---- ---- ---- ----      ---- ---- ---- ----
+
+
+
+
 # conda install package
+
+
+
+
+# ---- ---- ---- ----      ---- ---- ---- ----
 
 
 
@@ -84,6 +115,11 @@ conda activate uop
 # check UOP-Sim dataset
 ## read dataset
 ## visualize dataset
+
+
+
+
+# ---- ---- ---- ----      ---- ---- ---- ----
 
 
 
