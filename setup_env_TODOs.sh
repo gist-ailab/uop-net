@@ -120,6 +120,14 @@ python -m import pyrep # is this right to check?
 
 
 # conda install package
+#TODO : check, is env name uop env?
+pip install torch
+# pip install numpy open3d natsort tqdm trimesh pyfastnoisesimd opencv-python==4.4.0.44 point_cloud_utils
+#TODO : make requirements.txt
+# pip install -r requirements.txt
+
+# test
+#TODO : test run code
 
 
 
