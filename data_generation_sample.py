@@ -117,7 +117,7 @@ if __name__=="__main__":
     #region Generate Placement Data
     cfg = load_yaml_to_dic(config_path)
     cfg['data_type'] = "ycb sample"
-    cfg['headless'] = True
+    cfg['headless'] = False
     data_generator = UOPDataGenerator(cfg)
     
     # #1. samplilng stable pose

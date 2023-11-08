@@ -24,8 +24,7 @@ This repository contains official implementation of following paper:
 ## Table of Contents
 
 
-[**0. Environment Setting for UOP-Sim**](#environment-setting)\
-[**0. Environment Setting for Training UOP-Net**](#environment-setting)
+[**0. Environment Setting**](#environment-setting)
 
 [**1. Data Generation (UOP-Sim)**](#data-generation)
   * [**1-1. Download Public 3D models**](#1-download-public-3d-models)
@@ -75,19 +74,20 @@ make
   * uop data generation code built in CoppeliaSim and PyRep. Please install CoppeliaSim and pyrep first [PyRep github](https://github.com/stepjam/PyRep)
   * after install CoppeliaSim, you must open CoppeliaSim program at once. (This step )
 
-### 0-2. #Python Requirements
+  * Also follow [CoppeliaSim video compression library issue to solve them](https://github.com/stepjam/PyRep/issues/142)
 
-* After Install pyrep in your environment install requirments packages
-
-```
-conda activate uop_sim
-
-
-```
 
 <br>
 
 ## 1. Data Generation
+
+### 1-0. Sample Example
+
+```shell
+python download_ycb_dataset.py
+
+python data_generation_sample.py --object <Name of YCB Data>
+```
 
 ### 1-1. Download public 3D models
 - [YCB Dataset](https://www.ycbbenchmarks.com/object-models/)
