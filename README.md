@@ -46,43 +46,42 @@ This repository contains official implementation of following paper:
 
 ---
 
-## 0. Environment Setting for UOP-Sim
+## 0. Environment Setting
 
   * Our code implemented on Ubuntu 20.04 and Conda virtual environment.
   * Please follow below instruction.
 
-```
-conda create -n uop_sim python=3.8
-conda activate uop_sim
-
-```
-
-<br>
-
-## 0. Environment Setting for Training UOP-Net
-
-  * Our code implemented on Ubuntu 20.04 and Conda virtual environment.
-  * Please follow below instruction.
-
-```
+### 0-1. Create conda env & python requirements
+```shell
 conda create -n uop_net python=3.8
 conda activate uop_net
 
+pip install trimesh pycollada pyglet plotly open3d
+
 ```
 
-### 0-1. Simulation
+### 0-2. Build Manifold
+
+```shell
+cd Manifold
+mkdir build
+cd build
+cmake .. -DCMAKE_BUILD_TYPE=Release
+make
+```
+
+### 0-3. Simulation
 
   * uop data generation code built in CoppeliaSim and PyRep. Please install CoppeliaSim and pyrep first [PyRep github](https://github.com/stepjam/PyRep)
   * after install CoppeliaSim, you must open CoppeliaSim program at once. (This step )
 
-### 0-2. Python Requirements
+### 0-2. #Python Requirements
 
 * After Install pyrep in your environment install requirments packages
 
 ```
 conda activate uop_sim
 
-pip install open3d numpy natsort tqdm trimesh pyfastnoisesimd opencv-python point_cloud_utils
 
 ```
 

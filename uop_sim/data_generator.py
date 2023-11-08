@@ -1,4 +1,5 @@
 import os
+import sys
 import argparse
 import copy
 import time
@@ -9,6 +10,8 @@ from logging import warning
 import numpy as np
 
 from utils.file_utils import *
+
+sys.path.append(os.path.abspath(os.path.dirname(__file__)))
 from environment import PlacementEnv, InspectionEnv
 from labeling import clustering_sampled_pose, get_instance_label_from_clustered_info
 
@@ -103,7 +106,7 @@ class UOPDataGenerator():
         except:
             raise Exception("Labeling stability error")
     
-    def _inspecting__cluster(self, model_path, clustered_info, save_path):
+    def _inspecting_cluster(self, model_path, clustered_info, save_path):
         assert isinstance(self.env, InspectionEnv), "please convert env"
         try:
             clustered_info = self.env.inspect_clustered_info(model_path, clustered_info)
@@ -221,7 +224,7 @@ class UOPDataGenerator():
                 self.logger.debug("\n>>> Already Inspect Clustering Info {}".format(cluster_path))
             else:
                 self.logger.debug("\n>>> Inspecting Clustered Info to {} ...".format(stability_path))
-                self._inspecting__cluster(model_path, clustered_info, inspect_cluster_path)
+                self._inspecting_cluster(model_path, clustered_info, inspect_cluster_path)
             clustered_info = load_pickle(inspect_cluster_path)
             print("{:<35} OK!".format('Clustering Stability of Object:'))
 
