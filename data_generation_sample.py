@@ -95,7 +95,7 @@ if __name__=="__main__":
     # Prepare Path 
     ycb_root = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'models', 'ycb')
     manifold_path = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'thirdparty/Manifold/build')
-    config_path = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'config.yaml')
+    config_path = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'uop_sim/config.yaml')
     
     
     # Save Path
