@@ -12,8 +12,9 @@ from pyrep import PyRep
 
 from utils.pyrep_utils import convert_mesh_to_scene_object
 from utils.file_utils import load_yaml_to_dic, load_pickle
-
+from utils.open3d_utils import sampling_points_from_mesh, save_point_cloud
 from uop_sim.data_generator import UOPDataGenerator
+from uop_sim.labeling import get_instance_label_from_clustered_info
 
 
 def normalize_point_cloud(points : np.ndarray) -> np.ndarray:
@@ -41,6 +42,7 @@ def convert_to_watertight(manifold_path, input_mesh, output_mesh):
         if retobj.stderr != '': print(f'{retobj.stderr}')
     mesh = trimesh.load_mesh(output_mesh)
     os.system(f"rm {input_mesh}")
+    os.system(f"rm {os.path.dirname(input_mesh)}/material*")
     os.system(f"rm {output_mesh}")
     
     return mesh
@@ -55,15 +57,44 @@ def plot_mesh(mesh, color='lightblue', opacity=1.0):
         k=mesh.faces[:, 2],
         color=color, opacity=opacity)
 
+def plot_points_with_label(points, labels, mode='markers'):
+    label2color = {
+        0: 'black',
+        1: 'green',
+        2: 'blue',
+        3: 'yellow',
+        4: 'pink',
+        5: 'cyan',
+        6: 'orange',
+        7: 'purple',
+        8: 'brown',
+        9: 'black'
+    }
+    vis = []
+    for label in np.unique(labels):
+        idx = np.where(labels == label)[0]
+        vis.append(go.Scatter3d(
+            x=points[idx, 0],
+            y=points[idx, 1],
+            z=points[idx, 2],
+            mode=mode,
+            marker=dict(
+                size=2,
+                color=label2color[label],
+                opacity=0.8
+            )
+        ))
+    return vis
+
 
 if __name__=="__main__":
     parser = argparse.ArgumentParser()
-    parser.add_argument('--object', type=str, default='002_master_chef_can')
+    parser.add_argument('--object', type=str, default='003_cracker_box')
     args = parser.parse_args()
     
     # Prepare Path 
     ycb_root = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'models', 'ycb')
-    manifold_path = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'Manifold/build')
+    manifold_path = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'thirdparty/Manifold/build')
     config_path = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'config.yaml')
     
     
@@ -81,9 +112,6 @@ if __name__=="__main__":
     mesh_file = os.path.join(trg_obj_dir, "google_16k", "textured.obj")
     mesh = trimesh.load(mesh_file)
     
-    fig = go.Figure(data=[plot_mesh(mesh)])
-    fig.write_html(os.path.join(sample_obj_dir, "mesh_orginal.html"))
-    
     #2. check if the mesh is watertight
     if mesh.is_watertight:
         print("The mesh is already watertight.")
@@ -96,8 +124,8 @@ if __name__=="__main__":
     mesh = normalize_mesh(mesh)
     mesh.export(os.path.join(sample_obj_dir, "mesh.ply"))
     fig = go.Figure(data=[plot_mesh(mesh)])
-    fig.write_html(os.path.join(sample_obj_dir, "mesh_watertight.html"))
-
+    fig.write_html(os.path.join(sample_obj_dir, 'visualize_mesh.html'))
+    
     #3. generate coppeliasim scene model
     pr = PyRep()
     pr.launch(headless=True)
@@ -117,31 +145,48 @@ if __name__=="__main__":
     #region Generate Placement Data
     cfg = load_yaml_to_dic(config_path)
     cfg['data_type'] = "ycb sample"
-    cfg['headless'] = False
+    cfg['headless'] = True
     data_generator = UOPDataGenerator(cfg)
     
     # #1. samplilng stable pose
     model_path = os.path.join(sample_obj_dir, "model.ttm")
-    save_path = os.path.join(sample_obj_dir, "stability.pkl")
+    save_path = os.path.join(sample_obj_dir, "stable_pose.pkl")
     data_generator._simulate_stability(model_path, save_path)
     
     # #2. clustering stable pose
-    stability_file = os.path.join(sample_obj_dir, "stability.pkl")
-    save_path = os.path.join(sample_obj_dir, "cluster.pkl")
+    stability_file = os.path.join(sample_obj_dir, "stable_pose.pkl")
+    save_path = os.path.join(sample_obj_dir, "placement_axis.pkl")
     data_generator._clustering_stability(stability_file, save_path)
     
     #3. inspect clustering result
     data_generator.convert_to_labeling_env()
     
     model_path = os.path.join(sample_obj_dir, "model.ttm")
-    cluster_info = load_pickle(os.path.join(sample_obj_dir, "cluster.pkl"))
-    save_path = os.path.join(sample_obj_dir, "cluster_inspected.pkl")
+    cluster_info = load_pickle(os.path.join(sample_obj_dir, "placement_axis.pkl"))
+    save_path = os.path.join(sample_obj_dir, "label.pkl")
     data_generator._inspecting_cluster(model_path, cluster_info, save_path)
     
     data_generator.stop()
     
     #endregion
 
+    #region Visualize Placement Data
+    mesh_file = os.path.join(sample_obj_dir, "mesh.ply")
+    cluster_info = load_pickle(os.path.join(sample_obj_dir, "label.pkl"))
+    mesh = trimesh.load(mesh_file)
+    labels = get_instance_label_from_clustered_info(mesh_file, cluster_info)
+    _, labels = np.unique(labels, return_inverse=True)
+    
+    vis_data = []
+    vis_data += plot_points_with_label(mesh.vertices, labels)
+    
+    
+    fig = go.Figure(data=vis_data)
+    fig.write_html(os.path.join(sample_obj_dir, 'visualize_label.html'))
+    print()
+    
+    
+    #endregion
 
     
     
