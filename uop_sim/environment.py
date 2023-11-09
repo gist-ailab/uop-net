@@ -579,68 +579,42 @@ class InspectionEnv():
             for exp_id, exp in enumerate(self.experiments):
                 exp.init(self.target_objects[exp_id], matrix)
             
-            batch_size = 25
-            for batch_idx in range(1):
-                s, e = batch_size*(batch_idx), batch_size*(batch_idx+1)
-                batch_experiments = self.experiments[s:e]
-                for exp in batch_experiments:
-                    exp.start()
-            
-                for step in range(1, 10):
-                    self.step()
-                
-                    # for exp in batch_experiments:
-                    #     if exp.state == EXPSTATE.END:
-                    #         is_stable = False
-                    #         continue
-                    #     exp.step_calculate()
-                
-                for i in range(50):    
-                    for exp in batch_experiments:
-                        exp.tilt(self.tilt/50)
-                    self.step()
-                for exp in batch_experiments:
-                    exp.init_mat()
-            
-                for step in range(1, 5000):
-                    print("Inspection Clustered Pose >>> {:<2} / {:<2} | {:<3} / {:<3}".format(idx, len(clustered_info.keys()), step, 200), end='\r')
-                    ret = self.step()
-                    if not ret:
+            for exp in self.experiments:
+                exp.start()
+
+            # initialize        
+            for step in range(1, 10):
+                self.step()
+            for i in range(50):
+                for exp in self.experiments:
+                    exp.tilt(self.tilt/50)
+                self.step()
+            for exp in self.experiments:
+                exp.init_mat()
+            # start
+            for step in range(1, self.min_step+1):
+                print("Inspection Clustered Pose >>> {:<2} / {:<2} | {:<3} / {:<3}".format(idx, len(clustered_info.keys()), step, 200), end='\r')
+                ret = self.step()
+                if not ret:
+                    is_stable = False
+                    break
+                for exp in self.experiments:
+                    if exp.state == EXPSTATE.END:
                         is_stable = False
                         break
-                
-                    for exp in batch_experiments:
-                        if exp.state == EXPSTATE.END:
-                            is_stable = False
-                            break
-                        exp.step_calculate()
-                    if not is_stable:
-                        break
-            # select target experiment
+                    exp.step_calculate()
+                if not is_stable:
+                    break
             
-            #by stacked movements
-            # stacked_movements = []
-            # for exp in self.experiments:
-            #     stacked_movements.append(exp.stability)
-            
-            # target_exp = self.experiments[np.argmax(stacked_movements)]
-
-            # target_stabilities = {
-            #     "total_movements": target_exp.total_movements,
-            #     "sum": target_exp.stability,
-            #     "is_stable": target_exp.is_stable
-            # }
-            
+            # reset
             for exp in self.experiments:
                 exp.reset()
-            
             if is_stable:
                 inspected_info[orientation] = clustered_info[orientation]
-                # inspected_info[orientation].update(target_stabilities)
-            
+
+        # remove target objects
         for obj in self.target_objects:
             obj.remove()
-        
         self.target_objects = []
         
         print("Inspection Clustered Pose >>> {} to {}".format(len(clustered_info.keys()), len(inspected_info.keys())))
