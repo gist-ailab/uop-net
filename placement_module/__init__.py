@@ -1,19 +1,11 @@
-
-#
-import sys
-from pathlib import Path
-sys.path.append(str(Path(__file__).parent.parent.absolute()))
-
-#
 import numpy as np
 from sklearn import cluster
-
 import torch
 
-#
+
 from placement_module.uop_module import load_model
 from placement_module.ransac_module import *
-# from dataset import SOPSIM    # : org
+
 from dataset import UOPSIM
 from utils.placement_utils import *
 from utils.meanshift.mean_shift_gpu  import  MeanShiftEuc
@@ -47,7 +39,6 @@ class PlacementModule:
                 continue
             target_mask = ins_preds == instance_idx
             target_points = points[target_mask]
-            #criterion point size > 50
             if target_points.shape[0] < 50:
                 continue
     
@@ -91,40 +82,23 @@ class GTOracle(PlacementModule):
 
 
 class UOPModule(PlacementModule):
-    def __init__(self, cluster="mean-shift", **kwargs):
-        self.cluster_type = cluster
-        self.addon = None
-
-        if self.cluster_type == "k-means":                                      # : add for inference ins counter (MSE loss)
-            self.addon = "counter"
-
-        self.model = load_model(partial=True, addon=self.addon, **kwargs)
+    def __init__(self, **kwargs):
+        self.model = load_model(partial=True, **kwargs)
         
     def inference_gpu(self, points, bw_ratio=0.25):
         points_tensor = torch.from_numpy(points).unsqueeze(0).cuda().float()
+        _, logits, embedded, = self.model(points_tensor)
         
-        if self.cluster_type == "mean-shift":                                   # : org
-            _, logits, embedded, = self.model(points_tensor)     
-        elif self.cluster_type == "k-means":                                    # : add for inference ins counter (MSE loss)
-            _, logits, embedded, instance_count = self.model(points_tensor)     
-
         logits = logits.cpu().detach().numpy()
         semantics = np.argmax(logits, axis=-1)
         embedded = embedded.cpu().detach().numpy()
         
         stable_embedded = embedded[0][0 < semantics[0]]
         if 0 < stable_embedded.size:
-            
             try:
-                # = clustering module
-                #TODO : change clustering modules Mean-shift / K-means
-
-                if self.cluster_type == "mean-shift":                           # : rog
-                    band_width = cluster.estimate_bandwidth(stable_embedded)
-                    ins_result = MeanShiftEuc(bandwidth=band_width*bw_ratio).fit_predict(stable_embedded)
-                    ins_result += 1
-                elif self.cluster_type == "k-means":                            # : add for inference ins counter (MSE loss)
-                    ins_result = cluster.KMeans(n_clusters=int(np.round(instance_count.detach().cpu().numpy() * 32)[0][0])).fit_predict(stable_embedded)
+                band_width = cluster.estimate_bandwidth(stable_embedded)
+                ins_result = MeanShiftEuc(bandwidth=band_width*bw_ratio).fit_predict(stable_embedded)
+                ins_result += 1
                 
                 ins_preds = np.zeros_like(semantics[0])
                 ins_preds[semantics[0]>0] = ins_result
@@ -135,12 +109,11 @@ class UOPModule(PlacementModule):
         else:
             ins_preds = np.zeros_like(semantics[0])
         
-        # ins_preds = SOPSIM._reorder_label(ins_preds)  # : org
         ins_preds = UOPSIM._reorder_label(ins_preds)
         
         return ins_preds, logits, embedded
     
-    def get_stable_placement(self, points, gpu=True):
+    def get_stable_placement(self, points):
         ins_preds, logits, embedded = self.inference_gpu(points)
         plane_info = self.get_best_plane_info(points, ins_preds)
         
@@ -311,13 +284,11 @@ class PrimitiveFittingModule(PlacementModule):
 
 available_modules = {
     "gt": GTOracle,
-    # "sop": SOPModule,             # : org
-    "sop": UOPModule,
-    # "sop-whole": SOPModuleWhole,  # : org
-    "sop-whole": UOPModuleWhole,
     "trimesh": TrimeshModule,
     "ransac": RansacModule,
-    "primitive": PrimitiveFittingModule
+    "primitive": PrimitiveFittingModule,
+    "uop": UOPModule,
+    "uop-whole": UOPModuleWhole,
 }
 
 

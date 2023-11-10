@@ -1,9 +1,8 @@
 from typing import Optional, Union
 import numpy as np
 import open3d as o3d
-
-# from open3d.visualization import Visualizer
-
+import torch
+import point_cloud_utils as pcu
 
 import sys
 from os import path, read
@@ -177,6 +176,49 @@ def normalize_point_cloud(points : np.ndarray) -> np.ndarray:
 def hidden_point_removal(pcd, camera_location, radius):
     re = pcd.hidden_point_removal(camera_location, radius)
     
+
+def down_sample_points(points: np.ndarray, num_sample, method='random') -> np.ndarray:
+    assert len(points) >= num_sample
+
+    if method == 'poisson':
+        target_idx = pcu.downsample_point_cloud_poisson_disk(points, num_samples=num_sample)[:num_sample]
+        if len(target_idx) < num_sample:
+            target_idx = np.r_[target_idx, np.setdiff1d(np.arange(len(points)), target_idx)[:num_sample-len(target_idx)]]
+    
+    elif method == 'random':
+        target_idx = np.random.choice(range(len(points)), num_sample)
+    
+    elif method == 'fps':
+        target_idx = farthest_point_sample(points, num_sample)
+    
+    else:
+        raise NotImplementedError
+    
+    return target_idx
+
+def farthest_point_sample(points, npoint):
+    """
+    Input:
+        xyz: pointcloud data, [B, N, 3]
+        npoint: number of samples
+    Return:
+        centroids: sampled pointcloud index, [B, npoint]
+    """
+    xyz = torch.from_numpy(points).unsqueeze(0)
+    device = xyz.device
+    B, N, C = xyz.shape
+    centroids = torch.zeros(B, npoint, dtype=torch.long).to(device)
+    distance = torch.ones(B, N).to(device) * 1e10
+    farthest = torch.randint(0, N, (B,), dtype=torch.long).to(device)
+    batch_indices = torch.arange(B, dtype=torch.long).to(device)
+    for i in range(npoint):
+        centroids[:, i] = farthest
+        centroid = xyz[batch_indices, farthest, :].view(B, 1, 3)
+        dist = torch.sum((xyz - centroid) ** 2, -1)
+        mask = dist < distance
+        distance[mask] = dist[mask]
+        farthest = torch.max(distance, -1)[1]
+    return centroids[0]
 
 
 class PointCloudVisualizer:

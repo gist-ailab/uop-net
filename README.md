@@ -57,7 +57,11 @@ git clone --recursive https://github.com/gist-ailab/uop-net.git
 conda create -n uop_net python=3.8
 conda activate uop_net
 
-pip install trimesh pycollada pyglet plotly open3d
+pip install trimesh pycollada pyglet plotly open3d point_cloud_utils pyfastnoisesimd opencv-python networkx
+
+conda install pytorch==1.12.1 torchvision==0.13.1 torchaudio==0.12.1 cudatoolkit=11.3 -c pytorch
+
+
 
 ```
 

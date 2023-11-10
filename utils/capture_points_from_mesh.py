@@ -18,16 +18,12 @@ AZURE_INTRINSIC = [
 AZURE_WIDTH = 2048
 AZURE_HEIGHT = 1536     # : 4:3, 1536p NWOF
 
-
 class MeshCapture:
 
 
     def __init__(self, param_dir=os.path.join(str(Path(__file__).parent.absolute()), "o3d_cam_param")):
-        self.vis = o3d.visualization.Visualizer()
         self.param_list = [os.path.join(param_dir, p) for p in os.listdir(param_dir)]
-        self.vis.create_window(width=AZURE_WIDTH, 
-                               height=AZURE_HEIGHT)
-
+        
     def get_random_param(self):
         param_path =  random.choice(self.param_list)
         return o3d.io.read_pinhole_camera_parameters(param_path)
@@ -35,112 +31,30 @@ class MeshCapture:
     def capture_mesh_to_points(self, mesh_file, min_num):
         # load mesh
         mesh = o3d.io.read_triangle_mesh(mesh_file)
-        self.vis.add_geometry(mesh, reset_bounding_box=True)
-        self.update_view()
+        mesh = o3d.t.geometry.TriangleMesh.from_legacy(mesh)
+        
+        scene = o3d.t.geometry.RaycastingScene()
+        scene.add_triangles(mesh)
         
         # initialize window
-        is_captured = False
-        down_sample = True
-        while not is_captured:
-            self.param = self.get_random_param()
-            view_ctr = self.vis.get_view_control()
-            view_ctr.convert_from_pinhole_camera_parameters(self.param)
-            self.update_view()
-            
-            # self.vis.capture_screen_image("test.png")
-            
-            # capture
-            points = self.capture_point_cloud(down_sample)
-            down_sample = False
-            if points.shape[0] > min_num:
-                is_captured = True
-                break
-
-        self.vis.clear_geometries()
-        self.update_view()
+        param = self.get_random_param()
         
+        
+        rays = o3d.t.geometry.RaycastingScene.create_rays_pinhole(
+            intrinsic_matrix=o3d.cuda.pybind.core.Tensor(param.intrinsic.intrinsic_matrix), # (3, 3)
+            extrinsic_matrix=o3d.cuda.pybind.core.Tensor(param.extrinsic), # (4, 4) array
+            width_px= param.intrinsic.width,
+            height_px=param.intrinsic.height
+        )
+        # We can directly pass the rays tensor to the cast_rays function.
+        ans = scene.cast_rays(rays)
+        hit = ans['t_hit'].isfinite()
+        points = rays[hit][:,:3] + rays[hit][:,3:]*ans['t_hit'][hit].reshape((-1,1))
+        pcd = o3d.t.geometry.PointCloud(points)
+        pcd = pcd.voxel_down_sample(voxel_size=0.005)
+
+        points = np.asarray(pcd.to_legacy().points)
         return points
-
-    def update_view(self):
-        self.vis.poll_events()
-        self.vis.update_renderer()
-
-    def capture_point_cloud(self, down_sample=True):
-        depth = self.vis.capture_depth_float_buffer(do_render=True)
-        depth = np.asarray(depth)
-        
-        obj_mask = depth > 0
-        # depth noise
-        depth = self.PerlinDistortion(depth, AZURE_WIDTH, AZURE_HEIGHT)
-        depth[~obj_mask] = 0
-        # # depth mask
-        # obj_mask = np.uint8(obj_mask*255)
-        # contour, _ = cv2.findContours(obj_mask, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_NONE)
-        # contr = contour[0]
-        
-        # target_idx = random.choice(contr)[0]
-        # sx=max(target_idx[0]-20, 0)
-        # ex=min(target_idx[0]+20, AZURE_HEIGHT)
-        # sy=max(target_idx[1]-20, 0)
-        # ey=min(target_idx[1]+20, AZURE_WIDTH)
-        # depth[sx:ex, sy:ey] = 0
-        pcd = o3d.geometry.PointCloud.create_from_depth_image(o3d.geometry.Image(depth), 
-                                                              self.param.intrinsic, 
-                                                              self.param.extrinsic)
-        if down_sample:
-            pcd = pcd.voxel_down_sample(voxel_size=0.005)
-            
-        pcd , _ = pcd.remove_statistical_outlier(10, 0.01)
-        # pcd.rotate(rot_mat)
-        points = np.asarray(pcd.points)
-        
-        return points
-
-    def stop(self):
-        self.vis.destroy_window()
-        
-    @staticmethod    
-    def PerlinDistortion(image, width, height):
-        def perlin_noise(frequency, width, height):
-            noise = fns.Noise()
-            noise.NoiseType = 2 # perlin noise
-            noise.frequency = frequency
-            result = noise.genAsGrid(shape=[height, width], start=[0,0])
-            return result
-        """
-        """
-        # sample distortion parameters from noise vector
-        fx = np.random.uniform(0.0001, 0.1)
-        fy = np.random.uniform(0.0001, 0.1)
-        fz = np.random.uniform(0.01, 0.1)
-        wxy = np.random.uniform(0, 10)
-        wz = np.random.uniform(0, 0.005)
-        cnd_x = wxy * perlin_noise(fx, width, height)
-        cnd_y = wxy * perlin_noise(fy, width, height)
-        cnd_z = wz * perlin_noise(fz, width, height)
-
-        cnd_h = np.array(list(range(height)))
-        cnd_h = np.expand_dims(cnd_h, -1)
-        cnd_h = np.repeat(cnd_h, width, -1)
-        cnd_w = np.array(list(range(width)))
-        cnd_w = np.expand_dims(cnd_w, 0)
-        cnd_w = np.repeat(cnd_w, height, 0)
-
-        noise_cnd_h = np.int16(cnd_h + cnd_x)
-        noise_cnd_h = np.clip(noise_cnd_h, 0, (height - 1))
-        noise_cnd_w = np.int16(cnd_w + cnd_y)
-        noise_cnd_w = np.clip(noise_cnd_w, 0, (width - 1))
-
-        new_img = image[(noise_cnd_h, noise_cnd_w)]
-        new_img = new_img = new_img + cnd_z
-        return new_img.astype(np.float32)
-
-def check_o3d_headless():
-    if not o3d._build_config['ENABLE_HEADLESS_RENDERING']:
-        print("Headless rendering is not enabled. "
-              "Please rebuild Open3D with ENABLE_HEADLESS_RENDERING=ON")
-        exit(1)
-
         
 def generate_cam_parameters(sample_mesh, save_dir, num=1000):
     vis = o3d.visualization.Visualizer()
