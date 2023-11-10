@@ -8,11 +8,13 @@ import subprocess
 
 from plotly import graph_objects as go
 
+
 from pyrep import PyRep
 
 from utils.pyrep_utils import convert_mesh_to_scene_object
 from utils.file_utils import load_yaml_to_dic, load_pickle
-from utils.open3d_utils import sampling_points_from_mesh, save_point_cloud
+from utils.plotly_visualize_utils import plot_mesh, plot_points_with_label
+
 from uop_sim.data_generator import UOPDataGenerator
 from uop_sim.labeling import get_instance_label_from_clustered_info
 
@@ -46,45 +48,6 @@ def convert_to_watertight(manifold_path, input_mesh, output_mesh):
     os.system(f"rm {output_mesh}")
     
     return mesh
-
-def plot_mesh(mesh, color='lightblue', opacity=1.0):
-    return go.Mesh3d(
-        x=mesh.vertices[:, 0],
-        y=mesh.vertices[:, 1],
-        z=mesh.vertices[:, 2],
-        i=mesh.faces[:, 0],
-        j=mesh.faces[:, 1],
-        k=mesh.faces[:, 2],
-        color=color, opacity=opacity)
-
-def plot_points_with_label(points, labels, mode='markers'):
-    label2color = {
-        0: 'black',
-        1: 'green',
-        2: 'blue',
-        3: 'yellow',
-        4: 'pink',
-        5: 'cyan',
-        6: 'orange',
-        7: 'purple',
-        8: 'brown',
-        9: 'black'
-    }
-    vis = []
-    for label in np.unique(labels):
-        idx = np.where(labels == label)[0]
-        vis.append(go.Scatter3d(
-            x=points[idx, 0],
-            y=points[idx, 1],
-            z=points[idx, 2],
-            mode=mode,
-            marker=dict(
-                size=2,
-                color=label2color[label],
-                opacity=0.8
-            )
-        ))
-    return vis
 
 
 if __name__=="__main__":

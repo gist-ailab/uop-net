@@ -85,18 +85,29 @@ make
   make
   ```
 
+### 0-4. Sample code
+  
+  * We provide sample script for follow whole pipeline(data generation, inference, test on simulation) of our project with YCB dataset 
+
+```shell
+# download YCB dataset
+python download_ycb_dataset.py
+
+# data generation
+python sample_data_generation.py --object <Name of YCB Data>
+
+# inference
+python sample_inference.py --object <Name of YCB Data>
+
+# test on simulation
+python sample_test.py --object <Name of YCB Data>
+```
+
 
 <br>
 
 ## 1. Data Generation
 
-### 1-0. Sample Example
-
-```shell
-python download_ycb_dataset.py
-
-python data_generation_sample.py --object <Name of YCB Data>
-```
 
 ### 1-1. Download public 3D models
 - [YCB Dataset](https://www.ycbbenchmarks.com/object-models/)
