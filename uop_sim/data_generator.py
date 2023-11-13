@@ -9,9 +9,8 @@ from logging import warning
 
 import numpy as np
 
+sys.path.append(os.path.dirname(os.path.dirname(os.path.realpath(__file__))))
 from utils.file_utils import *
-
-sys.path.append(os.path.abspath(os.path.dirname(__file__)))
 from environment import PlacementEnv, InspectionEnv
 from labeling import clustering_sampled_pose, get_instance_label_from_clustered_info
 
@@ -389,7 +388,7 @@ class GenerateManager():
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
-
+    parser.add_argument('--root', required=True)
     parser.add_argument('--data_type', type=str,
                         default='ycb') # ycb, shapenet, 3dnet, ycb-texture
     parser.add_argument('--vis', action='store_true')
@@ -400,14 +399,14 @@ if __name__ == "__main__":
                         default=1)
     
     args = parser.parse_args()
-    config_path = 'config.yaml'
+    config_path = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'config.yaml')
     cfg = load_yaml_to_dic(config_path)
 
     cfg['data_type'] = args.data_type
     cfg['headless'] = not args.vis
     cfg['inspection'] = args.inspect
     cfg['under'] = args.under
-    cfg['save_root'] = os.path.join(os.environ['UOPROOT'], 'uop_data', cfg['data_type'])
+    cfg['save_root'] = os.path.join(args.root, 'uop_data', cfg['data_type'])
     
     manager = GenerateManager(cfg, args.split)
     obj_list = os.listdir(cfg['save_root'])

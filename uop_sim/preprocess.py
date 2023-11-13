@@ -335,7 +335,7 @@ def preprocess_pointcloud(data_root):
 
 if __name__=="__main__":
     parser = argparse.ArgumentParser()
-    parser.add_argument('--root', default='/home/raeyo/workspace/uop-net')
+    parser.add_argument('--root', required=True)
     parser.add_argument('--data_type', default='ycb') # ycb, shapenet, 3dnet, ycb-texture
     args = parser.parse_args()
     
