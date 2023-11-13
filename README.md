@@ -57,7 +57,7 @@ git clone --recursive https://github.com/gist-ailab/uop-net.git
 conda create -n uop_net python=3.8
 conda activate uop_net
 
-pip install trimesh pycollada pyglet plotly open3d point_cloud_utils pyfastnoisesimd opencv-python networkx
+pip install trimesh pycollada pyglet plotly open3d point_cloud_utils pyfastnoisesimd opencv-python networkx natsort
 
 conda install pytorch==1.12.1 torchvision==0.13.1 torchaudio==0.12.1 cudatoolkit=11.3 -c pytorch
 
@@ -121,49 +121,35 @@ python sample_test.py --object <Name of YCB Data>
 After download public data your data folder looks like below
 ```shell
 UOPROOT # path to generate uopdata
-├──public_data
-│  ├──ycb-tools/models/ycb # ycb data root
-│  │  ├── 001_chips_can
-│  │  ├── 002_master_chef_can
-│  │  ├── ...
-│  │  ├── 076_timer
-│  │  └── 077_rubiks_cube
-│  ├──ShapeNetCore.v1 # shapenet data root
-│  │  ├── 02691156
-│  │  ├── 02691156.csv
-│  │  ├── 02691156.zip
-│  │  ├── ...
-│  │  ├── count-models.sh
-│  │  ├── get-metadata.sh
-│  │  ├── jq
-│  │  ├── README.txt
-│  │  └── taxonomy.json
-│  └──3DNet_raw/ # 3dnet data_root
-│     ├── Cat10_ModelDatabase
-│     ├── Cat10_TestDatabase
-│     ├── Cat200_ModelDatabase
-│     ├── Cat60_ModelDatabase
-│     └── Cat60_TestDatabase
+├──models/ycb # ycb data root
+│  ├── 001_chips_can
+│  ├── 002_master_chef_can
+│  ├── ...
+│  ├── 076_timer
+│  └── 077_rubiks_cube
+├──ShapeNetCore.v1 # shapenet data root
+│  ├── 02691156
+│  ├── 02691156.csv
+│  ├── 02691156.zip
+│  ├── ...
+│  ├── count-models.sh
+│  ├── get-metadata.sh
+│  ├── jq
+│  ├── README.txt
+│  └── taxonomy.json
+└──3DNet_raw/ # 3dnet data_root
+│  ├── Cat10_ModelDatabase
+│  ├── Cat10_TestDatabase
+│  ├── Cat200_ModelDatabase
+│  ├── Cat60_ModelDatabase
+│  └── Cat60_TestDatabase
 └──uop_data # the path uop data generated
-```
-Add following term to your ~/.bashrc file
-```
-export UOPROOT=PATH/TO/GENRATE/UOP/DATA # # uop data root
 ```
 
 ### 1-2. Preprocess 3D models
 
-First build Manifold to watertight 3D models following the instruction in [Manifold](https://github.com/hjwdzh/Manifold)
-
-Add following term to your ~/.bashrc file
 ```
-export MANIFOLD=PATH/TO/MANIFOLD/BUILD/DIR # ex.) ~/Manifold/build
-```
-
-And run preprocess.py
-
-```
-python preprocess.py --data_type ycb # ycb, shapenet, 3dnet, ycb-texture
+python preprocess.py --root <UOPROOT> --data_type ycb # ycb, shapenet, 3dnet
 ```
 
 ### 1-3. Run DataGenerator

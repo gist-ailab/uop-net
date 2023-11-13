@@ -18,7 +18,7 @@ from utils.open3d_utils import sampling_points_from_mesh, save_point_cloud
 from utils.file_utils import *
 import argparse
 
-MANIFOLD_PATH = os.environ('MANIFOLD')
+MANIFOLD_PATH = os.path.join(os.path.dirname(os.path.dirname(os.path.realpath(__file__))), 'thirdparty/Manifold/build')
 
 class DataProcessing:
     @staticmethod
@@ -251,27 +251,22 @@ def convert_to_watertight(input_mesh, output_mesh):
         if retobj.stderr != '': print(f'{retobj.stderr}')
 
 
-def preprocess_mesh(data_root):
-    data_type = os.path.basename(data_root)
+def preprocess_mesh(data_root, save_root):
+    data_type = os.path.basename(save_root)
     
-    uoproot = os.environ["UOPROOT"]
-    pub_root = os.path.join(uoproot, "public_data")
     
     if data_type == "shapenet":
-        mesh_info = DataProcessing.get_ShapeNet_mesh(os.path.join(pub_root, "ShapeNetCore.v1"))
+        mesh_info = DataProcessing.get_ShapeNet_mesh(os.path.join(data_root, "ShapeNetCore.v1"))
     elif data_type == "3DNet":
-        mesh_info = DataProcessing.get_3DNet_mesh(os.path.join(pub_root, "3DNet_raw"))
+        mesh_info = DataProcessing.get_3DNet_mesh(os.path.join(data_root, "3DNet_raw"))
     elif data_type == "ycb":
-        mesh_info = DataProcessing.get_YCB_mesh(os.path.join(pub_root, "ycb-tools/models/ycb"))
+        mesh_info = DataProcessing.get_YCB_mesh(os.path.join(data_root, "models/ycb"))
     elif data_type == "ycb-texture":
-        mesh_info = DataProcessing.get_YCB_mesh(os.path.join(pub_root, "ycb-tools/models/ycb"), texture=True)
+        mesh_info = DataProcessing.get_YCB_mesh(os.path.join(data_root, "models/ycb"), texture=True)
         
     for obj_name, v in mesh_info.items():
-        obj_idx = obj_name.split("_")[-1]
         mesh_file = v[1]
-        if not int(obj_idx) < 300:
-            continue
-        obj_dir = os.path.join(data_root, obj_name)
+        obj_dir = os.path.join(save_root, obj_name)
         os.makedirs(obj_dir, exist_ok=True)
 
         target_file = os.path.join(obj_dir, "mesh_watertight.ply")
@@ -301,11 +296,11 @@ def preprocess_mesh(data_root):
         mesh.export(os.path.join(obj_dir, "mesh_watertight.ply"))
 
 
-    os.system("rm {}/*/*.obj".format(data_root))
-    os.system("rm {}/*/*.mtl".format(data_root))
-    os.system("rm {}/*/*.png".format(data_root))
-    os.system("rm {}/*/mesh_raw.ply".format(data_root))
-    os.system("rm {}/*/mesh_normalize.ply".format(data_root))
+    os.system("rm {}/*/*.obj".format(save_root))
+    os.system("rm {}/*/*.mtl".format(save_root))
+    os.system("rm {}/*/*.png".format(save_root))
+    os.system("rm {}/*/mesh_raw.ply".format(save_root))
+    os.system("rm {}/*/mesh_normalize.ply".format(save_root))
 
 def preprocess_scene_model(data_root):
     pr = PyRep()
@@ -340,18 +335,19 @@ def preprocess_pointcloud(data_root):
 
 if __name__=="__main__":
     parser = argparse.ArgumentParser()
+    parser.add_argument('--root', default='/home/raeyo/workspace/uop-net')
     parser.add_argument('--data_type', default='ycb') # ycb, shapenet, 3dnet, ycb-texture
     args = parser.parse_args()
     
-    data_root = os.path.join( os.environ["UOPROOT"], 'uop_data', args.data_type)
-    os.makedirs(data_root, exist_ok=True)
+    save_root = os.path.join(args.root , 'uop_data', args.data_type)
+    os.makedirs(save_root, exist_ok=True)
     
     # check 3d model watertight
-    preprocess_mesh(data_root)
+    preprocess_mesh(args.root, save_root)
     
     # sampling points from 3d model(mesh)
-    preprocess_pointcloud(data_root)
+    preprocess_pointcloud(save_root)
     
     # generate simulation scene model
-    preprocess_scene_model(data_root)
+    preprocess_scene_model(save_root)
 
