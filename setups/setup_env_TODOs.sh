@@ -43,7 +43,7 @@ cd uop-download
 ## download
 #TODO : check storage space
 #TODO : check linux ubuntu ver
-wget https://repo.anaconda.com/archive/Anaconda3-2023.09-0-Linux-x86_64.sh
+wget https://repo.anaconda.com/archive/Anaconda3-2023.09-0-Linux-x86_64.sh --no-check-certificate
 # https://www.anaconda.com/
 # https://www.anaconda.com/download#downloads
 
@@ -74,7 +74,7 @@ conda activate uop
 
 # sim install coppelia sim
 ## download
-wget https://www.coppeliarobotics.com/files/V4_1_0/CoppeliaSim_Edu_V4_1_0_Ubuntu20_04.tar.xz
+wget https://www.coppeliarobotics.com/files/V4_1_0/CoppeliaSim_Edu_V4_1_0_Ubuntu20_04.tar.xz --no-check-certificate
 # https://www.coppeliarobotics.com/
 # https://www.coppeliarobotics.com/downloads
 # https://www.coppeliarobotics.com/previousVersions
