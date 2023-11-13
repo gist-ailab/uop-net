@@ -157,23 +157,7 @@ UOPROOT # path to generate uopdata
 └──uop_data # the path uop data generated
 ```
 
-Add following term to your ~/.bashrc file
-
-```
-export UOPROOT=PATH/TO/GENRATE/UOP/DATA # # uop data root
-```
-
 ### 1-2. Preprocess 3D models
-
-First build Manifold to watertight 3D models following the instruction in [Manifold](https://github.com/hjwdzh/Manifold)
-
-Add following term to your ~/.bashrc file
-
-```
-export MANIFOLD=PATH/TO/MANIFOLD/BUILD/DIR # ex.) ~/Manifold/build
-```
-
-And run preprocess.py
 
 ```
 python preprocess.py --root <UOPROOT> --data_type ycb # ycb, shapenet, 3dnet
