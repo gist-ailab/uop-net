@@ -52,15 +52,22 @@ This repository contains official implementation of following paper:
 * Please follow below instruction.
 
 ```shell
-# ./setups/
+# 0. Download UOP & thirdparty repository
+git clone --recursive https://github.com/gist-ailab/uop-net.git
+cd ./uop-net
+
+# 1. check device
+sh ./setups/1_check_env.sh
+
+# 2. preparing conda environment
+sh ./setups/2_prepare_env.sh
+
 ```
 
 ### 0-1. Create conda env & python requirements
 
 ```shell
-# 1. Download UOP & thirdparty repository
-git clone --recursive https://github.com/gist-ailab/uop-net.git
-
+# 
 conda create -n uop_net python=3.8
 conda activate uop_net
 
