@@ -647,22 +647,23 @@ class InspectionEnv():
 
 
 class EvaluateEnv():
-    
     def __init__(self, headless=False, time_step=0.005, tolerance=1e-5,
-                             max_step=1000, demo=False):
+                max_step=1000, demo=False, tilt=0):
         self.pr = PyRep()
 
         # Launch the application with a scene file in headless mode
         self.pr.launch(EVALUATE_SCENE_FILE, headless=headless) 
         self.pr.set_simulation_timestep(time_step) # 0.01 = 10ms
-        self.pr.start()    # Start the simulation
+        self.pr.start()  # Start the simulation
         
         self.tolerance = tolerance
         self.max_step = max_step
         
         self.demo = demo
         
-        self.table = Shape('diningTable_visible')
+        self.table = Shape('diningTable')
+        rotation = [np.pi *(tilt/180), 0, 0]
+        self.table.rotate(rotation)
         
         self.object_base = Dummy('object_base')
         self.camera_depth = VisionSensor('camera_depth')
@@ -673,10 +674,9 @@ class EvaluateEnv():
             self.camera_depth.set_resolution([1, 1])
             self.camera_rgb.set_resolution([1, 1])
             self.camera_obs.set_resolution([1, 1])
-        
+            
         self.step()
         self.target = None
-
 
     def reset(self, model_path=None):
         if model_path is not None:
@@ -684,23 +684,27 @@ class EvaluateEnv():
                 self.target.remove()
             self.target = self.load_scene_object_from_file(model_path)
             self.init_ori = self.target.get_orientation()
-            
         assert self.target is not None
 
         self.target.set_position([0, 0, 0], relative_to=self.object_base)
-        
+    
         if self.demo:
             rand_ori = np.random.rand(3) * np.pi * 2
             self.target.set_orientation(rand_ori)
         else:
             self.target.set_orientation(self.init_ori)
+            
         self.target.respondable.set_parent(self.object_base)
-        
+    
         self.target.initialize_visible()
-        
         self.initial_pose = self.target.get_pose()
-        
         self.step()
+        
+    def get_initial_pose(self):
+        return self.initial_pose
+    def set_initial_pose(self, pose):
+        self.initial_pose = pose
+        
 
     def initialize(self):
         self.target.set_pose(self.initial_pose)
@@ -708,40 +712,43 @@ class EvaluateEnv():
         self.step()
 
     def observe(self, return_rgb=False):
-        
         depth = self.camera_depth.capture_depth()
-        object_mask = depth < 1
+        object_mask = depth < 0.999
         depth[object_mask] = 0
         
         point_cloud = self.camera_depth.capture_pointcloud()
         
         point_cloud = point_cloud[object_mask]
-        
+    
         if return_rgb:
             rgb = self.camera_rgb.capture_rgb()
-            return point_cloud, rgb
+            return point_cloud, rgb[object_mask]
         
         return point_cloud
-    
+
     def evaluate(self, rot, observe=False):
         mat = self.target.get_matrix()
         mat[:3, :3] = np.dot(rot, mat[:3, :3])
         self.target.set_matrix(mat)
         
         position = self.target.get_position(relative_to=self.table)
+        position[2] = position[2] + 0.5
+        self.target.set_position(position, relative_to=self.table)
+
         z_distance = self.target.check_distance(self.table)
         position[2] = position[2] - z_distance
         self.target.set_position(position, relative_to=self.table)
-        self.target.set_activate(True)
+        
         self.pr.step()
-
+        self.target.set_activate(True)
+        
         is_stop = False
         stability = 0.
         previous_mat = self.target.get_matrix()
         step_count = 0
         last_5_movement = []
         movements = []
-        matrixs = [previous_mat]
+        matrixs = []
         observations = []
         if observe:
             observations.append(self.camera_obs.capture_rgb())
@@ -753,19 +760,20 @@ class EvaluateEnv():
         
             current = np.array(current_mat)
             movement = np.linalg.norm(previous - current)
-        
+    
             previous_mat = current_mat
             stability += movement
-            # if observe:
-            #     observations.append(self.observe()[0])
-
+      
             step_count += 1
 
             last_5_movement.append(movement)
             movements.append(movement)
+            if len(last_5_movement) < 5:
+                continue
+            
             if len(last_5_movement) > 5:
                 last_5_movement.pop(0)
-            
+      
             if np.mean(last_5_movement) < self.tolerance:
                 self.target.set_activate(False)
                 is_stop = True
@@ -774,10 +782,10 @@ class EvaluateEnv():
                     stability += 100
                     self.target.set_activate(False)
                     is_stop = True
-        
+    
         if observe:
             observations.append(self.camera_obs.capture_rgb())
-        
+    
         return {
             'stability': stability,
             'step_count': step_count,
@@ -790,8 +798,8 @@ class EvaluateEnv():
         self.pr.step()
 
     def stop(self):
-        self.pr.stop()    # Stop the simulation
-        self.pr.shutdown()    # Close the application
+        self.pr.stop()  # Stop the simulation
+        self.pr.shutdown()  # Close the application
 
     def load_scene_object_from_file(self, file_path):
         file_name = os.path.splitext(file_path)[0].split("/")[-1]
@@ -800,8 +808,6 @@ class EvaluateEnv():
 
     def import_model(self, model_path):
         return self.pr.import_model(model_path)
-
-
 if __name__=='__main__':
     pr = PyRep()
     

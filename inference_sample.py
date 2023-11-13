@@ -1,5 +1,6 @@
 import argparse
 import os
+import torch
 
 from placement_module import load_placement_module
 
@@ -38,10 +39,12 @@ if __name__=="__main__":
         placement_module = load_placement_module(module_name)
         
         inference_result = placement_module.get_stable_placement(partial_points)
-        result_path = os.path.join(result_dir, "{}.png".format(method))
+        result_path = os.path.join(result_dir, "{}.pt".format(method))
+        torch.save(inference_result, result_path)
+        visualize_path = os.path.join(result_dir, "{}.png".format(method))
         visualize_exp_result(exp_result=inference_result,
                              module=module_name,
-                             save_path=result_path)
+                             save_path=visualize_path)
         
     
     

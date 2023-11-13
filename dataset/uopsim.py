@@ -85,7 +85,7 @@ class UOPSIM(data.Dataset):
             self.labels_cloud.append(label)
             self.cluster_info.append(cluster)
             self.mesh_cloud.append(os.path.join(data_dir, 'mesh_watertight.ply'))
-    
+        
         self.total_name_list = np.unique(total_names)
         self.max_instances = int(max_instances)
         self.dataset_size = len(self.object_names)
