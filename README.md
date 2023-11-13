@@ -3,9 +3,10 @@
 ![Main Image](figure/main_image.png)
 
 This repository contains official implementation of following paper:
-> **UOP-Net: Learning to Place Objects Stably using a Large-scale Simulation**<br>
-> **Author:** *Anonymous*<br>
-> **Abstract:** *Object placement is a fundamental task for robots, yet it remains challenging for partially observed objects. Existing methods for object placement have limitations, such as the requirement for a complete 3D model of the object or the inability to handle complex shapes and novel objects that restrict the applicability of robots in the real world. Herein, we focus on addressing the Unseen Object Placement(UOP) problem. We tackled the UOP problem using two methods: (1) UOP-Sim, a large-scale dataset to accommodate various shapes and novel objects, and (2) UOP-Net, a point cloud segmentation-based approach that directly detects the most stable plane from partial point clouds. Our UOP approach enables robots to place objects stably, even when the object's shape and properties are not fully known, thus providing a promising solution for object placement in various environments. We verify our approach through simulation and real-world robot experiments, demonstrating state-of-the-art performance for placing single-view and partial objects.*<br>
+
+> **UOP-Net: Learning to Place Objects Stably using a Large-scale Simulation**`<br>`
+> **Author:** *Anonymous*`<br>`
+> **Abstract:** *Object placement is a fundamental task for robots, yet it remains challenging for partially observed objects. Existing methods for object placement have limitations, such as the requirement for a complete 3D model of the object or the inability to handle complex shapes and novel objects that restrict the applicability of robots in the real world. Herein, we focus on addressing the Unseen Object Placement(UOP) problem. We tackled the UOP problem using two methods: (1) UOP-Sim, a large-scale dataset to accommodate various shapes and novel objects, and (2) UOP-Net, a point cloud segmentation-based approach that directly detects the most stable plane from partial point clouds. Our UOP approach enables robots to place objects stably, even when the object's shape and properties are not fully known, thus providing a promising solution for object placement in various environments. We verify our approach through simulation and real-world robot experiments, demonstrating state-of-the-art performance for placing single-view and partial objects.*`<br>`
 > [Click here for website and paper.](https://gistailab.github.io/uop/)
 
 <br>
@@ -23,13 +24,13 @@ This repository contains official implementation of following paper:
 
 ## Table of Contents
 
-
 [**0. Environment Setting**](#environment-setting)
 
 [**1. Data Generation (UOP-Sim)**](#data-generation)
-  * [**1-1. Download Public 3D models**](#1-download-public-3d-models)
-  * [**1-2. Preprocess 3D models**](#2-preprocess-3d-models)
-  * [**1-3. Run Data Generation**](#3-run-datagenerator)
+
+* [**1-1. Download Public 3D models**](#1-download-public-3d-models)
+* [**1-2. Preprocess 3D models**](#2-preprocess-3d-models)
+* [**1-3. Run Data Generation**](#3-run-datagenerator)
 
 [**2. Train UOP-Net (UOP-Net)**](#train-uop-net)
 
@@ -47,22 +48,32 @@ This repository contains official implementation of following paper:
 
 ## 0. Environment Setting
 
-  * Our code implemented on Ubuntu 20.04 and Conda virtual environment.
-  * Please follow below instruction.
+* Our code implemented on Ubuntu 20.04 and Conda virtual environment.
+* Please follow below instruction.
+
+```shell
+# 0. Download UOP & thirdparty repository
+git clone --recursive https://github.com/gist-ailab/uop-net.git
+cd ./uop-net
+
+# 1. check device
+sh ./setups/1_check_env.sh
+
+# 2. preparing conda environment
+sh ./setups/2_prepare_env.sh
+
+```
 
 ### 0-1. Create conda env & python requirements
-```shell
-git clone --recursive https://github.com/gist-ailab/uop-net.git
 
+```shell
+# 
 conda create -n uop_net python=3.8
 conda activate uop_net
 
 pip install trimesh pycollada pyglet plotly open3d point_cloud_utils pyfastnoisesimd opencv-python networkx natsort
 
 conda install pytorch==1.12.1 torchvision==0.13.1 torchaudio==0.12.1 cudatoolkit=11.3 -c pytorch
-
-
-
 ```
 
 ### 0-2. Build Manifold
@@ -77,21 +88,21 @@ make
 
 ### 0-3. Simulation
 
-  * uop data generation code built in CoppeliaSim and PyRep. Please install CoppeliaSim and pyrep first [PyRep github](https://github.com/stepjam/PyRep)
-  * after install CoppeliaSim, you must open CoppeliaSim program at once. (This step )
+* uop data generation code built in CoppeliaSim and PyRep. Please install CoppeliaSim and pyrep first [PyRep github](https://github.com/stepjam/PyRep)
+* after install CoppeliaSim, you must open CoppeliaSim program at once. (This step )
+* Also follow [CoppeliaSim video compression library issue to solve them](https://github.com/stepjam/PyRep/issues/142)
 
-  * Also follow [CoppeliaSim video compression library issue to solve them](https://github.com/stepjam/PyRep/issues/142)
-  ```shell
-  cd thirdparty/videoRecorder/vvcl
-  mkdir build
-  cd build
-  cmake ..
-  make
-  ```
+```shell
+cd thirdparty/videoRecorder/vvcl
+mkdir build
+cd build
+cmake ..
+make
+```
 
 ### 0-4. Sample code
-  
-  * We provide sample script for follow whole pipeline(data generation, inference, test on simulation) of our project with YCB dataset 
+
+* We provide sample script for follow whole pipeline(data generation, inference, test on simulation) of our project with YCB dataset
 
 ```shell
 # download YCB dataset
@@ -107,18 +118,18 @@ python sample_inference.py --object <Name of YCB Data>
 python sample_test.py --object <Name of YCB Data>
 ```
 
-
 <br>
 
 ## 1. Data Generation
 
-
 ### 1-1. Download public 3D models
+
 - [YCB Dataset](https://www.ycbbenchmarks.com/object-models/)
 - [3DNet](https://strands.readthedocs.io/en/latest/datasets/three_d_net.html)
 - [ShapeNet](https://shapenet.org/)
 
 After download public data your data folder looks like below
+
 ```shell
 UOPROOT # path to generate uopdata
 ├──models/ycb # ycb data root
@@ -146,13 +157,30 @@ UOPROOT # path to generate uopdata
 └──uop_data # the path uop data generated
 ```
 
+Add following term to your ~/.bashrc file
+
+```
+export UOPROOT=PATH/TO/GENRATE/UOP/DATA # # uop data root
+```
+
 ### 1-2. Preprocess 3D models
+
+First build Manifold to watertight 3D models following the instruction in [Manifold](https://github.com/hjwdzh/Manifold)
+
+Add following term to your ~/.bashrc file
+
+```
+export MANIFOLD=PATH/TO/MANIFOLD/BUILD/DIR # ex.) ~/Manifold/build
+```
+
+And run preprocess.py
 
 ```
 python preprocess.py --root <UOPROOT> --data_type ycb # ycb, shapenet, 3dnet
 ```
 
 ### 1-3. Run DataGenerator
+
 ```shell
 python data_generator.py --data_type ycb --inspect
 ```
@@ -168,12 +196,13 @@ conda activate uop_net
 # install required packages in conda environment
 
 cd uop_net
-python train.py --config_path 
+python train.py --config_path
 ```
 
 <br>
 
 ## 3. Test and Demo
+
 *The code for Test and Demo will be released*
 
 <br>
@@ -181,6 +210,7 @@ python train.py --config_path
 ## 4. References
 
 ### 3D Model - YCB
+
 ```
 [1] Berk Calli, Aaron Walsman, Arjun Singh, Siddhartha Srinivasa, Pieter Abbeel, and Aaron M. Dollar, Benchmarking in Manipulation Research: The YCB Object and Model Set and Benchmarking Protocols, IEEE Robotics and Automation Magazine, pp. 36 – 52, Sept. 2015.
 
@@ -188,7 +218,9 @@ python train.py --config_path
 
 [3] Berk Calli, Arjun Singh, Aaron Walsman, Siddhartha Srinivasa, Pieter Abbeel, and Aaron M. Dollar, The YCB Object and Model Set: Towards Common Benchmarks for Manipulation Research, proceedings of the 2015 IEEE International Conference on Advanced Robotics (ICAR), Istanbul, Turkey, 2015.
 ```
+
 ### 3D Model - 3DNet
+
 ```
 @inproceedings{wohlkinger20123dnet,
   title={3dnet: Large-scale object class recognition from cad models},
@@ -201,6 +233,7 @@ python train.py --config_path
 ```
 
 ### 3D Model - ShapeNet
+
 ```
 @techreport{shapenet2015,
   title       = {{ShapeNet: An Information-Rich 3D Model Repository}},
@@ -210,7 +243,9 @@ python train.py --config_path
   year        = {2015}
 }
 ```
+
 ### 3D Model - Watertight Method
+
 ```
 @article{huang2018robust,
   title={Robust Watertight Manifold Surface Generation Method for ShapeNet Models},
@@ -219,7 +254,9 @@ python train.py --config_path
   year={2018}
 }
 ```
+
 ### Simulation - PyRep
+
 ```
 @article{james2019pyrep,
   title={PyRep: Bringing V-REP to Deep Robot Learning},
@@ -232,11 +269,13 @@ python train.py --config_path
 <br>
 
 ## 5. License
+
 See [LICENSE](LICENSE)
 
 <br>
 
 ## 6. Citation
+
 ```
 @article{noh2023learning,
   title={Learning to Place Unseen Objects Stably using a Large-scale Simulation},
