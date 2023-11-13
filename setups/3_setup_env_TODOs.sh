@@ -26,22 +26,6 @@ conda activate uop
 
 
 
-# sim install coppelia sim
-## download
-wget https://www.coppeliarobotics.com/files/V4_1_0/CoppeliaSim_Edu_V4_1_0_Ubuntu20_04.tar.xz --no-check-certificate
-# https://www.coppeliarobotics.com/
-# https://www.coppeliarobotics.com/downloads
-# https://www.coppeliarobotics.com/previousVersions
-# 
-
-## unzip
-tar -xvf CoppeliaSim_Edu_V4_1_0_Ubuntu20_04.tar.xz
-
-## turn on once.
-#TODO : check uncompressed file 
-cd CoppeliaSim_Edu_V4_1_0_Ubuntu20_04/
-sh ./coppeliaSim.sh
-
 # sim install pyrep
 
 ## clone git
