@@ -4,30 +4,56 @@ import gc
 import numpy as np
 import matplotlib.pyplot as plt
 from matplotlib.patches import FancyArrowPatch
-from mpl_toolkits.mplot3d import proj3d
-
+from mpl_toolkits.mplot3d.proj3d import proj_transform
+from mpl_toolkits.mplot3d.axes3d import Axes3D
 
 
 class Arrow3D(FancyArrowPatch):
-  def __init__(self, xs, ys, zs, *args, **kwargs):
-    FancyArrowPatch.__init__(self, (0, 0), (0, 0), *args, **kwargs)
-    self._verts3d = xs, ys, zs
+    """ reference: https://gist.github.com/WetHat/1d6cd0f7309535311a539b42cccca89c
+    """
 
-  def draw(self, renderer):
-    xs3d, ys3d, zs3d = self._verts3d
-    xs, ys, zs = proj3d.proj_transform(xs3d, ys3d, zs3d, renderer.M)
-    self.set_positions((xs[0], ys[0]), (xs[1], ys[1]))
-    FancyArrowPatch.draw(self, renderer)
+    def __init__(self, x, y, z, dx, dy, dz, *args, **kwargs):
+        super().__init__((0, 0), (0, 0), *args, **kwargs)
+        self._xyz = (x, y, z)
+        self._dxdydz = (dx, dy, dz)
 
-  def do_3d_projection(self, renderer=None):
-    xs3d, ys3d, zs3d = self._verts3d
-    xs, ys, zs = proj3d.proj_transform(xs3d, ys3d, zs3d, self.axes.M)
-    self.set_positions((xs[0],ys[0]),(xs[1],ys[1]))
+    def draw(self, renderer):
+        x1, y1, z1 = self._xyz
+        dx, dy, dz = self._dxdydz
+        x2, y2, z2 = (x1 + dx, y1 + dy, z1 + dz)
 
-    return np.min(zs)
+        xs, ys, zs = proj_transform((x1, x2), (y1, y2), (z1, z2), self.axes.M)
+        self.set_positions((xs[0], ys[0]), (xs[1], ys[1]))
+        super().draw(renderer)
+        
+    def do_3d_projection(self, renderer=None):
+        x1, y1, z1 = self._xyz
+        dx, dy, dz = self._dxdydz
+        x2, y2, z2 = (x1 + dx, y1 + dy, z1 + dz)
+
+        xs, ys, zs = proj_transform((x1, x2), (y1, y2), (z1, z2), self.axes.M)
+        self.set_positions((xs[0], ys[0]), (xs[1], ys[1]))
+
+        return np.min(zs) 
+
+def _arrow3D(ax, x, y, z, dx, dy, dz, *args, **kwargs):
+    '''Add an 3d arrow to an `Axes3D` instance.'''
+
+    arrow = Arrow3D(x, y, z, dx, dy, dz, *args, **kwargs)
+    ax.add_artist(arrow)
+
+setattr(Axes3D, 'arrow3D', _arrow3D)
 
 
-def visualize_data(data):
+def visualize_uopsim(data, save_path=None):
+    """ visualize uop-sim data
+    -------------------------------------
+    | input points | points with labels |
+    -------------------------------------
+    Args:
+        data(dict): dict data from dataset.uopsim.UOPSIM
+        save_path (str, optional): save path. Defaults to None(plt.show()).
+    """
     cols = 2
     rows = 1
     fig = plt.figure(figsize=(5*cols, 5*rows), constrained_layout=True)
@@ -46,13 +72,28 @@ def visualize_data(data):
     ax = fig.add_subplot(rows, cols, fig_idx, projection='3d')
     visualize_pred_points(ax, input_points, pred_label, label2color)
     fig_idx += 1
-
-    plt.show()
+    
+    if save_path is None:
+        plt.show()
+    else:
+        plt.savefig(save_path)
+        plt.close('all')
+        plt.close()
+        gc.collect()
     
 
-def visualize_uop_result(exp_result):
+def visualize_uop_result(exp_result, save_path=None):
+    """ visualize result from uop module
+    -----------------------------------
+    | input points | predicted points |
+    | plane        | plane + arrow    |
+    -----------------------------------
+    Args:
+        exp_result(dict): dict data from placement_module.UOPModule
+        save_path (str, optional): save path. Defaults to None(plt.show()).
+    """
     # initialize figure
-    cols = 4
+    cols = 2
     rows = 2
     fig = plt.figure(figsize=(5*cols, 5*rows), constrained_layout=True)
     fig_idx = 1
@@ -79,15 +120,31 @@ def visualize_uop_result(exp_result):
         fig_idx += 1
 
         ax = fig.add_subplot(rows, cols, fig_idx, projection='3d')
-        visualize_pred_points(ax, input_points, pred_label, label2color)
+        visualize_pred_points(ax, input_points, pred_label, label2color, title='pred points with arrow')
         visualize_normal(ax, rot_mat)
         fig_idx += 1
     
+    if save_path is None:
+        plt.show()
+    else:
+        plt.savefig(save_path)
+        plt.close('all')
+        plt.close()
+        gc.collect()
     
-def visualize_trimesh_result(exp_result):
+
+def visualize_trimesh_result(exp_result, save_path=None):
+    """ visualize result from trimesh module
+    --------------------------------------
+    | input points | mesh | mesh + arrow |
+    --------------------------------------
+    Args:
+        exp_result(dict): dict data from placement_module.TrimeshModule
+        save_path (str, optional): save path. Defaults to None(plt.show()).
+    """
     # initialize figure
     cols = 3
-    rows = 2
+    rows = 1
     fig = plt.figure(figsize=(5*cols, 5*rows), constrained_layout=True)
     fig_idx = 1
     
@@ -111,16 +168,33 @@ def visualize_trimesh_result(exp_result):
     # input points and mesh and arrow
     ax = fig.add_subplot(rows, cols, fig_idx, projection='3d')
     visualize_input_points(ax, input_points)
-    visualize_mesh(ax, triangles, vertices)
+    visualize_mesh(ax, triangles, vertices, title='mesh with arrow')
     visualize_normal(ax, rot_mat)
     fig_idx += 1
     
-    plt.show()
+    if save_path is None:
+        plt.show()
+    else:
+        plt.savefig(save_path)
+        plt.close('all')
+        plt.close()
+        gc.collect()
     
 
-def visualize_ransac_result(exp_result):
+def visualize_ransac_result(exp_result, save_path=None):
+    """ visualize result from ransac module
+
+    --------------------------------------
+    | input points | predicted points |   |
+    | plane        | plane + arrow    |   |
+
+    Args:
+        exp_result (dict): dict data from placement_module.RANSACModule
+        save_path (str, optional): save path. Defaults to None(plt.show()).
+    """
+    
     # initialize figure
-    cols = 4
+    cols = 2
     rows = 2
     fig = plt.figure(figsize=(5*cols, 5*rows), constrained_layout=True)
     fig_idx = 1
@@ -151,19 +225,32 @@ def visualize_ransac_result(exp_result):
         pred_label[pred_label!=target_ins] = 0
 
         ax = fig.add_subplot(rows, cols, fig_idx, projection='3d')
-        visualize_pred_points(ax, pred_points, pred_label, label2color)
+        visualize_pred_points(ax, pred_points, pred_label, label2color, title='pred points with arrow')
         visualize_normal(ax, rot_mat)
         fig_idx += 1
         
-        ax = fig.add_subplot(rows, cols, fig_idx, projection='3d')
-        visualize_pred_points(ax, pred_points, pred_label, label2color)
-        fig_idx += 1
+    if save_path is None:
+        plt.show()
+    else:
+        plt.savefig(save_path)
+        plt.close('all')
+        plt.close()
+        gc.collect()
         
  
-def visualize_bbox_result(exp_result):
+def visualize_bbox_result(exp_result, save_path=None):
+    """ visualize result from bbox module
+
+    --------------------------------------
+    | input points | bbox | bbox + arrow |
+
+    Args:
+        exp_result (dict): dict data from placement_module.PrimitiveFittingModule
+        save_path (str, optional): save path. Defaults to None(plt.show()).
+    """
     # initialize figure
     cols = 3
-    rows = 2
+    rows = 1
     fig = plt.figure(figsize=(5*cols, 5*rows), constrained_layout=True)
     fig_idx = 1
     
@@ -190,7 +277,13 @@ def visualize_bbox_result(exp_result):
     visualize_normal(ax, rot_mat)
     fig_idx += 1
     
-    plt.show()
+    if save_path is None:
+        plt.show()
+    else:
+        plt.savefig(save_path)
+        plt.close('all')
+        plt.close()
+        gc.collect()
     
 
 def visualize_module_compare(exp_result_dict, save_path=None):
@@ -293,18 +386,10 @@ def visualize_module_compare(exp_result_dict, save_path=None):
         gc.collect()
     
 def visualize_exp_result(exp_result, module='uop', save_path=None):
-    visualizer[module](exp_result)
-    if save_path is None:
-        plt.show()
-    else:
-        plt.savefig(save_path)
-        plt.close('all')
-        plt.close()
-        gc.collect()
-
+    visualizer[module](exp_result, save_path=save_path)
 
 visualizer = {
-    'gt': visualize_data,
+    'gt': visualize_uopsim,
     'uop': visualize_uop_result,
     'trimesh': visualize_trimesh_result,
     'ransac': visualize_ransac_result,
@@ -393,7 +478,7 @@ def visualize_plane(ax, points, pred_label, plane_info, label2color):
     }
     plot3d(ax, **draw_info)
 
-def visualize_mesh(ax, triangles, vertices):
+def visualize_mesh(ax, triangles, vertices, title='mesh'):
     vertices = vertices.T
     
     ax.plot_trisurf(vertices[0], vertices[1], vertices[2], triangles=triangles, 
@@ -403,7 +488,7 @@ def visualize_mesh(ax, triangles, vertices):
     ax.set_xlim((center[0]-2/2,center[0]+2/2))
     ax.set_ylim((center[1]-2/2,center[1]+2/2))
     ax.set_zlim((center[2]-2/2,center[2]+2/2))
-    ax.set_title('Mesh')
+    ax.set_title(title)
     ax.axis('off')
 
 def visualize_bbox(ax, bbox):
@@ -445,27 +530,12 @@ def get_label2color(pred_label):
     
     return label2color
 
-def plot_coordinate(ax):
-  arrow_prop_dict = dict(mutation_scale=20, arrowstyle='->', shrinkA=0, shrinkB=0)
-  
-  a = Arrow3D([0, 1], [0, 0], [0, 0], **arrow_prop_dict, color='r')
-  ax.add_artist(a)
-  a = Arrow3D([0, 0], [0, 1], [0, 0], **arrow_prop_dict, color='b')
-  ax.add_artist(a)
-  a = Arrow3D([0, 0], [0, 0], [0, 1], **arrow_prop_dict, color='g')
-  ax.add_artist(a)
-
-  # Give them a name:
-  # ax.text(0.0, 0.0, -0.1, r'$0$')
-  ax.text(1.1, 0, 0, r'$x$')
-  ax.text(0, 1.1, 0, r'$y$')
-  ax.text(0, 0, 1.1, r'$z$')
-  
 def plot_arrow(ax, xyz, text):
-  arrow_prop_dict = dict(mutation_scale=20, arrowstyle='->', shrinkA=0, shrinkB=0)
-  a = Arrow3D(xyz[0], xyz[1], xyz[2], **arrow_prop_dict, color='r')
-  ax.add_artist(a)
-  ax.text(1.1, 0, 0, text)
+    arrow_prop_dict = dict(mutation_scale=20, arrowstyle='->', shrinkA=0, shrinkB=0)
+    ax.arrow3D(xyz[0, 0], xyz[1, 0], xyz[2, 0],
+               xyz[0, 1], xyz[1, 1], xyz[2, 1],
+               **arrow_prop_dict, color='r')
+    ax.text(1.1, 0, 0, text)
   
 def plot3d(ax, xyz, center=None, title=None, range=None, c=None, plane=None, axis=False):
     fontlabel = {"fontsize":"large", "color":"gray", "fontweight":"bold"}

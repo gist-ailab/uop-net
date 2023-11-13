@@ -1,11 +1,11 @@
 import argparse
 import os
 
-
 from placement_module import load_placement_module
 
 from utils.capture_points_from_mesh import MeshCapture
 from utils.open3d_utils import down_sample_points
+from utils.matplotlib_visualize_utils import visualize_exp_result
 
 if __name__=="__main__":
     parser = argparse.ArgumentParser()
@@ -36,9 +36,12 @@ if __name__=="__main__":
 
     for method, module_name in module_list.items():
         placement_module = load_placement_module(module_name)
-    
         
         inference_result = placement_module.get_stable_placement(partial_points)
-        result_path = os.path.join(result_dir, "{}.pkl".format(method))
+        result_path = os.path.join(result_dir, "{}.png".format(method))
+        visualize_exp_result(exp_result=inference_result,
+                             module=module_name,
+                             save_path=result_path)
+        
     
     
