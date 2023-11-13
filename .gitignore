@@ -3,6 +3,7 @@ __pycache__/
 *.py[cod]
 *$py.class
 .vscode/
+Anaconda3-2023.09-0-Linux-x86_64.sh
 
 # C extensions
 *.so
