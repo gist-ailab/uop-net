@@ -3,7 +3,7 @@
 
 
 
-echo "-->> UOP-setup bash : start bash code"
+echo "-->> UOP-setup bash : start system check bash code"
 # TODO : make flag operate
 UOP_ERROR_FLAG=0
 
@@ -16,22 +16,23 @@ UOP_ERROR_FLAG=0
 
 
 # = check system
-#TODO : check gpu
-UOP_GPU_STRING=$(lspci | grep VGA | cut -d" " -f 1)
+UOP_GPU_STRING=$(lspci | grep asdf | cut -d" " -f 1)
 if [ -z $UOP_GPU_STRING ]
 then 
     echo "... [ERROR] GPU is Not Detected."
     UOP_ERROR_FLAG=1
+    echo "-->> UOP-setup bash : End system check bash code with Error : $UOP_ERROR_FLAG"
     exit $UOP_ERROR_FLAG
 else
     echo "... [CHECK] GPU Detected. continue ... "
 fi
+
 #TODO : check file storage
 
 
 # check linux 20.04
 #TODO : check ubuntu
-echo "-->> UOP-setup bash : system check"
+
 
 # check nvidia driver ver
 # check cuda ver
@@ -41,6 +42,11 @@ echo "-->> UOP-setup bash : system check"
 
 
 # ---- ---- ---- ----      ---- ---- ---- ----
+
+
+
+
+echo "-->> UOP-setup bash : system check"
 
 
 

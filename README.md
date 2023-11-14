@@ -57,7 +57,7 @@ git clone --recursive https://github.com/gist-ailab/uop-net.git
 cd ./uop-net
 
 # # 1. check device
-# sh ./setups/1_check_env.sh
+sh ./setups/1_check_env.sh
 
 # # 2. preparing conda environment
 # sh ./setups/2_prepare_env.sh
