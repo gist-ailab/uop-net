@@ -1,13 +1,9 @@
 
 import os
 import random
-import argparse
-
 import numpy as np
 import open3d as o3d
 from pathlib import Path
-import pyfastnoisesimd as fns
-import cv2
 
 # = From real env -> rgb intrinsic, depth2rgb(in ros ppoint cloud capture)
 # AZURE_INTRINSIC = [[973.5092163085938, 0.0, 1019.8231811523438], [0.0, 973.4360961914062, 779.4862670898438], [0.0, 0.0, 1.0]]
@@ -110,46 +106,4 @@ def generate_cam_parameters(sample_mesh, save_dir, num=1000):
         vis.poll_events()
         vis.update_renderer()
         save_cam_param(idx)
-
-
-if __name__=="__main__":
-
-    parser = argparse.ArgumentParser()
-    parser.add_argument('--mode', type=str, default='vis', help="select [vis, non]")
-    parser.add_argument('--split', type=int, default=1)
-    args = parser.parse_args()
-
-    mode = args.mode
-
-    if mode == 'vis':
-        # = for visualize & save
-        save_dir = "o3d_cam_param"
-        sample_mesh = "/data/datasets/sop_watertight/ycb/002_master_chef_can/mesh_watertight.ply"
-        generate_cam_parameters(sample_mesh, save_dir)
-
-    elif mode == 'non':
-        # = for headless check
-        check_o3d_headless()
-        param_dir = "o3d_cam_param"
-        capture_tool = MeshCapture(param_dir)
-
-        data_root = "/datasets/sop_watertight_distribute/3dnet"
-
-        obj_list = [os.path.join(data_root, p) for p in os.listdir(data_root)]
-        if args.split < 0:
-            pass
-        else:
-            step_size = len(obj_list) // 10
-            split = int(args.split)
-            obj_list = obj_list[split*step_size:(split+1)*step_size]
-
-        for obj_dir in obj_list:
-            mesh_file = os.path.join(obj_dir, 'mesh_watertight.ply')
-            cluster_file = os.path.join(obj_dir, 'cluster_inspected.pkl')
-
-            capture_dir = os.path.join(obj_dir, 'capture')
-
-            # capture
-            points = capture_tool.capture_mesh_to_points(mesh_file)
-            print(points.shape[0])    
 

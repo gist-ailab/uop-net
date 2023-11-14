@@ -388,7 +388,7 @@ class PlacementEnv():
         for obj in self.target_objects:
             obj.remove()
         self.target_objects = []
-        
+        print()
         return stability
     
     def stop(self):

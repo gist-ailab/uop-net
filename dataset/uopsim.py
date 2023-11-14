@@ -1,7 +1,6 @@
 import os
 import re
 import copy
-import random   # TODO : is used?
 
 import torch.utils.data as data
 import torch

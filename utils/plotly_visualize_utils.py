@@ -48,7 +48,7 @@ CSS_COLORS = ["black", "blue", "brown", "cyan", "darkblue",
 # ]
 
 
-def plot_points_with_label(points, labels, mode='markers'):
+def plot_points_with_label(points, labels, mode='markers', opacity=1.0):
     label2color = {i+1: CSS_COLORS[i+1] for i in range(len(CSS_COLORS[1:]))}
     label2color[0] = 'black'
     vis = []
@@ -62,17 +62,17 @@ def plot_points_with_label(points, labels, mode='markers'):
             marker=dict(
                 size=2,
                 color=label2color[label],
-                opacity=0.8
+                opacity=opacity
             )
         ))
     return vis
 
 def plot_mesh(mesh, color='lightblue', opacity=1.0):
-    return go.Mesh3d(
+    return [go.Mesh3d(
         x=mesh.vertices[:, 0],
         y=mesh.vertices[:, 1],
         z=mesh.vertices[:, 2],
         i=mesh.faces[:, 0],
         j=mesh.faces[:, 1],
         k=mesh.faces[:, 2],
-        color=color, opacity=opacity)
+        color=color, opacity=opacity)]

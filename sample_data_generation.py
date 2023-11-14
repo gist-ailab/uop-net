@@ -1,13 +1,10 @@
-
 import os
 import argparse
-
 import trimesh
 import numpy as np
 import subprocess
-
+from multiprocessing import Process
 from plotly import graph_objects as go
-
 
 from pyrep import PyRep
 
@@ -18,10 +15,8 @@ from utils.capture_points_from_mesh import MeshCapture
 from utils.open3d_utils import down_sample_points
 
 from dataset.uopsim import UOPSIM
-
 from uop_sim.data_generator import UOPDataGenerator
 from uop_sim.labeling import get_instance_label_from_clustered_info
-
 
 def normalize_point_cloud(points : np.ndarray) -> np.ndarray:
     assert points.shape[0] > 0
@@ -92,7 +87,7 @@ if __name__=="__main__":
     
     mesh = normalize_mesh(mesh)
     mesh.export(os.path.join(sample_obj_dir, "mesh.ply"))
-    fig = go.Figure(data=[plot_mesh(mesh)])
+    fig = go.Figure(data=plot_mesh(mesh))
     fig.write_html(os.path.join(sample_obj_dir, 'visualize_mesh.html'))
     
     #3. generate coppeliasim scene model
@@ -117,8 +112,9 @@ if __name__=="__main__":
     cfg = load_yaml_to_dic(config_path)
     cfg['data_type'] = "ycb sample"
     cfg['headless'] = True
+
     data_generator = UOPDataGenerator(cfg)
-    
+
     #1. samplilng stable pose
     print(">>> Sampling Stable Pose")
     model_path = os.path.join(sample_obj_dir, "model.ttm")
@@ -130,7 +126,7 @@ if __name__=="__main__":
     stability_file = os.path.join(sample_obj_dir, "stable_pose.pkl")
     save_path = os.path.join(sample_obj_dir, "placement_axis.pkl")
     data_generator._clustering_stability(stability_file, save_path)
-    
+
     #3. inspect clustering result
     print(">>> Inspecting Clustering Result")
     data_generator.convert_to_labeling_env()
@@ -141,7 +137,7 @@ if __name__=="__main__":
     data_generator._inspecting_cluster(model_path, cluster_info, save_path)
     
     data_generator.stop()
-    
+
     #endregion
 
     #region Visualize Placement Data
@@ -174,11 +170,16 @@ if __name__=="__main__":
     partial_labels = captured_labels[partial_idx]
     
     vis_data = []
-    vis_data += plot_points_with_label(partial_points, partial_labels)
+    vis_data += plot_mesh(mesh, opacity=0.1)
+    vis_data += plot_points_with_label(partial_points, partial_labels, opacity=0.9)
     fig = go.Figure(data=vis_data)
     fig.write_html(os.path.join(sample_obj_dir, 'visualize_input_partial.html'))
     
     #endregion
+    
+    print("===== Finish =====")
+    print("Please check the {} directory".format(sample_obj_dir))
+    
 
     
     
