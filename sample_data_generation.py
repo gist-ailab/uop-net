@@ -72,6 +72,10 @@ if __name__=="__main__":
     print("===== Preprocess YCB Object =====")
     #1. load mesh file
     print(">>> Load Mesh File")
+    # google_16k has high quality
+    if "google_16k" in os.listdir(trg_obj_dir):
+        print("Please select other object (with google_16k)")
+        exit()
     mesh_file = os.path.join(trg_obj_dir, "google_16k", "textured.obj")
     mesh = trimesh.load(mesh_file)
     

@@ -160,7 +160,7 @@ UOPROOT # path to generate uopdata
 ### 1-2. Preprocess 3D models
 
 ```
-python preprocess.py --root <UOPROOT> --data_type ycb # ycb, shapenet, 3dnet
+python uop_sim/preprocess.py --root <UOPROOT> --data_type ycb # ycb, shapenet, 3dnet
 ```
 
 ### 1-3. Run DataGenerator
