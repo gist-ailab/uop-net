@@ -136,6 +136,7 @@ python sample_test.py --object 002_master_chef_can
 - [ShapeNet](https://shapenet.org/)
 
 After download public data your data folder looks like below
+Also use [shapenet unzip script](./unzip_shapenet.sh)
 
 ```shell
 UOPROOT # path to generate uopdata

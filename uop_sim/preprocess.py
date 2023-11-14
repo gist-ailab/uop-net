@@ -257,7 +257,7 @@ def preprocess_mesh(data_root, save_root):
     
     if data_type == "shapenet":
         mesh_info = DataProcessing.get_ShapeNet_mesh(os.path.join(data_root, "ShapeNetCore.v1"))
-    elif data_type == "3DNet":
+    elif data_type == "3dnet":
         mesh_info = DataProcessing.get_3DNet_mesh(os.path.join(data_root, "3DNet_raw"))
     elif data_type == "ycb":
         mesh_info = DataProcessing.get_YCB_mesh(os.path.join(data_root, "models/ycb"))
