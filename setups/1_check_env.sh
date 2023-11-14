@@ -51,7 +51,8 @@ fi
 
 ## check cuda ver
 UOP_CUDA_STRING=$(nvcc -V | tail -1 | awk '{print $2}' | tr "cuda_" " ")
-if [ -z $UOP_CUDA_STRING ]
+UOP_CUDA_STRING_S=(${UOP_CUDA_STRING//// })
+if [ -z $UOP_CUDA_STRING_S ]
 then 
     echo "... [ERROR] CUDA is Not Detected."
     UOP_ERROR_FLAG=1
@@ -60,7 +61,7 @@ then
 else
     echo "... [CHECK] CUDA Detected. continue ... "
 fi
-UOP_CUDA_VER=(${UOP_CUDA_STRING//./ })
+UOP_CUDA_VER=(${UOP_CUDA_STRING_S//./ })
 if [ 10 -gt $UOP_CUDA_VER ];
 then 
     echo "... [ERROR] CUDA is Not Sufficient"
@@ -81,7 +82,7 @@ fi
 
 
 
-echo "-->> UOP-setup bash : system check"
+echo "-->> UOP-setup bash : system check end."
 
 
 
