@@ -15,36 +15,38 @@ from utils.capture_points_from_mesh import MeshCapture
 
 
 class UOPSIM(data.Dataset):
-    def __init__(self, root,
-                   num_points=2048, under=-1, sampling='random', val=None,
-                   partial=True, label_cut=10, seed=None, non_zero=True,
-                   projection=False, max_instances=32):
+    def __init__(self, root, 
+                 max_obj_per_cat=-1, val=None, non_zero=True,      # setting for using objects
+                 num_points=2048, sampling='random', partial=True, # setting for data sampling
+                 max_instances=32,                                 # setting for instance mask
+                 seed=None):                                       # setting for random seed
         """ uop dataset initialize 
         Args:
-            root: uop dataset root(data generator save root)
-            num_points(default: 2048): num of points
-            partial(default: False): True => partial sample points
-            partial_ratio(default: 2000): larger more partial points
-            projection(default: False): True => add projection value to input points(N, 4)
-            max_instances(default: 100): Affect instance mask size [N, 100]
+            root (str): root directory of dataset
+            max_obj_per_cat (int, optional): maximum number of objects per category. Defaults to -1(All object).
+            val (list, optional): validation object list. Defaults to None.
+            non_zero (bool, optional): use only non zero label. Defaults to True.
+            
+            num_points (int, optional): number of points to sample. Defaults to 2048.
+            sampling (str, optional): sampling method. Defaults to 'random'.
+            partial (bool, optional): partial sampling. Defaults to True.(False-> whole point cloud)
+            
+            max_instances (int, optional): maximum number of instances. Defaults to 32.
+            seed (int, optional): random seed. Defaults to None.
         """
 
         self.data_root = root
         
+        self.max_obj_per_cat = max_obj_per_cat
+        
         self.num_points = num_points
         self.sampling = sampling
-
         self.partial = partial
-        
-        self.label_cut = label_cut
-
-        self.projection = projection
 
         self.max_instances = max_instances
 
         self.seed = seed
-        self.under = under
-
+        
         self.capture_tool = MeshCapture()
 
         self.data_list = get_dir_list(self.data_root)
@@ -54,8 +56,7 @@ class UOPSIM(data.Dataset):
         self.mesh_cloud = [] 
         self.object_names = []
         
-        total_names = []
-        self.total_name_list = []
+        self.category_info = {}
         
         for data_dir in tqdm(self.data_list, 'data loading'):
             if not self.check_file_existancy(data_dir):
@@ -66,10 +67,11 @@ class UOPSIM(data.Dataset):
                 if not obj_name in val:
                     continue
             alpahbet_len = len(re.findall('[a-zA-Z_]', get_dir_name(data_dir)))
-            total_names.append(get_dir_name(data_dir)[:alpahbet_len])
-      
-            if under > 0:
-                if not self.check_under(obj_name, under):
+            cat_name = get_dir_name(data_dir)[:alpahbet_len]
+            self.category_info.setdefault(cat_name, [])
+
+            if self.max_obj_per_cat > 0:
+                if not self.check_under(obj_name, self.max_obj_per_cat):
                     continue
             
             label = self._load_label(os.path.join(data_dir, 'label_inspected.pkl'))
@@ -79,16 +81,19 @@ class UOPSIM(data.Dataset):
                 if np.max(label) == 0:
                     continue
             
+            self.category_info[cat_name].append(obj_name)
             self.object_names.append(obj_name)
             self.points_cloud.append(self._load_point_cloud(os.path.join(data_dir, 'point_cloud.ply')))
             self.labels_cloud.append(label)
             self.cluster_info.append(cluster)
             self.mesh_cloud.append(os.path.join(data_dir, 'mesh_watertight.ply'))
         
-        self.total_name_list = np.unique(total_names)
         self.max_instances = int(max_instances)
         self.dataset_size = len(self.object_names)
+        # print dataset info
         print("Whole Dataset Size: {}".format(self.dataset_size))
+        for cat_name in self.category_info.keys():
+            print("{}: {}".format(cat_name, len(self.category_info[cat_name])))
     
     @staticmethod
     def get_object_cat(object_name):
@@ -250,6 +255,10 @@ class UOPSIM(data.Dataset):
     
     @staticmethod
     def filtering_label(points, labels, cluster_info):
+        """ filter unstable instance label
+        for partial sampled points, some instance label is cut offed
+        so, we need to filter unstable instance label by plane fitting
+        """
         filtered = copy.deepcopy(labels)
         instance_labels = np.unique(labels)
         if instance_labels[0] == 0:
@@ -273,31 +282,6 @@ class UOPSIM(data.Dataset):
         
         return filtered
     
-    def _partial_sampling_o3d(self, points, labels):
-        pcd = convert_numpy_to_point_cloud(points)
-        
-        center = np.mean(points, axis=0)
-        diameter = np.linalg.norm(np.asarray(pcd.get_max_bound()) - np.asarray(pcd.get_min_bound()))
-        cam_distance = np.random.uniform(1, 3)
-        cam_radius = np.random.uniform(10, 100)
-        camera_direction = np.random.rand(3) - 0.5
-        camera_direction /= np.linalg.norm(camera_direction)
-        camera = center + diameter* camera_direction * cam_distance
-        _, pt_map = pcd.hidden_point_removal(camera, diameter * cam_radius)
-        del pcd
-        if len(pt_map) < self.num_points:
-            pt_map = np.r_[pt_map, np.setdiff1d(np.arange(points.shape[0]), pt_map)[:self.num_points - len(pt_map)]]
-        
-        points = points[pt_map]
-        labels = labels[pt_map]
-        
-        if self.projection:
-            proj = self._min_max_normalize(np.dot(points, camera_direction))
-            proj = np.expand_dims(proj, axis=-1).astype(np.float32)
-            points = np.concatenate([points, proj], axis=1)
-        
-        return points, labels
-
     def _partial_sampling_mesh(self, whole_points, mesh_file, cluster_info):
         captured_points = self.capture_tool.capture_mesh_to_points(mesh_file, min_num=2048)
         labels = np.zeros((captured_points.shape[0]))
@@ -335,7 +319,6 @@ class UOPSIM(data.Dataset):
 
         # partial sampling
         if self.partial:
-            # points, labels = self._partial_sampling(points, labels)
             points, labels = self._partial_sampling_mesh(points, mesh_file, cluster)
             
         # down sampling 
