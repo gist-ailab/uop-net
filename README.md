@@ -56,11 +56,11 @@ This repository contains official implementation of following paper:
 git clone --recursive https://github.com/gist-ailab/uop-net.git
 cd ./uop-net
 
-# 1. check device
-sh ./setups/1_check_env.sh
+# # 1. check device
+# sh ./setups/1_check_env.sh
 
-# 2. preparing conda environment
-sh ./setups/2_prepare_env.sh
+# # 2. preparing conda environment
+# sh ./setups/2_prepare_env.sh
 
 ```
 
@@ -79,11 +79,14 @@ conda install pytorch==1.12.1 torchvision==0.13.1 torchaudio==0.12.1 cudatoolkit
 ### 0-2. Build Manifold
 
 ```shell
+# start from uop-net folder
 cd thirdparty/Manifold
 mkdir build
 cd build
 cmake .. -DCMAKE_BUILD_TYPE=Release
 make
+
+
 ```
 
 ### 0-3. Simulation
@@ -93,11 +96,15 @@ make
 * Also follow [CoppeliaSim video compression library issue to solve them](https://github.com/stepjam/PyRep/issues/142)
 
 ```shell
+# start from uop-net folder
 cd thirdparty/videoRecorder/vvcl
 mkdir build
 cd build
 cmake ..
 make
+
+# apply to CoppeliaSim
+cp ./libvvcl.so $COPPELIASIM_ROOT
 ```
 
 ### 0-4. Sample code
