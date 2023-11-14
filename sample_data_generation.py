@@ -74,12 +74,14 @@ if __name__=="__main__":
     os.makedirs(sample_obj_dir, exist_ok=True)
     
     #region Preprocess YCB Object
-    
+    print("===== Preprocess YCB Object =====")
     #1. load mesh file
+    print(">>> Load Mesh File")
     mesh_file = os.path.join(trg_obj_dir, "google_16k", "textured.obj")
     mesh = trimesh.load(mesh_file)
     
     #2. check if the mesh is watertight
+    print(">>> Check if the mesh is watertight")
     if mesh.is_watertight:
         print("The mesh is already watertight.")
     else:
@@ -94,6 +96,7 @@ if __name__=="__main__":
     fig.write_html(os.path.join(sample_obj_dir, 'visualize_mesh.html'))
     
     #3. generate coppeliasim scene model
+    print(">>> Generate CoppeliaSim Scene Model")
     pr = PyRep()
     pr.launch(headless=True)
     pr.start()
@@ -109,23 +112,27 @@ if __name__=="__main__":
 
     #endregion
 
-    #region Generate Placement Data
+    #region Simulate Placement Data
+    print("===== Simulate Placement Data =====")
     cfg = load_yaml_to_dic(config_path)
     cfg['data_type'] = "ycb sample"
     cfg['headless'] = True
     data_generator = UOPDataGenerator(cfg)
     
-    # #1. samplilng stable pose
+    #1. samplilng stable pose
+    print(">>> Sampling Stable Pose")
     model_path = os.path.join(sample_obj_dir, "model.ttm")
     save_path = os.path.join(sample_obj_dir, "stable_pose.pkl")
     data_generator._simulate_stability(model_path, save_path)
     
-    # #2. clustering stable pose
+    #2. clustering stable pose
+    print(">>> Clustering Stable Pose")
     stability_file = os.path.join(sample_obj_dir, "stable_pose.pkl")
     save_path = os.path.join(sample_obj_dir, "placement_axis.pkl")
     data_generator._clustering_stability(stability_file, save_path)
     
     #3. inspect clustering result
+    print(">>> Inspecting Clustering Result")
     data_generator.convert_to_labeling_env()
     
     model_path = os.path.join(sample_obj_dir, "model.ttm")
@@ -138,6 +145,7 @@ if __name__=="__main__":
     #endregion
 
     #region Visualize Placement Data
+    print("===== Visualize Data =====")
     #1. visualize whole mesh with label
     mesh_file = os.path.join(sample_obj_dir, "mesh.ply")
     cluster_info = load_pickle(os.path.join(sample_obj_dir, "label.pkl"))

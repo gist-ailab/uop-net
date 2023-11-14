@@ -8,9 +8,9 @@ from itertools import product
 from logging import warning
 
 import numpy as np
-
-sys.path.append(os.path.dirname(os.path.dirname(os.path.realpath(__file__))))
 from utils.file_utils import *
+
+sys.path.append(os.path.dirname(os.path.realpath(__file__)))
 from environment import PlacementEnv, InspectionEnv
 from labeling import clustering_sampled_pose, get_instance_label_from_clustered_info
 

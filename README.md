@@ -109,13 +109,13 @@ make
 python download_ycb_dataset.py
 
 # data generation
-python sample_data_generation.py --object <Name of YCB Data>
+python sample_data_generation.py --object 002_master_chef_can
 
 # inference
-python sample_inference.py --object <Name of YCB Data>
+python sample_inference.py --object 002_master_chef_can
 
 # test on simulation
-python sample_test.py --object <Name of YCB Data>
+python sample_test.py --object 002_master_chef_can
 ```
 
 <br>
