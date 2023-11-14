@@ -17,11 +17,13 @@ UOP_ERROR_FLAG=0
 
 # = check system
 
+
 # check linux 20.04
 #TODO : check ubuntu
 
+
 ## check GPU
-UOP_GPU_STRING=$(lspci | grep asdf | cut -d" " -f 1)
+UOP_GPU_STRING=$(lspci | grep VGA | cut -d" " -f 1)
 if [ -z $UOP_GPU_STRING ]
 then 
     echo "... [ERROR] GPU is Not Detected."
@@ -31,6 +33,7 @@ then
 else
     echo "... [CHECK] GPU Detected. continue ... "
 fi
+
 
 ## check Stroage
 UOP_STORAGE_STRING=$(df -PBG $PWD | tail -1 | awk '{print $4}' | tr "G" " ")
@@ -44,9 +47,11 @@ else
     echo "... [CHECK] Storage Checked. continue ... "
 fi
 
-# check nvidia driver ver
-# check cuda ver
-# check is there conda
+## check nvidia driver ver
+
+## check cuda ver
+
+## check is there conda
 
 
 
