@@ -15,9 +15,10 @@ error_flag = 0
 
 
 
-mkdir ./setups/uop-download
-cd ./setups/uop-download
-
+# go to dir
+cd ./setups
+mkdir ./uop-download
+cd ./uop-download
 
 # = setup conda environment
 
@@ -32,8 +33,10 @@ wget https://repo.anaconda.com/archive/Anaconda3-2023.09-0-Linux-x86_64.sh --no-
 ## install
 #TODO : check file exist
 #TODO : check permission ? / chmod +777 ?
-sh ./Anaconda3-2023.09-0-Linux-x86_64.sh
-# sh ./Anaconda3-2023.09-0-Linux-x86_64.sh -b
+# sh ./Anaconda3-2023.09-0-Linux-x86_64.sh
+sh ./Anaconda3-2023.09-0-Linux-x86_64.sh -b
+eval "$(/home/ailab-ur5/anaconda3/bin/conda shell.bash hook)"
+conda init
 
 
 
@@ -56,8 +59,10 @@ tar -xvf CoppeliaSim_Edu_V4_1_0_Ubuntu20_04.tar.xz
 ## turn on once.
 #TODO : check uncompressed file 
 cd CoppeliaSim_Edu_V4_1_0_Ubuntu20_04/
-sh ./coppeliaSim.sh
-
+./coppeliaSim.sh
+# at first, you must run with GUI monitor setup
+# ./coppeliaSim.sh -h # headless
+cd ..
 
 
 

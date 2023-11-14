@@ -11,9 +11,15 @@ error_flag = 0
 # conda create env 
 ## create env
 #TODO : check env name is exist?
-conda create -n uop
+if conda info --envs | grep -q uop_net; 
+then echo "... uop_net already exists"; 
+else conda create -y -n uop_net python=3.8; 
+fi
 ## activate
-conda activate uop
+conda activate uop_net
+pip install --upgrade pip
+pip install --upgrade setuptools
+pip install --upgrade wheel
 
 # test
 #TODO : check current env name
@@ -42,7 +48,7 @@ export QT_QPA_PLATFORM_PLUGIN_PATH=$COPPELIASIM_ROOT
 ## install pyrep
 cd PyRep 
 #TODO : check, is env name uop env?
-conda activate uop # check duplicated
+# conda activate uop # check duplicated
 pip install -r requirements.txt
 pip install .
 
@@ -59,15 +65,17 @@ python -m import pyrep # is this right to check?
 
 # conda install package
 #TODO : check, is env name uop env?
-pip install torch
-# pip install numpy open3d natsort tqdm trimesh pyfastnoisesimd opencv-python==4.4.0.44 point_cloud_utils
+pip install torch torchvision torchaudio    # cuda 12.1 torch 2.1.0 py38 / 2023.11.13.
+pip install numpy open3d natsort tqdm trimesh pyfastnoisesimd opencv-python==4.4.0.44 point_cloud_utils
+pip install pycollada pyglet plotly networkx
 #TODO : make requirements.txt
 # pip install -r requirements.txt
 
 # test
 #TODO : test run code
 
-
+cd ..
+cd ..
 
 
 # ---- ---- ---- ----      ---- ---- ---- ----
