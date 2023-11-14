@@ -73,7 +73,7 @@ if __name__=="__main__":
     #1. load mesh file
     print(">>> Load Mesh File")
     # google_16k has high quality
-    if "google_16k" in os.listdir(trg_obj_dir):
+    if "google_16k" not in os.listdir(trg_obj_dir):
         print("Please select other object (with google_16k)")
         exit()
     mesh_file = os.path.join(trg_obj_dir, "google_16k", "textured.obj")
