@@ -47,7 +47,7 @@ This repository contains official implementation of following paper:
 ---
 
 ## 0. Environment Setting
-
+<!-- checked -->
 * Our code implemented on Ubuntu 20.04 and Conda virtual environment.
 * Please follow below instruction.
 
@@ -65,7 +65,7 @@ sh ./setups/1_check_env.sh
 ```
 
 ### 0-1. Create conda env & python requirements
-
+<!-- checked -->
 ```shell
 # 
 conda create -n uop_net python=3.8
@@ -77,7 +77,7 @@ conda install pytorch==1.12.1 torchvision==0.13.1 torchaudio==0.12.1 cudatoolkit
 ```
 
 ### 0-2. Build Manifold
-
+<!-- checked -->
 ```shell
 # start from uop-net folder
 cd thirdparty/Manifold
@@ -90,7 +90,7 @@ make
 ```
 
 ### 0-3. Simulation
-
+<!-- checked -->
 * uop data generation code built in CoppeliaSim and PyRep. Please install CoppeliaSim and pyrep first [PyRep github](https://github.com/stepjam/PyRep)
 * after install CoppeliaSim, you must open CoppeliaSim program at once. (This step )
 * Also follow [CoppeliaSim video compression library issue to solve them](https://github.com/stepjam/PyRep/issues/142)
