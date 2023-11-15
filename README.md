@@ -131,22 +131,43 @@ python sample_test.py --object 002_master_chef_can
 
 ### 1-1. Download public 3D models
 
-- [YCB Dataset](https://www.ycbbenchmarks.com/object-models/)
-- [3DNet](https://strands.readthedocs.io/en/latest/datasets/three_d_net.html)
-- [ShapeNet](https://shapenet.org/)
+- [YCB Dataset](https://www.ycbbenchmarks.com/) (you can download from web or run script below.)
+  ```shell
+  python download_ycb_dataset.py
+  ```
+
+- [3DNet](https://www.acin.tuwien.ac.at/vision-for-robotics/software-tools/3dnet-dataset/) (you can download from web or run script below.)
+  ```shell
+  # 3DNet Cat10 model/test
+  wget https://data.acin.tuwien.ac.at/index.php/s/7GrnwJlDQrajFTo/download --no-check-certificate
+  wget https://data.acin.tuwien.ac.at/index.php/s/6XkgKCAmpUyznnP/download --no-check-certificate
+
+  # 3DNet Cat60 model/test
+  wget https://data.acin.tuwien.ac.at/index.php/s/uGarwrExmIjlwwP/download --no-check-certificate
+  wget https://data.acin.tuwien.ac.at/index.php/s/GYAseQVDSslZ82A/download --no-check-certificate
+
+  # 3DNet Cat200 model
+  wget https://data.acin.tuwien.ac.at/index.php/s/9ngYbr00uFvEThj/download --no-check-certificate
+  ```
+
+- [ShapeNet](https://shapenet.org/) (you can download from web only.)
+  - [ShapeNet alternated](https://huggingface.co/ShapeNet) (original web download link has been crashed. use alternated one.)
+  <!-- ```shell
+  wget  --no-check-certificate
+  ``` -->  
 
 After download public data your data folder looks like below
 Also use [shapenet unzip script](./unzip_shapenet.sh)
 
 ```shell
-UOPROOT # path to generate uopdata
-├──models/ycb # ycb data root
+UOPROOT # path to generate UOP-Sim data
+├──models/ycb # YCB data root
 │  ├── 001_chips_can
 │  ├── 002_master_chef_can
 │  ├── ...
 │  ├── 076_timer
 │  └── 077_rubiks_cube
-├──ShapeNetCore.v1 # shapenet data root
+├──models/ShapeNetCore.v1 # ShapeNet data root
 │  ├── 02691156
 │  ├── 02691156.csv
 │  ├── 02691156.zip
@@ -156,13 +177,13 @@ UOPROOT # path to generate uopdata
 │  ├── jq
 │  ├── README.txt
 │  └── taxonomy.json
-└──3DNet_raw/ # 3dnet data_root
+└──models/3DNet_raw/ # 3DNet data_root
 │  ├── Cat10_ModelDatabase
 │  ├── Cat10_TestDatabase
 │  ├── Cat200_ModelDatabase
 │  ├── Cat60_ModelDatabase
 │  └── Cat60_TestDatabase
-└──uop_data # the path uop data generated
+└──models/uop_data # the path uop data generated
 ```
 
 ### 1-2. Preprocess 3D models
