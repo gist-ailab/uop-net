@@ -4,12 +4,12 @@ import torch.nn as nn
 import numpy as np
 
 
-class PlaneLoss(nn.Module):
+class DiscriminativeLoss(nn.Module):
     def __init__(self, delta_d, delta_v,
                  alpha=1.1, beta=1.1, gamma=0.001, 
                  reduction='mean'):
         
-        super(PlaneLoss, self).__init__()
+        super(DiscriminativeLoss, self).__init__()
         self.alpha = alpha
         self.beta = beta
         self.gamma = gamma

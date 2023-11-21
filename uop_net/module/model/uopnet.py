@@ -4,7 +4,6 @@ import torch.nn.functional as F
 
 from .pointnet import PointNet
 from .dgcnn import Dgcnn
-from .pointmlp import PointMLPForUOP
 
 class UOPNet(nn.Module):
     def __init__(self, backbone_type="dgcnn"):
@@ -17,9 +16,6 @@ class UOPNet(nn.Module):
 
         elif self.backbone_type == "dgcnn":
             self.backbone = Dgcnn()
-
-        elif self.backbone_type == "pointmlp":
-            self.backbone = PointMLPForUOP()
 
         else:
             raise("Backbone type should be in [pointnet, dgcnn, pointmlp]. Baseline UOP model uses dgcnn")

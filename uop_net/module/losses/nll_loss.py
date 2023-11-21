@@ -2,9 +2,9 @@ import torch
 import torch.nn as nn
 
 
-class StabilityLoss(nn.Module):
+class NLLLoss(nn.Module):
     def __init__(self, weight=None, reduction='mean'):
-        super(StabilityLoss, self).__init__()
+        super(NLLLoss, self).__init__()
         self.nll = nn.NLLLoss(weight, reduction=reduction)
 
     def forward(self, x, y):
