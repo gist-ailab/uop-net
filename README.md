@@ -1,4 +1,25 @@
-# UOP : Unseen Object Placement with Large Scale Simulation
+<!-- # UOP : Unseen Object Placement with Large Scale Simulation -->
+
+<br>
+<br>
+
+<!-- TODO : add icons -->
+<!-- add icons - projectpage / youtube / code / dataset link / AILAB hompage -->
+<!-- TODO : add main concept image -->
+
+
+<p align="center">
+  <!-- <img src="resources/logo.png" align="center" width="25%"> -->
+  <h1 align="center">
+    <strong>UOP : Unseen Object Placement with Large Scale Simulation</strong>
+  </h1>
+</p>
+
+<br>
+<br>
+
+<br>
+<br>
 
 ![Main Image](resources/uop_figure/main_image.png)
 
