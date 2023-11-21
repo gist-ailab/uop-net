@@ -6,7 +6,7 @@ import torch
 from placement_module.uop_module import load_model
 from placement_module.ransac_module import *
 
-from dataset import UOPSIM
+from dataset.uopsim import UOPSIM
 from utils.placement_utils import *
 from utils.meanshift.mean_shift_gpu  import  MeanShiftEuc
 from utils.trimesh_utils import get_stable_transform
