@@ -1,6 +1,6 @@
 # UOP : Unseen Object Placement with Large Scale Simulation
 
-![Main Image](figure/main_image.png)
+![Main Image](resources/uop_figure/main_image.png)
 
 This repository contains official implementation of following paper:
 

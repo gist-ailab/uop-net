@@ -1,6 +1,6 @@
 [submodule "Manifold"]
-	path = thirdparty/Manifold
+	path = setups/thirdparty/Manifold
 	url = https://github.com/hjwdzh/Manifold
 [submodule "thirdparty/VideoRecorder"]
-	path = thirdparty/videoRecorder
+	path = setups/thirdparty/videoRecorder
 	url = https://github.com/CoppeliaRobotics/videoRecorder

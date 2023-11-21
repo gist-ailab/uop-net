@@ -135,5 +135,6 @@ uop-download/
 models/*
 !models/unzip_data.sh
 !models/download_ycb_dataset.py
+setups/thirdparty/*
 sample
 uop_data

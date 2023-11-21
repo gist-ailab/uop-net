@@ -55,7 +55,7 @@ conda install pytorch==1.12.1 torchvision==0.13.1 torchaudio==0.12.1 cudatoolkit
 <!-- checked -->
 ```shell
 # start from uop-net folder
-cd thirdparty/Manifold
+cd setups/thirdparty/Manifold
 mkdir build
 cd build
 cmake .. -DCMAKE_BUILD_TYPE=Release
@@ -72,7 +72,7 @@ make
 
 ```shell
 # start from uop-net folder
-cd thirdparty/videoRecorder/vvcl
+cd setups/thirdparty/videoRecorder/vvcl
 mkdir build
 cd build
 cmake ..
