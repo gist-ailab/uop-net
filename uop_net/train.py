@@ -25,7 +25,7 @@ from data.load_data import load_data
 from utility.config import *
 from utility import pointcloud_utils as pcu
 
-from module.model.uop_net import UOPNet
+from module.model.uopnet import UOPNet
 from module.losses.plane_loss import PlaneLoss
 from module.losses.stability_loss import StabilityLoss
 
