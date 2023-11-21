@@ -1,43 +1,71 @@
-from module.model.dgcnn import BaseDgcnn
-
 import torch
 import torch.nn as nn
-import torch.nn.functional as F
+import torch.nn.functional as F 
+
+from .pointnet import PointNet
+from .dgcnn import Dgcnn
+from .pointmlp import PointMLPForUOP
 
 class UOPNet(nn.Module):
-    def __init__(self, opt):
+    def __init__(self, backbone_type="dgcnn"):
         super(UOPNet, self).__init__()
-        self.opt = opt
-        self.num_classes = opt.config['base']['train']['num_classes']
-        self.embedding_size = opt.config['base']['train']['embedding_size']
-    
-        self.backbone = BaseDgcnn(self.opt)
 
-        self.emb_dims = opt.config['base']['model']['dgcnn']['emb_dims']    
+        self.backbone_type = backbone_type
+
+        if self.backbone_type == "pointnet":
+            self.backbone = PointNet()
+
+        elif self.backbone_type == "dgcnn":
+            self.backbone = Dgcnn()
+
+        elif self.backbone_type == "pointmlp":
+            self.backbone = PointMLPForUOP()
+
+        else:
+            raise("Backbone type should be in [pointnet, dgcnn, pointmlp]. Baseline UOP model uses dgcnn")
         
-        self.fc_1 = nn.Conv1d(self.emb_dims, 512, 1)
-        self.fc_2 = nn.Conv1d(512, 256, 1)
-        self.fc_3 = nn.Conv1d(256, self.num_classes, 1)
+        
+        if self.backbone_type == "pointmlp":
+            # semantic branch to predict a point stable or not
+            self.sb_1 = nn.Conv1d(128, 128, 1)
+            self.sb_2 = nn.Conv1d(128, 128, 1)
+            self.sb_3 = nn.Conv1d(128, 2, 1) # num classes = 2  (stable, unstable)
 
-        self.fc_4 = nn.Conv1d(self.emb_dims, 512, 1)
-        self.fc_5 = nn.Conv1d(512, 256, 1)
-        self.fc_6 = nn.Conv1d(256, self.embedding_size, 1)
-    
+            # instance branch to embed instance features for points
+            self.ib_1 = nn.Conv1d(128, 128, 1)
+            self.ib_2 = nn.Conv1d(128, 128, 1)
+            self.ib_3 = nn.Conv1d(128, 32, 1) # embedding size = 32
+        else:
+            # semantic branch to predict a point stable or not
+            self.sb_1 = nn.Conv1d(1024, 512, 1)
+            self.sb_2 = nn.Conv1d(512, 256, 1)
+            self.sb_3 = nn.Conv1d(256, 2, 1) # num classes = 2  (stable, unstable)
+
+            # instance branch to embed instance features for points
+            self.ib_1 = nn.Conv1d(1024, 512, 1)
+            self.ib_2 = nn.Conv1d(512, 256, 1)
+            self.ib_3 = nn.Conv1d(256, 32, 1) # embedding size = 32
+
     def forward(self, x):
-            
         x = self.backbone(x)
 
-        logits = self.fc_1(x)
-        logits = self.fc_2(logits)
-        logits = self.fc_3(logits)
-        logits = logits.transpose(2, 1)
-        logits = torch.log_softmax(logits, dim=-1)
+        if self.backbone_type == "pointmlp":
+            x = x.transpose(2, 1)
 
-        embedded = self.fc_4(x)
-        embedded = self.fc_5(embedded)
-        embedded = self.fc_6(embedded)
+        out = self.sb_1(x)
+        out = self.sb_2(out)
+        out = self.sb_3(out)
+        out = out.transpose(2, 1)
+        logits = torch.log_softmax(out, dim=-1)
 
-        embedded = embedded.transpose(2, 1)
+        emb = self.ib_1(x)
+        emb = self.ib_2(emb)
+        emb = self.ib_3(emb)
+        emb = emb.transpose(2, 1)
+
+        if self.backbone_type == "pointmlp":
+            x = x.transpose(2, 1)
 
 
-        return x, logits, embedded
+        return x, logits, emb
+        
