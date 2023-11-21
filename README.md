@@ -138,17 +138,22 @@ python sample_test.py --object 002_master_chef_can
 
 - [3DNet](https://www.acin.tuwien.ac.at/vision-for-robotics/software-tools/3dnet-dataset/) (you can download from web or run script below.)
   ```shell
+  mkdir -p models/3DNet
+
   # 3DNet Cat10 model/test
-  wget https://data.acin.tuwien.ac.at/index.php/s/7GrnwJlDQrajFTo/download --no-check-certificate
-  wget https://data.acin.tuwien.ac.at/index.php/s/6XkgKCAmpUyznnP/download --no-check-certificate
+  wget https://data.acin.tuwien.ac.at/index.php/s/7GrnwJlDQrajFTo/download -O models/3dnet/Cat10_ModelDatabase.zip --no-check-certificate
+  wget https://data.acin.tuwien.ac.at/index.php/s/6XkgKCAmpUyznnP/download -O models/3dnet/Cat10_TestDatabase.zip --no-check-certificate
 
   # 3DNet Cat60 model/test
-  wget https://data.acin.tuwien.ac.at/index.php/s/uGarwrExmIjlwwP/download --no-check-certificate
-  wget https://data.acin.tuwien.ac.at/index.php/s/GYAseQVDSslZ82A/download --no-check-certificate
+  wget https://data.acin.tuwien.ac.at/index.php/s/uGarwrExmIjlwwP/download -O models/3dnet/Cat60_ModelDatabase.zip --no-check-certificate
+  wget https://data.acin.tuwien.ac.at/index.php/s/GYAseQVDSslZ82A/download -O models/3dnet/Cat60_TestDatabase.zip --no-check-certificate
 
   # 3DNet Cat200 model
-  wget https://data.acin.tuwien.ac.at/index.php/s/9ngYbr00uFvEThj/download --no-check-certificate
+  wget https://data.acin.tuwien.ac.at/index.php/s/9ngYbr00uFvEThj/download -O models/3dnet/Cat200_ModelDatabase.zip --no-check-certificate
   ```
+
+  - After download public data your data folder looks like below
+  - Also use [unzip script](./models/unzip_file.sh)
 
 - [ShapeNet](https://shapenet.org/) (you can download from web only.)
   - [ShapeNet alternated](https://huggingface.co/ShapeNet) (original web download link has been crashed. use alternated one.)
@@ -156,12 +161,13 @@ python sample_test.py --object 002_master_chef_can
   wget  --no-check-certificate
   ``` -->  
 
-After download public data your data folder looks like below
-Also use [shapenet unzip script](./unzip_shapenet.sh)
+  - After download public data your data folder looks like below
+  - Also use [unzip script](./models/unzip_file.sh)
 
+- Data path
 ```shell
 UOPROOT # path to generate UOP-Sim data
-├──models/ycb # YCB data root
+├──models/ycb             # YCB data root
 │  ├── 001_chips_can
 │  ├── 002_master_chef_can
 │  ├── ...
@@ -177,13 +183,13 @@ UOPROOT # path to generate UOP-Sim data
 │  ├── jq
 │  ├── README.txt
 │  └── taxonomy.json
-└──models/3DNet_raw/ # 3DNet data_root
+└──models/3DNet/          # 3DNet data_root
 │  ├── Cat10_ModelDatabase
 │  ├── Cat10_TestDatabase
 │  ├── Cat200_ModelDatabase
 │  ├── Cat60_ModelDatabase
 │  └── Cat60_TestDatabase
-└──models/uop_data # the path uop data generated
+└──models/uop_data        # the path uop data generated
 ```
 
 ### 1-2. Preprocess 3D models
