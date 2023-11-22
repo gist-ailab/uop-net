@@ -128,7 +128,7 @@ python sample_test.py --object 002_master_chef_can
   ```
 
   - After download public data your data folder looks like below
-  - Also use [unzip script](./models/unzip_file.sh)
+  - Also use [unzip script](../models/unzip_data.sh)
 
 - [ShapeNet](https://shapenet.org/) (you can download from web only.)
   - [ShapeNet alternated](https://huggingface.co/ShapeNet) (original web download link has been crashed. use alternated one.)
@@ -137,7 +137,7 @@ python sample_test.py --object 002_master_chef_can
   ``` -->  
 
   - After download public data your data folder looks like below
-  - Also use [unzip script](./models/unzip_file.sh)
+  - Also use [unzip script](../models/unzip_data.sh)
 
 - Data path
 ```shell
