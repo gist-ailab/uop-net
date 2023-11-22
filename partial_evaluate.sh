@@ -1,33 +1,32 @@
 #!/bin/bash
 
+# set ROOT to the root directory of the uop_data
+ROOT='/home/ailab/Workspaces/_data/uop_data'
+
 echo "Start to sampling evaluation data"
-for data_name in 'ycb' '3dnet' 'shapenet'
+for data_name in 'ycb'
     do
-        python evaluate_script/sampling_data.py --dtype partial --sampling random --trial 100 --data $data_name
+        python evaluate_script/1.data_sampling.py --root $ROOT --name $data_name --partial --trial 100
     done
 echo "End to sampling evaluation data"
 
 for mod in 'trimesh' 'primitive'
     do
         echo "Start inference" $mod
-        python evaluate_script/inference_data.py --dtype partial  --trial 100 --module $mod --maxprocess 5
-        
+        python evaluate_script/2.inference.py --root $ROOT --name $data_name --partial --trial 100 --module $mod --maxprocess 16
     done
 
-for mod in 'ransac' 'sop'
+for mod in 'ransac' 'uop'
     do
         echo "Start inference" $mod
-        python evaluate_script/inference_data.py --dtype partial  --trial 100 --module $mod --maxprocess 1
+        python evaluate_script/2.inference.py --root $ROOT --name $data_name --partial --trial 100 --module $mod
     done
 
-for mod in 'trimesh' 'primitive' 'ransac' 'sop'
+for mod in 'trimesh' 'primitive' 'ransac' 'uop'
     do
         echo "Start evaluate" $mod
-        python evaluate_script/evaluate_data.py --dtype partial  --trial 100 --module $mod --maxprocess 5
+        python evaluate_script/3.evaluate.py --root $ROOT --name $data_name --partial --trial 100 --module $mod --maxprocess 16
     done
 
-for mod in 'trimesh' 'primitive' 'ransac' 'sop'
-    do
-        echo "Start metric" $mod
-        python evaluate_script/metric_data.py --dtype partial  --trial 100 --module $mod
-    done
+echo "Start metric"
+python evaluate_script/4.metric.py --root $ROOT --name 'ycb' --partial --trial 100

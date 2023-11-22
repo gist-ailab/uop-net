@@ -3,12 +3,10 @@ from sklearn import cluster
 import torch
 
 
-from placement_module.uop_module import load_model
-from placement_module.ransac_module import *
-
-from dataset.uopsim import UOPSIM
+from uop_net import load_model
+from dataset import UOPSIM
 from utils.placement_utils import *
-from utils.meanshift.mean_shift_gpu  import  MeanShiftEuc
+from utils.meanshift.mean_shift_gpu  import MeanShiftEuc
 from utils.trimesh_utils import get_stable_transform
 
 
@@ -180,10 +178,14 @@ class RansacModule(PlacementModule):
     """
     Yueci Deng, https://github.com/yuecideng/Multiple_Planes_Detection.git
     """
+    def __init__(self):
+        from placement_module.ransac_module import RemoveNoiseStatistical, DetectMultiPlanes
+        self.noise_remover = RemoveNoiseStatistical
+        self.plane_detector = DetectMultiPlanes
     
     def get_stable_placement(self, points: np.ndarray):
-        pred_points = RemoveNoiseStatistical(points, nb_neighbors=50, std_ratio=0.5)
-        results = DetectMultiPlanes(pred_points, min_ratio=0.05, threshold=0.005, iterations=2000)
+        pred_points = self.noise_remover(points, nb_neighbors=50, std_ratio=0.5)
+        results = self.plane_detector(pred_points, min_ratio=0.05, threshold=0.005, iterations=2000)
     
         # pred
         pred_points = []
@@ -292,5 +294,6 @@ available_modules = {
 }
 
 
-def load_placement_module(module_name):
-    return available_modules[module_name]()
+def load_placement_module(module_name, **kwargs):
+    print(kwargs)
+    return available_modules[module_name](**kwargs)

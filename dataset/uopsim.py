@@ -50,8 +50,6 @@ class UOPSIM(data.Dataset):
         self.capture_tool = MeshCapture()
 
         self.data_list = get_dir_list(self.data_root)
-        self.points_cloud = []
-        self.labels_cloud = []
         self.cluster_info = []
         self.mesh_cloud = [] 
         self.object_names = []
@@ -74,17 +72,10 @@ class UOPSIM(data.Dataset):
                 if not self.check_under(obj_name, self.max_obj_per_cat):
                     continue
             
-            label = self._load_label(os.path.join(data_dir, 'label_inspected.pkl'))
-            cluster = self._load_cluster(os.path.join(data_dir, 'cluster_inspected.pkl'))
-            
-            if non_zero:
-                if np.max(label) == 0:
-                    continue
-            
+            cluster = self._load_cluster(os.path.join(data_dir, 'inspected_zaxis.pkl'))
+
             self.category_info[cat_name].append(obj_name)
             self.object_names.append(obj_name)
-            self.points_cloud.append(self._load_point_cloud(os.path.join(data_dir, 'point_cloud.ply')))
-            self.labels_cloud.append(label)
             self.cluster_info.append(cluster)
             self.mesh_cloud.append(os.path.join(data_dir, 'mesh_watertight.ply'))
         
@@ -92,9 +83,7 @@ class UOPSIM(data.Dataset):
         self.dataset_size = len(self.object_names)
         # print dataset info
         print("Whole Dataset Size: {}".format(self.dataset_size))
-        for cat_name in self.category_info.keys():
-            print("{}: {}".format(cat_name, len(self.category_info[cat_name])))
-    
+        
     @staticmethod
     def get_object_cat(object_name):
         idx = -1
@@ -123,23 +112,11 @@ class UOPSIM(data.Dataset):
 
     def check_file_existancy(self, object_dir):
         file_list = os.listdir(object_dir)
-        if not 'point_cloud.ply' in file_list:
-            return False
-        if not 'cluster_inspected.pkl' in file_list:
-            return False
-        if not 'label_inspected.pkl' in file_list:
+        if not 'inspected_zaxis.pkl' in file_list:
             return False
         if not 'mesh_watertight.ply' in file_list:
             return False
         return True
-
-    @staticmethod
-    def _load_point_cloud(file_path):
-        return np.asarray(read_point_cloud(file_path).points, dtype=np.float32)
-
-    @staticmethod
-    def _load_label(file_path):
-        return load_pickle(file_path)
 
     @staticmethod
     def _load_cluster(file_path):
@@ -311,16 +288,18 @@ class UOPSIM(data.Dataset):
         """
         if self.seed is not None:
             np.random.seed(self.seed)
-            
-        points = self.points_cloud[i]
-        labels = self.labels_cloud[i]
         cluster = self.cluster_info[i]
         mesh_file = self.mesh_cloud[i]
+
+        # sampling points
+        pcd = sampling_points_from_mesh(mesh_file, number_of_points=2048, method='uniform')
+        points = np.asarray(pcd.points, dtype=np.float32)
+        labels = self.get_label_from_cluster(points, cluster)
 
         # partial sampling
         if self.partial:
             points, labels = self._partial_sampling_mesh(points, mesh_file, cluster)
-            
+        
         # down sampling 
         target_idx = self.downsampling(points, num_sample=self.num_points, method=self.sampling)
         points = points[target_idx].astype(np.float32)

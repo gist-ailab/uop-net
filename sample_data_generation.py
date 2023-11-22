@@ -52,6 +52,7 @@ def convert_to_watertight(manifold_path, input_mesh, output_mesh):
 if __name__=="__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument('--object', type=str, default='003_cracker_box')
+    parser.add_argument('--visualize', action='store_true')
     args = parser.parse_args()
     
     # Prepare Path 
@@ -76,10 +77,12 @@ if __name__=="__main__":
     if "google_16k" not in os.listdir(trg_obj_dir):
         print("Please select other object (with google_16k)")
         exit()
-    mesh_file = os.path.join(trg_obj_dir, "google_16k", "textured.obj")
+    mesh_file = os.path.join(trg_obj_dir, "google_16k", "nontextured.ply")
+    textured_mesh = os.path.join(trg_obj_dir, "google_16k", "textured.dae")
     mesh = trimesh.load(mesh_file)
     
     #2. check if the mesh is watertight
+    mesh = normalize_mesh(mesh)
     print(">>> Check if the mesh is watertight")
     if mesh.is_watertight:
         print("The mesh is already watertight.")
@@ -89,7 +92,6 @@ if __name__=="__main__":
         mesh.export(input_mesh)
         mesh = convert_to_watertight(manifold_path, input_mesh, output_mesh)
     
-    mesh = normalize_mesh(mesh)
     mesh.export(os.path.join(sample_obj_dir, "mesh.ply"))
     fig = go.Figure(data=plot_mesh(mesh))
     fig.write_html(os.path.join(sample_obj_dir, 'visualize_mesh.html'))
@@ -101,6 +103,8 @@ if __name__=="__main__":
     pr.start()
     
     mesh_file = os.path.join(sample_obj_dir, "mesh.ply")
+    if args.visualize:
+        mesh_file = textured_mesh
     save_path = os.path.join(sample_obj_dir, "model.ttm")
     obj_name = args.object
     convert_mesh_to_scene_object(pr, mesh_file, save_path,
@@ -115,7 +119,7 @@ if __name__=="__main__":
     print("===== Simulate Placement Data =====")
     cfg = load_yaml_to_dic(config_path)
     cfg['data_type'] = "ycb sample"
-    cfg['headless'] = True
+    cfg['headless'] = not args.visualize
 
     data_generator = UOPDataGenerator(cfg)
 

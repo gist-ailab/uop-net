@@ -17,20 +17,20 @@ from labeling import clustering_sampled_pose, get_instance_label_from_clustered_
 
 data_file = {
     # preprocess
-    "mesh": "mesh_watertight.ply",
-    "pointcloud": "point_cloud.ply",
-    "model": "model.ttm",
+    "mesh": "mesh_watertight.ply",              #KEEP
+    "pointcloud": "point_cloud.ply", 
+    "model": "model.ttm",                       #KEEP
     
     # sampling
-    "stability": "stability.pkl",
-    "cluster": "cluster.pkl",
+    "stability": "stable_poses.pkl",            # simulation sampled stable pose 
+    "cluster": "cluster_zaxis.pkl",             # stable pose -> z axis cluster
     
     # labeling
-    "label": "label.pkl",
+    "label": "label.pkl",                       # point cloud + z axis -> N, 1
     
     # after inspection
-    "inspect_cluster": "cluster_inspected.pkl",
-    "inspect_label": "label_inspected.pkl"
+    "inspect_cluster": "inspected_zaxis.pkl",   # z axis cluster -> z axis filter #KEEP
+    "inspect_label": "label_inspected.pkl"      # point cloud + filterd z axis -> N, 1
 }
 
 
