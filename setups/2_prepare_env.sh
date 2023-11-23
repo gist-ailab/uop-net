@@ -59,9 +59,9 @@ tar -xvf CoppeliaSim_Edu_V4_1_0_Ubuntu20_04.tar.xz
 ## turn on once.
 #TODO : check uncompressed file 
 cd CoppeliaSim_Edu_V4_1_0_Ubuntu20_04/
-./coppeliaSim.sh
+ ./coppeliaSim.sh -h -s10000 -q # headless & quit after 10 sec
+# ./coppeliaSim.sh
 # at first, you must run with GUI monitor setup
-# ./coppeliaSim.sh -h # headless
 cd ..
 
 
