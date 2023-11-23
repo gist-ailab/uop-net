@@ -13,7 +13,7 @@ from urllib.request import Request, urlopen
 
 
 # Define an output folder
-output_directory = os.path.join("models", "ycb")
+output_directory = os.path.join("ycb")
 
 # Define a list of objects to download from
 # http://ycb-benchmarks.s3-website-us-east-1.amazonaws.com/
