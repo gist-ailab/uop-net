@@ -23,7 +23,13 @@
 
 ## 0. Environment Setting
 <!-- checked -->
-* Our code implemented on Ubuntu 20.04 and Conda virtual environment.
+* Our code implemented on ```Ubuntu 20.04```, Nvidia-gpu environments and ```Conda``` virtual environment.
+  * etc. ```cmake```, ```anaconda```, ```cosimppeliasim``` & ```pyrep``` 
+  * tested on 
+    - ubuntu >= 18.04, <= 22.04
+    - nvidia-driver ver. > 52x.xx
+    - cuda > 11.3 , <=12.1
+    - python >= 3.7, <= 3.8 (conda)
 * Please follow below instruction.
 
 ```shell
@@ -31,13 +37,13 @@
 git clone --recursive https://github.com/gist-ailab/uop-net.git
 cd ./uop-net
 
-# # 1. check device
+# 1. check device
 sh ./setups/1_check_env.sh
-
-# # 2. preparing conda environment
-# sh ./setups/2_prepare_env.sh
-
 ```
+
+* if you don't know how to install ```cmake```, ```anaconda```, ```cosimppeliasim``` & ```pyrep``` then, follow the [2_prepare_env.sh](2_prepare_env.sh) bash file
+
+
 
 ### 0-1. Create conda env & python requirements
 <!-- checked -->
@@ -46,10 +52,19 @@ sh ./setups/1_check_env.sh
 conda create -n uop_net python=3.8
 conda activate uop_net
 
+pip install --upgrade pip setuptools wheel
+pip install -r requirements.txt 
+```
+<!-- org: 
+
+conda install pytorch==1.12.1 torchvision==0.13.1 torchaudio==0.12.1 cudatoolkit=11.3 -c pytorch 
+
 pip install trimesh pycollada pyglet plotly open3d point_cloud_utils pyfastnoisesimd opencv-python networkx natsort
 
-conda install pytorch==1.12.1 torchvision==0.13.1 torchaudio==0.12.1 cudatoolkit=11.3 -c pytorch
-```
+-->
+<!-- TODO: make packages pip install -r requirement.txt -->
+<!-- pip install trimesh plotly pyyaml open3d point_cloud_utils ... by sample_data_generation.py  -->
+<!-- pip install  -->
 
 ### 0-2. Build Manifold
 <!-- checked -->
@@ -60,8 +75,6 @@ mkdir build
 cd build
 cmake .. -DCMAKE_BUILD_TYPE=Release
 make
-
-
 ```
 
 ### 0-3. Simulation
@@ -72,7 +85,7 @@ make
 
 ```shell
 # start from uop-net folder
-cd setups/thirdparty/videoRecorder/vvcl
+cd setups/thirdparty/VideoRecorder/vvcl
 mkdir build
 cd build
 cmake ..
@@ -87,6 +100,7 @@ cp ./libvvcl.so $COPPELIASIM_ROOT
 * We provide sample script for follow whole pipeline(data generation, inference, test on simulation) of our project with YCB dataset
 
 ```shell
+cd models
 # download YCB dataset
 python download_ycb_dataset.py
 
@@ -104,8 +118,11 @@ python sample_test.py --object 002_master_chef_can
 
 ## 1. Data Generation
 
-### 1-1. Download public 3D models
+<!-- ### 1-2. Prepare UOP -->
+<!-- TODO: seperate dataset build & download built dataset -->
 
+### 1-1. Download public 3D models
+<!-- checked -->
 - [YCB Dataset](https://www.ycbbenchmarks.com/) (you can download from web or run script below.)
   ```shell
   python download_ycb_dataset.py
