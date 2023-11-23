@@ -131,9 +131,11 @@ dmypy.json
 .pyre/
 
 # custom files
+_temp/
 uop-download/
 models/*
 !models/unzip_data.sh
 !models/download_ycb_dataset.py
+!models/download_uop_sim_dataset.py
 sample
 uop_data
