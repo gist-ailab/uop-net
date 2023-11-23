@@ -17,9 +17,7 @@ else conda create -y -n uop_net python=3.8;
 fi
 ## activate
 conda activate uop_net
-pip install --upgrade pip
-pip install --upgrade setuptools
-pip install --upgrade wheel
+pip install --upgrade pip setuptools wheel
 
 # test
 #TODO : check current env name
@@ -40,20 +38,27 @@ cd ..
 git clone https://github.com/stepjam/PyRep.git
 
 ## add envrionment variable
-export COPPELIASIM_ROOT=EDIT/ME/PATH/TO/COPPELIASIM/INSTALL/DIR
-#TODO : change ROOT abs
-export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$COPPELIASIM_ROOT
-export QT_QPA_PLATFORM_PLUGIN_PATH=$COPPELIASIM_ROOT
+UOP_COPPELIASIM_PATH=$(realpath CoppeliaSim_Edu_V4_1_0_Ubuntu20_04/)
+echo 'export COPPELIASIM_ROOT='\"$UOP_COPPELIASIM_PATH\" >> ~/.bashrc
+echo 'export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$COPPELIASIM_ROOT' >> ~/.bashrc
+echo 'export QT_QPA_PLATFORM_PLUGIN_PATH=$COPPELIASIM_ROOT' >> ~/.bashrc
+
 
 ## install pyrep
 cd PyRep 
 #TODO : check, is env name uop env?
 # conda activate uop # check duplicated
 pip install -r requirements.txt
+
+source ~/.bashrc
+conda activate uop_net
+
 pip install .
+cd ..
+cd ..
 
 # test
-python -m import pyrep # is this right to check?
+python -c "import pyrep"
 
 
 
