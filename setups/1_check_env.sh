@@ -50,9 +50,10 @@ fi
 ## check nvidia driver ver
 
 ## check cuda ver
-UOP_CUDA_STRING=$(nvcc -V | tail -1 | awk '{print $2}' | tr "cuda_" " ")
-UOP_CUDA_STRING_S=(${UOP_CUDA_STRING//// })
-if [ -z $UOP_CUDA_STRING_S ]
+# UOP_CUDA_STRING=$(nvcc -V | tail -1 | awk '{print $2}' | tr "cuda_" " ")
+UOP_CUDA_STRING_1=$(nvcc -V | tail -1 | awk '{print $2}' | cut -d "/" -f 1 | tr -d "cuda_" | cut -d "." -f 1)
+UOP_CUDA_STRING_2=$(nvcc -V | tail -1 | awk '{print $2}' | cut -d "/" -f 1 | tr -d "cuda_" | cut -d "." -f 2)
+if [ -z $UOP_CUDA_STRING_1 ]
 then 
     echo "... [ERROR] CUDA is Not Detected."
     UOP_ERROR_FLAG=1
@@ -61,8 +62,7 @@ then
 else
     echo "... [CHECK] CUDA Detected. continue ... "
 fi
-UOP_CUDA_VER=(${UOP_CUDA_STRING_S//./ })
-if [ 10 -gt $UOP_CUDA_VER ];
+if [ 10 -gt $UOP_CUDA_STRING_1 ];
 then 
     echo "... [ERROR] CUDA is Not Sufficient"
     UOP_ERROR_FLAG=1
