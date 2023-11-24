@@ -5,8 +5,8 @@
 
 echo "-->> UOP-setup bash : start bash code"
 # TODO : make flag operate
-error_flag = 0
-UOP_PRE_FLAG = 0
+error_flag=0
+UOP_PRE_FLAG=0
 
 
 
@@ -28,7 +28,7 @@ cd ./uop-download
 #TODO : check linux ubuntu ver
 
 # if ! command -v conda &> /dev/null
-if [ ! command -v conda &> /dev/null ]
+if [ ! $(command -v conda) ]
 then
     echo "... conda could not be found"
 
@@ -51,7 +51,7 @@ else
         echo "... uop_net - conda env already exists"
     else 
         echo "... uop_net - conda doesn't exists, follow 3_setup_env.sh"
-        UOP_PRE_FLAG = 1
+        UOP_PRE_FLAG=1
     fi
 fi
 
