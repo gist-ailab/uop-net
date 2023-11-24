@@ -39,10 +39,13 @@ cd ./uop-net
 
 # 1. check device
 sh ./setups/1_check_env.sh
+
+# 2. prepare setups
+sh ./setups/2_prepare_env.sh
 ```
 
 * if you don't know how to install ```cmake```, ```anaconda```, ```cosimppeliasim``` & ```pyrep``` then, follow the [2_prepare_env.sh](2_prepare_env.sh) bash file
-
+* This project can't setup on ssh/Windows WSL terminal(due to GPUsimulation setup)
 
 
 ### 0-1. Create conda env & python requirements
