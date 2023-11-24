@@ -1,6 +1,10 @@
+import os
+import sys
+
+sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+
 from uop_net.module.model.uopnet import UOPNet
 import torch
-import os
 
 def load_model(partial=True, backbone='dgcnn', weight=None):
     model = UOPNet(backbone_type=backbone)
@@ -21,3 +25,7 @@ def load_model(partial=True, backbone='dgcnn', weight=None):
     model.eval()
     
     return model
+
+
+if __name__=="__main__":
+    load_model()
