@@ -131,7 +131,7 @@ dmypy.json
 .pyre/
 
 # custom files
-_temp/
+# _temp/
 uop-download/
 models/*
 !models/unzip_data.sh
