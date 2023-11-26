@@ -27,11 +27,14 @@ if __name__=="__main__":
     list_not_maded = []
     for idx, one_obj_folder in tqdm.tqdm(enumerate(sorted_list_obj_folder)):
 
-        if idx < 23 :
+        if idx < 27 :
             continue
         
         list_img_folder = glob.glob(one_obj_folder + "recorded_data/*/")
         sorted_list_img_folder = natsort.natsorted(list_img_folder)
+        
+        print()
+        print()
 
         for one_img_folder in sorted_list_img_folder:
             
