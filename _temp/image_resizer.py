@@ -26,6 +26,9 @@ if __name__=="__main__":
     
     list_not_maded = []
     for idx, one_obj_folder in tqdm.tqdm(enumerate(sorted_list_obj_folder)):
+
+        if idx < 7 :
+            continue
         
         list_img_folder = glob.glob(one_obj_folder + "recorded_data/*/")
         sorted_list_img_folder = natsort.natsorted(list_img_folder)
@@ -37,10 +40,11 @@ if __name__=="__main__":
 
             one_img_folder_split = one_img_folder.split("/")
 
-            fig = plt.figure()
-            ax = fig.add_subplot(111)
-            plt.ion()
-            plt.show()
+            # # = for visualize
+            # fig = plt.figure()
+            # ax = fig.add_subplot(111)
+            # plt.ion()
+            # plt.show()
 
             for one_image_file in sorted_list_img_file:
                 try:
