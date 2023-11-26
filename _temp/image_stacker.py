@@ -71,7 +71,7 @@ if __name__=="__main__":
                 hstacked_image.save(save_name_dir + f"stacked_{idx}.png")
 
                 # = close images
-                imgs.close()
+                [img_one.close() for img_one in imgs]
                 hstacked_image.close()
 
             except:
