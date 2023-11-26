@@ -27,7 +27,7 @@ if __name__=="__main__":
     list_not_maded = []
     for idx, one_obj_folder in tqdm.tqdm(enumerate(sorted_list_obj_folder)):
 
-        if idx < 7 :
+        if idx < 23 :
             continue
         
         list_img_folder = glob.glob(one_obj_folder + "recorded_data/*/")
@@ -46,7 +46,7 @@ if __name__=="__main__":
             # plt.ion()
             # plt.show()
 
-            for one_image_file in sorted_list_img_file:
+            for one_image_file in tqdm.tqdm(sorted_list_img_file):
                 try:
                     pil_image = Image.open(one_image_file).copy()
 
@@ -82,6 +82,11 @@ if __name__=="__main__":
                     
                     os.makedirs(save_name_2_dir, exist_ok=True)
                     resized_pil_image.save(save_name_2)
+
+                    # = add close for process
+                    pil_image.close()
+                    crop_pil_image.close()
+                    resized_pil_image.close()
 
                 except:
                     pass
