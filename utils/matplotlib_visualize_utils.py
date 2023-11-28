@@ -287,8 +287,8 @@ def visualize_bbox_result(exp_result, save_path=None):
     
 
 def visualize_module_compare(exp_result_dict, save_path=None):
-    cols = 3
-    rows = 2
+    cols = 5
+    rows = 1
     fig = plt.figure(figsize=(5*cols, 5*rows), constrained_layout=True)
     fig_idx = 1
     for mode, eval_result in exp_result_dict.items():
@@ -310,7 +310,7 @@ def visualize_module_compare(exp_result_dict, save_path=None):
             input_points = eval_result['points']
             ax = fig.add_subplot(rows, cols, fig_idx, projection='3d')
             visualize_input_points(ax, input_points)
-            ax.set_title(mode)
+            ax.set_title("INPUT")
             fig_idx += 1
             
         elif mode == 'trimesh':
@@ -323,7 +323,7 @@ def visualize_module_compare(exp_result_dict, save_path=None):
             visualize_input_points(ax, input_points)
             visualize_mesh(ax, triangles, vertices)
             visualize_normal(ax, rot_mat)
-            ax.set_title(mode)
+            ax.set_title("CHSA")
             fig_idx += 1
         elif mode == 'primitive':
             input_points = eval_result['input']
@@ -334,7 +334,7 @@ def visualize_module_compare(exp_result_dict, save_path=None):
             visualize_input_points(ax, input_points)
             visualize_bbox(ax, bbox_points)
             visualize_normal(ax, rot_mat)
-            ax.set_title(mode)
+            ax.set_title("BBF")
             fig_idx += 1
         elif mode == 'ransac':
             # inference result
@@ -352,7 +352,7 @@ def visualize_module_compare(exp_result_dict, save_path=None):
                 ax = fig.add_subplot(rows, cols, fig_idx, projection='3d')
                 visualize_pred_points(ax, pred_points, pred_label, label2color)
                 visualize_normal(ax, rot_mat)
-            ax.set_title(mode)
+            ax.set_title("RPF")
             fig_idx += 1
         elif 'uop' in mode:
             # inference result
@@ -364,7 +364,6 @@ def visualize_module_compare(exp_result_dict, save_path=None):
             label2color = get_label2color(pred_label)
             
             ax = fig.add_subplot(rows, cols, fig_idx, projection='3d')
-            ax.set_title(mode)
             if not plane_info == {}:
                 target_ins = plane_info['instance_idx']
                 for ins, color in label2color.items():
@@ -373,9 +372,12 @@ def visualize_module_compare(exp_result_dict, save_path=None):
                 # ax = fig.add_subplot(rows, cols, fig_idx, projection='3d')
                 visualize_pred_points(ax, input_points, pred_label, label2color)
                 visualize_normal(ax, rot_mat)
-                
+            ax.set_title("UOP")
             fig_idx += 1
         
+        ax.set_xlim((-1, 1))
+        ax.set_ylim((-1, 1))
+        ax.set_zlim((-1, 1))
     
     if save_path is None:
         plt.show()
@@ -402,7 +404,7 @@ def visualize_input_points(ax, points):
     input_colors[:, 3] = 0.1
     draw_info = {
         'xyz': points,
-        'title': 'input points',
+        'title': 'INPUT',
         'range': 2,
         'c': input_colors, 
     }
