@@ -68,19 +68,14 @@ conda create -n uop_net python=3.8
 conda activate uop_net
 
 pip install --upgrade pip setuptools wheel
-pip install -r requirements.txt 
+pip install torch torchvision torchaudio                    # : torch 2, cuda 12
+pip install trimesh plotly pyyaml open3d point_cloud_utils natsort tqdm
+# pip install -r requirements.txt 
 ```
 <!-- org: 
-
 conda install pytorch==1.12.1 torchvision==0.13.1 torchaudio==0.12.1 cudatoolkit=11.3 -c pytorch 
-
-pip install trimesh pycollada pyglet plotly open3d point_cloud_utils pyfastnoisesimd opencv-python networkx natsort
-
 -->
 <!-- TODO: make packages pip install -r requirement.txt -->
-<!-- pip install torch torchvision torchaudio -->
-<!-- pip install trimesh plotly pyyaml open3d point_cloud_utils   ... by sample_data_generation.py  -->
-<!-- pip install  -->
 
 <br>
 
@@ -124,20 +119,29 @@ cp ./libvvcl.so $COPPELIASIM_ROOT
 
 <!-- TODO : fill in/out & final result files + how to view -->
 ```shell
-cd models
-# download YCB dataset
-python download_ycb_dataset.py
-# in: , out:
+# 1. download YCB dataset
+python models/download_ycb_dataset.py
+```
+* ```--object-dir``` : root to save ycb data, default: "```models/ycb```"
+* out: 3D object model files in models/ycb/
 
-# data generation
+```shell
+# 2. data generation
 python sample_data_generation.py --object 002_master_chef_can
-# in: , out:
+```
+* ```--object``` : ycb object name 
+* --object : 
+* in: mesh_input.obj
+* out: mesh.ply, visualize_mesh.html, 
 
-# inference
+```shell
+# 3. inference object
 python sample_inference.py --object 002_master_chef_can
 # in: , out:
+```
 
-# test on simulation
+```shell
+# 4. test on simulation
 python sample_test.py --object 002_master_chef_can
 # in: , out:
 
