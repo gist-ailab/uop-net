@@ -78,7 +78,7 @@ This repository contains official implementation of following paper:
 <br>
 
 |                                [**Prototype Table #1**]                               |||||
-| :-------------- | :-------------------- | :-------------------- | :---------------------- |
+| :-------------: | :-------------------: | :-------------------: | :---------------------: |
 | [**Object**](-) | [**Whole Points**](-) | [**Stable Label**](-) | [**Partial Points**](-) |
 | <img width="128" src="-.png"> | <img width="128" src="-.png"> | <img width="128" src="-.png"> | <img width="128" src="-.png"> | 
 | [**Inference Result**](-) ||||
@@ -87,7 +87,7 @@ This repository contains official implementation of following paper:
 <br>
 
 |                                  Prototype Table #2                                   |||||
-| :-------------- | :-------------------- | :-------------------- | :---------------------- |
+| :-------------: | :-------------------: | :-------------------: | :---------------------: |
 | [**Object**](-) | [**Whole Points**](-) | [**Stable Label**](-) | [**Partial Points**](-) |
 | <img width="128" src="-.png"> | <img width="128" src="-.png"> | <img width="128" src="-.png"> | <img width="128" src="-.png"> | 
 |             [**Inference Result**](-)       ||||
