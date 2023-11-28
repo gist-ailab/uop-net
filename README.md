@@ -66,9 +66,9 @@ This repository contains official implementation of following paper:
 
 <br>
 
-|  | [**Object**](-) |
-| :-: | :-:             |
-|  | <img width="128" src="-.png"> |
+| [**Object**](-) |
+| :-:             |
+| <img width="128" src="-.png"> |
 
 <br>
 
@@ -77,11 +77,11 @@ This repository contains official implementation of following paper:
 
 <br>
 
-|                                  Prototype Table #1                                   |||||
+|                                [**Prototype Table #1**]                               |||||
 | :-------------- | :-------------------- | :-------------------- | :---------------------- |
 | [**Object**](-) | [**Whole Points**](-) | [**Stable Label**](-) | [**Partial Points**](-) |
 | <img width="128" src="-.png"> | <img width="128" src="-.png"> | <img width="128" src="-.png"> | <img width="128" src="-.png"> | 
-|             [**Inference Result**](-)       ||||
+| [**Inference Result**](-) ||||
 | <img width="1024" src="-.png"> ||||
 
 <br>
