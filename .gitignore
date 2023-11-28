@@ -141,3 +141,8 @@ models/*
 !models/uop_data_for_evaluation.tree
 sample
 uop_data
+
+
+partial_result*
+partial_view_visualize
+partial_points

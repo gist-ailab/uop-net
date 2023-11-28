@@ -18,13 +18,14 @@ class MeshCapture:
 
 
     def __init__(self, param_dir=os.path.join(str(Path(__file__).parent.absolute()), "o3d_cam_param")):
+        self.param_dir = param_dir
         self.param_list = [os.path.join(param_dir, p) for p in os.listdir(param_dir)]
         
     def get_random_param(self):
         param_path =  random.choice(self.param_list)
         return o3d.io.read_pinhole_camera_parameters(param_path)
     
-    def capture_mesh_to_points(self, mesh_file, min_num):
+    def capture_mesh_to_points(self, mesh_file, min_num, param=None):
         # load mesh
         mesh = o3d.io.read_triangle_mesh(mesh_file)
         mesh = o3d.t.geometry.TriangleMesh.from_legacy(mesh)
@@ -33,8 +34,10 @@ class MeshCapture:
         scene.add_triangles(mesh)
         
         # initialize window
-        param = self.get_random_param()
-        
+        if param is None:
+            param = self.get_random_param()
+        else:
+            pass
         
         rays = o3d.t.geometry.RaycastingScene.create_rays_pinhole(
             intrinsic_matrix=o3d.cuda.pybind.core.Tensor(param.intrinsic.intrinsic_matrix), # (3, 3)
