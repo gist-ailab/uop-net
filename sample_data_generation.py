@@ -18,6 +18,7 @@ from dataset.uopsim import UOPSIM
 from uop_sim.data_generator import UOPDataGenerator
 from uop_sim.labeling import get_instance_label_from_clustered_info
 
+
 def normalize_point_cloud(points : np.ndarray) -> np.ndarray:
     assert points.shape[0] > 0
     centroid = np.mean(points, axis=0)
@@ -27,10 +28,12 @@ def normalize_point_cloud(points : np.ndarray) -> np.ndarray:
     
     return points, centroid, max_value
 
+
 def normalize_mesh(mesh: trimesh.Trimesh) -> trimesh.Trimesh:
     points, centroid, max_value = normalize_point_cloud(mesh.vertices)
     mesh.vertices = points
     return mesh
+
 
 def convert_to_watertight(manifold_path, input_mesh, output_mesh):
     print(f'watertight running on "{input_mesh}"')
@@ -60,7 +63,6 @@ if __name__=="__main__":
     manifold_path = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'thirdparty/Manifold/build')
     config_path = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'uop_sim/config.yaml')
     
-    
     # Save Path
     sample_root = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'sample')
 
@@ -69,23 +71,24 @@ if __name__=="__main__":
     sample_obj_dir = os.path.join(sample_root, args.object)
     os.makedirs(sample_obj_dir, exist_ok=True)
     
+
     #region Preprocess YCB Object
-    print("===== Preprocess YCB Object =====")
-    #1. load mesh file
-    print(">>> Load Mesh File")
+    print("==== Preprocess YCB Object ====")
+    # 1. load mesh file
+    print("..>> Load Mesh File")
     # google_16k has high quality
     if "google_16k" not in os.listdir(trg_obj_dir):
-        print("Please select other object (with google_16k)")
+        print("!!>> Please select other object (with google_16k)")
         exit()
     mesh_file = os.path.join(trg_obj_dir, "google_16k", "nontextured.ply")
     textured_mesh = os.path.join(trg_obj_dir, "google_16k", "textured.dae")
     mesh = trimesh.load(mesh_file)
     
-    #2. check if the mesh is watertight
+    # 2. check if the mesh is watertight
     mesh = normalize_mesh(mesh)
-    print(">>> Check if the mesh is watertight")
+    print("..>> Check if the mesh is watertight")
     if mesh.is_watertight:
-        print("The mesh is already watertight.")
+        print(".... The mesh is already watertight.")
     else:
         input_mesh = os.path.join(sample_obj_dir, "mesh_input.obj")
         output_mesh = os.path.join(sample_obj_dir, "mesh_out.obj")
@@ -97,7 +100,7 @@ if __name__=="__main__":
     fig.write_html(os.path.join(sample_obj_dir, 'visualize_mesh.html'))
     
     #3. generate coppeliasim scene model
-    print(">>> Generate CoppeliaSim Scene Model")
+    print("..>> Generate CoppeliaSim Scene Model")
     pr = PyRep()
     pr.launch(headless=True)
     pr.start()
