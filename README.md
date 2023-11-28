@@ -85,10 +85,10 @@ This repository contains official implementation of following paper:
     </tr>
     <tr>
       <!-- 2 -->
-      <td><img src="-.png" align="center" width="40%"></td>
-      <td><img src="resources/demo/whole.gif" width="40%"></td>
-      <td><img src="resources/demo/label.gif" align="center" align="center" width="40%"></td>
-      <td><img src="resources/demo/partial.gif" align="center" width="40%"></td>
+      <td><img src="-.png" align="center" width="80%"></td>
+      <td><img src="resources/demo/whole.gif" width="80%"></td>
+      <td><img src="resources/demo/label.gif" align="center" align="center" width="80%"></td>
+      <td><img src="resources/demo/partial.gif" align="center" width="80%"></td>
     </tr>
     <tr>
       <!-- 3 -->
