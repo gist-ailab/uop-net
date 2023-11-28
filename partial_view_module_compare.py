@@ -25,6 +25,19 @@ for each partial view (1 ~ 1000)
 - BBF result
 - UOP result
 
+1. random 100 view , metric with 100 trial
+-> rotation, translation, l2norm (/infer) -> uop is over best 
+-> success rate (/trial) -> uop is best
+2. 100 view and all sample has placement label, metric with 100 trial
+-> ??
+-> uop is best?
+
+3. 100 random view, metric with inferenced trial
+-> rotation, translation, l2norm (/infer) -> uop is over best
+-> success rate (/infer) -> uop is over best
+
+
+
 """
 
 
@@ -171,6 +184,9 @@ class PointCloudVisualizer:
                 "CHSA": "trimesh",
                 "BBF": "primitive",
             }
+            exp_result_dict['input'] = {
+                'points': normalized_points}
+
             for module_name in self.module_list.keys():
                 exp_result = self.get_module_result(module_name, normalized_points)
                 exp_result['input_points'] = partial_points
