@@ -147,12 +147,39 @@ python sample_test.py --object 002_master_chef_can
 <br>
 
 ## 1. Prepare Dataset (UOP-Sim)
-* If you want to simply download dataset(UOP-Sim), follow [1-1. Download pre-built UOP-Sim]() instruction.
+* You can simply use UOP-Sim dataset for evaluate UOP-Net, follow [1-1. Download pre-built UOP-Sim](#1-1-download-pre-built-uop-sim) instruction.
+* If you want to simply download dataset(UOP-Sim), 
 
 <br>
 
 ### 1-1. Download pre-built UOP-Sim
 <!-- TODO: seperate dataset build & download built dataset -->
+* Download dataset with google drive link 
+  * [uop_data.zip - 28GB](https://drive.google.com/file/d/11yvzrLgIbv8e3Yy2gyCG0k2QMHepeGa0/view?usp=drive_link) (this can't be download using bash or python)
+    * includes : 
+    * file tree :
+  * [uop_data_for_evaluation.zip - 171MB](https://drive.google.com/file/d/19mmLYNT_2reMV7C7Z8pEWwgjBulVobCG/view?usp=drive_link)
+    * includes :
+    * file tree :
+      ```shell
+      .
+      ├── uop_data_tree.txt
+      └── ycb
+          ├── 002_master_chef_can
+          │   ├── inspected_zaxis.pkl
+          │   ├── mesh_watertight.ply
+          │   ├── model.ttm
+          │   └── partial
+          │       ├── 0.pkl
+          │       ├── 1.pkl
+          │       ├── ...
+          │       └── 99.pkl
+          ├── 003_cracker_box
+          ├── ...
+          └── 077_rubiks_cube
+
+      127 directories, 6489 files, 171.1MB
+      ```
 ```shell
 # codes will here
 ```
