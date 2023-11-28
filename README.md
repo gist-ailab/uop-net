@@ -77,12 +77,37 @@ This repository contains official implementation of following paper:
 
 <br>
 
-| [**Prototype Table #1**](-) ||||
-| :-: | :-: | :-: | :-: |
-| [**Object**](-) | [**Whole Points**](-) | [**Stable Label**](-) | [**Partial Points**](-) |
-| <img width="128" src="-.png"> | <img width="128" src="-.png"> | <img width="128" src="-.png"> | <img width="128" src="-.png"> | 
-| [**Inference Result**](-) ||||
-| <img width="1024" src="-.png"> ||||
+<table>
+  <thead>
+    <tr>
+      <th colspan="4"><b>Prototype Table #1</b></th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <!-- 1 -->
+      <td><b>Object</b></td>
+      <td><b>Whole Points</b></td>
+      <td><b>Stable Label</b></td>
+      <td><b>Partial Points</b></td>
+    </tr>
+    <tr>
+      <!-- 2 -->
+      <td><img src="-.png" align="center" width="40%"></td>
+      <td><img src="-.png" align="center" width="40%"></td>
+      <td><img src="-.png" align="center" width="40%"></td>
+      <td><img src="-.png" align="center" width="40%"></td>
+    </tr>
+    <tr>
+      <!-- 3 -->
+      <th colspan="4"><b>Inference Result</b></th>
+    </tr>
+    <tr>
+      <!-- 4 -->
+      <th colspan="4"><img src="-.png" align="center" width="40%"></th>
+    </tr>
+  </tbody>
+</table>
 
 <br>
 
