@@ -61,6 +61,56 @@ This repository contains official implementation of following paper:
 ## Experiment Inferences
 - experiment Inferences images will be upload.
 
+### Partial View Generation
+- This is visualization of our partial points generation sequence(gif image).
+
+<br>
+
+|  | [**Object**](-) |
+| :-: | :-:             |
+|  | <img width="128" src="-.png"> |
+
+<br>
+
+### Partial View Generation
+- experiment Inferences images will be upload.
+
+<br>
+
+|                                  Prototype Table #1                                   |||||
+| :-------------- | :-------------------- | :-------------------- | :---------------------- |
+| [**Object**](-) | [**Whole Points**](-) | [**Stable Label**](-) | [**Partial Points**](-) |
+| <img width="128" src="-.png"> | <img width="128" src="-.png"> | <img width="128" src="-.png"> | <img width="128" src="-.png"> | 
+|             [**Inference Result**](-)       ||||
+| <img width="1024" src="-.png"> ||||
+
+<br>
+
+|                                  Prototype Table #2                                   |||||
+| :-------------- | :-------------------- | :-------------------- | :---------------------- |
+| [**Object**](-) | [**Whole Points**](-) | [**Stable Label**](-) | [**Partial Points**](-) |
+| <img width="128" src="-.png"> | <img width="128" src="-.png"> | <img width="128" src="-.png"> | <img width="128" src="-.png"> | 
+|             [**Inference Result**](-)       ||||
+| <img width="1024" src="-.png"> ||||
+
+<br>
+
+|                                  Prototype Table #3                                   |||||
+| :-------------- | :-------------------- | :-------------------- | :---------------------- |
+| [**Object**](-) | [**Whole Points**](-) | [**Stable Label**](-) | [**Partial Points**](-) |
+| <img width="128" src="-.png"> | <img width="128" src="-.png"> | <img width="128" src="-.png"> | <img width="128" src="-.png"> | 
+|             [**Inference Result**](-)       ||||
+| <img width="1024" src="-.png"> ||||
+
+<br>
+
+|                                  Prototype Table #4                                   |||||
+| :-------------- | :-------------------- | :-------------------- | :---------------------- |
+| [**Object**](-) | [**Whole Points**](-) | [**Stable Label**](-) | [**Partial Points**](-) |
+| <img width="128" src="-.png"> | <img width="128" src="-.png"> | <img width="128" src="-.png"> | <img width="128" src="-.png"> | 
+|             [**Inference Result**](-)       ||||
+| <img width="1024" src="-.png"> ||||
+
 <br>
 <br>
 
