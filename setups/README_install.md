@@ -78,7 +78,8 @@ pip install trimesh pycollada pyglet plotly open3d point_cloud_utils pyfastnoise
 
 -->
 <!-- TODO: make packages pip install -r requirement.txt -->
-<!-- pip install trimesh plotly pyyaml open3d point_cloud_utils ... by sample_data_generation.py  -->
+<!-- pip install torch torchvision torchaudio -->
+<!-- pip install trimesh plotly pyyaml open3d point_cloud_utils   ... by sample_data_generation.py  -->
 <!-- pip install  -->
 
 <br>
@@ -93,6 +94,7 @@ cd build
 cmake .. -DCMAKE_BUILD_TYPE=Release
 make
 ```
+<!-- TODO: make bash script -->
 
 <br>
 
