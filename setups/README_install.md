@@ -1,25 +1,36 @@
 
+<br>
+
 ## Table of Contents
 
-[**0. Environment Setting**](#environment-setting)
+[**0. Environment Setting**](#0-environment-setting)
+* [**0-1. Create conda env & python requirements**](#0-1-create-conda-env-and-python-requirements)
+* [**0-2. Build Manifold**](#0-2-build-manifold)
+* [**0-3. Simulation**](#0-3-simulation)
+* [**0-4. Sample code**](#0-4-sample-code)
 
-[**1. Data Generation (UOP-Sim)**](#data-generation)
+[**1. Prepare Dataset (UOP-Sim)**](#1-prepare-dataset-uop-sim)
+* [**1-1. Download pre-built UOP-Sim**](#1-1-download-pre-built-uop-sim)
+* [**1-2. Build UOP-Sim**](#1-2-build-uop-sim)
+  * [**1-2-1. Download Public 3D models**](#1-2-1-download-public-3d-models)
+  * [**1-2-2. Preprocess 3D models**](#1-2-2-preprocess-3d-models)
+  * [**1-2-3. Run Data Generator**](#1-2-3-run-data-generator)
 
-* [**1-1. Download Public 3D models**](#1-download-public-3d-models)
-* [**1-2. Preprocess 3D models**](#2-preprocess-3d-models)
-* [**1-3. Run Data Generation**](#3-run-datagenerator)
+[**2. Train UOP-Net (UOP-Net)**](#2-train-uop-net)
 
-[**2. Train UOP-Net (UOP-Net)**](#train-uop-net)
-
-[**3. Test and Inference**](#test-and-inference)
+[**3. Test and Inference**](#3-test-and-inference)
 
 [**4. Reference**](#4-references)
 
 [**5. License**](#5-license)
 
 <br>
+<br>
 
 ---
+
+<br>
+<br>
 
 ## 0. Environment Setting
 <!-- checked -->
@@ -45,10 +56,11 @@ sh ./setups/2_prepare_env.sh
 ```
 
 * if you don't know how to install ```cmake```, ```anaconda```, ```cosimppeliasim``` & ```pyrep``` then, follow the [2_prepare_env.sh](2_prepare_env.sh) bash file
-* This project can't setup on ssh/Windows WSL terminal(due to GPUsimulation setup)
+* This project can't setup on ```SSH-termianl```/```Windows-WSL-terminal``` (due to simulations/packages run with GPU driver)
 
+<br>
 
-### 0-1. Create conda env & python requirements
+### 0-1. Create conda env and python requirements
 <!-- checked -->
 ```shell
 # 
@@ -70,6 +82,8 @@ pip install trimesh pycollada pyglet plotly open3d point_cloud_utils pyfastnoise
 <!-- pip install trimesh plotly pyyaml open3d point_cloud_utils   ... by sample_data_generation.py  -->
 <!-- pip install  -->
 
+<br>
+
 ### 0-2. Build Manifold
 <!-- checked -->
 ```shell
@@ -81,6 +95,8 @@ cmake .. -DCMAKE_BUILD_TYPE=Release
 make
 ```
 <!-- TODO: make bash script -->
+
+<br>
 
 ### 0-3. Simulation
 <!-- checked -->
@@ -100,33 +116,52 @@ make
 cp ./libvvcl.so $COPPELIASIM_ROOT
 ```
 
+<br>
+
 ### 0-4. Sample code
 
-* We provide sample script for follow whole pipeline(data generation, inference, test on simulation) of our project with YCB dataset
+* We provide sample script for check settings to follow whole pipeline of our project (data generation, inference, test on simulation) with YCB dataset
 
+<!-- TODO : fill in/out & final result files + how to view -->
 ```shell
 cd models
 # download YCB dataset
 python download_ycb_dataset.py
+# in: , out:
 
 # data generation
 python sample_data_generation.py --object 002_master_chef_can
+# in: , out:
 
 # inference
 python sample_inference.py --object 002_master_chef_can
+# in: , out:
 
 # test on simulation
 python sample_test.py --object 002_master_chef_can
+# in: , out:
+
+```
+
+<br>
+<br>
+
+## 1. Prepare Dataset (UOP-Sim)
+* If you want to simply download dataset(UOP-Sim), follow [1-1. Download pre-built UOP-Sim]() instruction.
+
+<br>
+
+### 1-1. Download pre-built UOP-Sim
+<!-- TODO: seperate dataset build & download built dataset -->
+```shell
+# codes will here
 ```
 
 <br>
 
-## 1. Data Generation
+### 1-2. Build UOP-Sim
 
-<!-- ### 1-2. Prepare UOP -->
-<!-- TODO: seperate dataset build & download built dataset -->
-
-### 1-1. Download public 3D models
+#### 1-2-1. Download Public 3D models
 <!-- checked -->
 - [YCB Dataset](https://www.ycbbenchmarks.com/) (you can download from web or run script below.)
   ```shell
@@ -189,18 +224,23 @@ UOPROOT # path to generate UOP-Sim data
 └──models/uop_data        # the path uop data generated
 ```
 
-### 1-2. Preprocess 3D models
+<br>
+
+#### 1-2-2. Preprocess 3D models
 
 ```
 python uop_sim/preprocess.py --root <UOPROOT> --data_type ycb # ycb, shapenet, 3dnet
 ```
 
-### 1-3. Run DataGenerator
+<br>
+
+#### 1-2-3. Run Data Generator
 
 ```shell
 python data_generator.py --data_type ycb --inspect
 ```
 
+<br>
 <br>
 
 ## 2. Train UOP-Net
@@ -216,16 +256,18 @@ python train.py --config_path
 ```
 
 <br>
+<br>
 
-## 3. Test and Demo
+## 3. Test and Inference
 
 *The code for Test and Demo will be released*
 
 <br>
+<br>
 
 ## 4. References
 
-### 3D Model - YCB
+### 3D Object Model - YCB
 
 ```
 [1] Berk Calli, Aaron Walsman, Arjun Singh, Siddhartha Srinivasa, Pieter Abbeel, and Aaron M. Dollar, Benchmarking in Manipulation Research: The YCB Object and Model Set and Benchmarking Protocols, IEEE Robotics and Automation Magazine, pp. 36 – 52, Sept. 2015.
@@ -235,7 +277,7 @@ python train.py --config_path
 [3] Berk Calli, Arjun Singh, Aaron Walsman, Siddhartha Srinivasa, Pieter Abbeel, and Aaron M. Dollar, The YCB Object and Model Set: Towards Common Benchmarks for Manipulation Research, proceedings of the 2015 IEEE International Conference on Advanced Robotics (ICAR), Istanbul, Turkey, 2015.
 ```
 
-### 3D Model - 3DNet
+### 3D Object Model - 3DNet
 
 ```
 @inproceedings{wohlkinger20123dnet,
@@ -248,7 +290,7 @@ python train.py --config_path
 }
 ```
 
-### 3D Model - ShapeNet
+### 3D Object Model - ShapeNet
 
 ```
 @techreport{shapenet2015,
@@ -260,7 +302,7 @@ python train.py --config_path
 }
 ```
 
-### 3D Model - Watertight Method
+### Processing 3D Object Model - Watertight Method
 
 ```
 @article{huang2018robust,
@@ -286,6 +328,6 @@ python train.py --config_path
 
 ## 5. License
 
-See [LICENSE](LICENSE)
+See [LICENSE](../LICENSE)
 
 <br>
