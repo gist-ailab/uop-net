@@ -249,7 +249,7 @@ class PointCloudVisualizer:
 
 
 if __name__=="__main__":
-    data_root = "/home/ailab/Workspaces/_data/uop_data/"
+    data_root = "/home/ailab-ur5/_Workspaces/_data/uop_data/"
     dataset ="ycb"
     dataset_root = os.path.join(data_root, dataset)
 
