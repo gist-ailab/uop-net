@@ -287,8 +287,8 @@ def visualize_bbox_result(exp_result, save_path=None):
     
 
 def visualize_module_compare(exp_result_dict, save_path=None):
-    cols = 3
-    rows = 2
+    cols = 5
+    rows = 1
     fig = plt.figure(figsize=(5*cols, 5*rows), constrained_layout=True)
     fig_idx = 1
     for mode, eval_result in exp_result_dict.items():

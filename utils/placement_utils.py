@@ -35,24 +35,29 @@ def get_area_from_3points(points):
   return np.linalg.norm(np.cross(a, b))/2
 
 
-def calculate_placement_transform(plane_model, plane_center, points_centroid):
+def calculate_placement_transform(plane_model, plane_center, points_centroid, place_axis=np.array([0, 0, -1])):
   # normal vector
   normal = plane_model[:3]
   outer_vec = plane_center - points_centroid
   if np.dot(normal, outer_vec) < 0:
     normal = normal * -1
   
-  gravity = np.array([0, 0, -1])
-  
-  cnt_axis = np.cross(normal, gravity)
-  cnt_axis = cnt_axis / (np.linalg.norm(cnt_axis)+1e-9)
-  dot_product = np.dot(normal, gravity)/(np.linalg.norm(normal)*np.linalg.norm(gravity))
-  angle = np.arccos(dot_product)
-  rotation = R.from_rotvec(angle*cnt_axis)
+  place_axis = np.array([0, 0, -1])
 
-  # rotation, _ = R.align_vectors([normal], [[0, 0, -1]])
-
-  return rotation.as_matrix()
+  # for case that normal vector is parallel or anti-parallel to place_axis
+  if np.linalg.norm(np.cross(normal, place_axis)) < 1e-9:
+    if np.dot(normal, place_axis) > 0:
+      return np.eye(3)
+    else:
+      return np.diag([-1, 1, -1]) # flip z-axis
+  else:
+    cnt_axis = np.cross(normal, place_axis)
+    cnt_axis = cnt_axis / (np.linalg.norm(cnt_axis)+1e-9)
+    dot_product = np.dot(normal, place_axis)/(np.linalg.norm(normal)*np.linalg.norm(place_axis))
+    angle = np.arccos(dot_product)
+    rotation = R.from_rotvec(angle*cnt_axis)
+    
+    return rotation.as_matrix()
 
 def calculate_transform_from_normal(normal, plane_center, points_centroid):
   # normal vector

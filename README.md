@@ -35,15 +35,72 @@ This repository contains official implementation of following paper:
 
 ---
 
-## 0. Environment Setting
+## Environment Setting
 <!-- checked -->
-* Please follow instruction in ```setups``` [READMD_install.md](setups/README_install.md)
+* Please follow instruction in [setups/install.md](setups/install.md)
+
+## Fast view our overall pipeline
+
+* Please follow instruction in [setups/example.md](setups/example.md)
+
+## Download Data
+
+#### Evaluation Data
+
+You can download evaluation data [here](https://drive.google.com/file/d/19mmLYNT_2reMV7C7Z8pEWwgjBulVobCG/view?usp=drive_link)
+
+- 63 YCB data with 100 partial sampled point cloud which was used for test and evaluate
+- You can inference and evaluate code after download this data
+
+##### File tree
+
+```shell
+└── uop_data
+    └── ycb
+        ├── 002_master_chef_can
+        │   ├── inspected_zaxis.pkl   # uopsim label(axis of placement)
+        │   ├── mesh_watertight.ply   # watertight mesh
+        │   ├── model.ttm             # scene model to evaluate in simulation
+        │   └── partial
+        │       ├── 0.pkl             # partial sampled point cloud
+        │       ├── 1.pkl
+        │       ├── ...
+        │       └── 99.pkl
+        ├── 003_cracker_box
+        ├── ...
+        └── 077_rubiks_cube
+127 directories, 6489 files, 171.1MB
+```
+
+#### Whole Data
+You can download UOP-Sim dataset [here](https://drive.google.com/file/d/11yvzrLgIbv8e3Yy2gyCG0k2QMHepeGa0/view?usp=drive_link)
+
+## Generate Data (optional)
+
+If you want to generate UOP-Sim data yourself. Please follow the instruction in [setups/data_generation.md](./setups/data_generation.md)
+
+
+## Inference and Evaluate
+
+To place objects with placement modules; UOP(ours), RPF, CHSA, BBF
+
+you should follow step by step instruction in [setups/uopnet.md](./setups/uopnet.md#inference)
+
+or run the combined script below (you have to change path of uop data inside [partial_evaluate.sh](./partial_evaluate.sh))
+
+```shell
+sh ./partial_evaluate.sh
+```
+
+## Training (optional)
+
+We propose pretrained model weight inside our repository.
+
+If you want to training yourself please follow the instruction [here](./setups/uopnet.md#training)
+
 
 ### ToDo
 
-- [ ] UOP-Sim Evaluation Data Download link (with google drive)
-- [ ] Release demo and test code
-- [ ] Environment Setting ... update pkg requirements for training UOP-Net
 - [ ] update Experiment Tables
 - [ ] update Experiment Inferences
 - [ ] update Experiment Demo
@@ -91,3 +148,6 @@ This repository contains official implementation of following paper:
 }
 ```
 
+## License
+
+See [LICENSE](LICENSE)

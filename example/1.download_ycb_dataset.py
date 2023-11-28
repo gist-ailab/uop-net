@@ -13,11 +13,12 @@ from urllib.request import Request, urlopen
 
 
 # Define an output folder
-output_directory = os.path.join("models", "ycb")
+output_directory = os.path.join(os.path.dirname( os.path.dirname(os.path.realpath(__file__))), "models", "ycb")
 
 # Define a list of objects to download from
 # http://ycb-benchmarks.s3-website-us-east-1.amazonaws.com/
-objects_to_download = "all"
+# objects_to_download = "all"
+objects_to_download = ["002_master_chef_can"]
 # objects_to_download = ["001_chips_can", 
 #                        "002_master_chef_can",
 #                        "003_cracker_box",

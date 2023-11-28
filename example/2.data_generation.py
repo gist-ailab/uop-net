@@ -8,6 +8,9 @@ from plotly import graph_objects as go
 
 from pyrep import PyRep
 
+import sys
+sys.path.append(os.path.dirname( os.path.dirname(os.path.realpath(__file__))))
+
 from utils.pyrep_utils import convert_mesh_to_scene_object
 from utils.file_utils import load_yaml_to_dic, load_pickle
 from utils.plotly_visualize_utils import plot_mesh, plot_points_with_label
@@ -51,22 +54,23 @@ def convert_to_watertight(manifold_path, input_mesh, output_mesh):
 
 if __name__=="__main__":
     parser = argparse.ArgumentParser()
-    parser.add_argument('--object', type=str, default='003_cracker_box')
+    parser.add_argument('--object', type=str, default='002_master_chef_can')
     parser.add_argument('--visualize', action='store_true')
     args = parser.parse_args()
     
     # Prepare Path 
-    ycb_root = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'models', 'ycb')
-    manifold_path = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'thirdparty/Manifold/build')
-    config_path = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'uop_sim/config.yaml')
-    
+    uop_root = os.path.dirname( os.path.dirname( os.path.realpath(__file__)) )
+
+    ycb_root = os.path.join(uop_root, 'models', 'ycb')
+    manifold_path = os.path.join(uop_root, 'setups/thirdparty/Manifold/build')
+    config_path = os.path.join(uop_root, 'uop_sim/config.yaml')
     
     # Save Path
-    sample_root = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'sample')
+    example_root = os.path.join(uop_root, 'example_results')
 
     # Target Object
     trg_obj_dir = os.path.join(ycb_root, args.object)
-    sample_obj_dir = os.path.join(sample_root, args.object)
+    sample_obj_dir = os.path.join(example_root, args.object)
     os.makedirs(sample_obj_dir, exist_ok=True)
     
     #region Preprocess YCB Object

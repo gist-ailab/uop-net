@@ -4,3 +4,6 @@
 [submodule "setups/thirdparty/VideoRecorder"]
 	path = setups/thirdparty/VideoRecorder
 	url = https://github.com/CoppeliaRobotics/videoRecorder
+[submodule "setups/thirdparty/PyRep"]
+	path = setups/thirdparty/PyRep
+	url = https://github.com/stepjam/PyRep

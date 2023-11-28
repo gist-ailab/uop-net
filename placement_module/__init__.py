@@ -295,5 +295,5 @@ available_modules = {
 
 
 def load_placement_module(module_name, **kwargs):
-    print(kwargs)
+    
     return available_modules[module_name](**kwargs)
