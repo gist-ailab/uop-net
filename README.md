@@ -61,15 +61,6 @@ This repository contains official implementation of following paper:
 ## Experiment Inferences
 - experiment Inferences images will be upload.
 
-### Partial View Generation
-- This is visualization of our partial points generation sequence(gif image).
-
-<br>
-
-| [**Object**](-) |
-| :-:             |
-| <img width="128" src="-.png"> |
-
 <br>
 
 ### Partial View Generation
@@ -77,6 +68,7 @@ This repository contains official implementation of following paper:
 
 <br>
 
+<!-- Prototype Table #1 -->
 <table>
   <thead>
     <tr>
@@ -94,9 +86,9 @@ This repository contains official implementation of following paper:
     <tr>
       <!-- 2 -->
       <td><img src="-.png" align="center" width="40%"></td>
-      <td><img src="-.png" align="center" width="40%"></td>
-      <td><img src="-.png" align="center" width="40%"></td>
-      <td><img src="-.png" align="center" width="40%"></td>
+      <td><img src="/home/ailab-ur5/_Workspaces/_code/uop/uop-net-private/resources/demo/whole.gif" width="40%"></td>
+      <td><img src="/home/ailab-ur5/_Workspaces/_code/uop/uop-net-private/resources/demo/label.gif" align="center" align="center" width="40%"></td>
+      <td><img src="/home/ailab-ur5/_Workspaces/_code/uop/uop-net-private/resources/demo/partial.gif" align="center" width="40%"></td>
     </tr>
     <tr>
       <!-- 3 -->
@@ -111,30 +103,15 @@ This repository contains official implementation of following paper:
 
 <br>
 
-|                                  Prototype Table #2                                   ||||
-| :-------------: | :-------------------: | :-------------------: | :---------------------: |
-| [**Object**](-) | [**Whole Points**](-) | [**Stable Label**](-) | [**Partial Points**](-) |
-| <img width="128" src="-.png"> | <img width="128" src="-.png"> | <img width="128" src="-.png"> | <img width="128" src="-.png"> | 
-|             [**Inference Result**](-)       ||||
-| <img width="1024" src="-.png"> ||||
+### Partial View Generation
+- This is visualization of our partial points generation sequence(gif image).
 
 <br>
 
-|                                  Prototype Table #3                                   ||||
-| :-------------- | :-------------------- | :-------------------- | :---------------------- |
-| [**Object**](-) | [**Whole Points**](-) | [**Stable Label**](-) | [**Partial Points**](-) |
-| <img width="128" src="-.png"> | <img width="128" src="-.png"> | <img width="128" src="-.png"> | <img width="128" src="-.png"> | 
-|             [**Inference Result**](-)       ||||
-| <img width="1024" src="-.png"> ||||
+| [**Object**](-) |
+| :-:             |
+| <img width="128" src="-.png"> |
 
-<br>
-
-|                                  Prototype Table #4                                   ||||
-| :-------------- | :-------------------- | :-------------------- | :---------------------- |
-| [**Object**](-) | [**Whole Points**](-) | [**Stable Label**](-) | [**Partial Points**](-) |
-| <img width="128" src="-.png"> | <img width="128" src="-.png"> | <img width="128" src="-.png"> | <img width="128" src="-.png"> | 
-|             [**Inference Result**](-)       ||||
-| <img width="1024" src="-.png"> ||||
 
 <br>
 <br>
