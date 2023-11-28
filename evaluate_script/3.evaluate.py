@@ -37,7 +37,7 @@ def evaluate(target_obj_dir_list):
             # check inference fail or not
             rot = infer_result['rot']
             if rot is None: # inference fail
-                print("Inference Fail in {}".format(infer_path))
+                # print("Inference Fail in {}".format(infer_path))
                 continue
             
             # reset environment

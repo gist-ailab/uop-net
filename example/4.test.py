@@ -3,6 +3,9 @@ import os
 import torch
 import numpy as np
 
+import sys
+sys.path.append(os.path.dirname( os.path.dirname(os.path.realpath(__file__))))
+
 from uop_sim.environment import EvaluateEnv
 from utils.calc_metric import calc_transform_diff
 
@@ -20,13 +23,17 @@ Success(<10deg)  | {} | {} | {} | {}
 if __name__=="__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument('--object', type=str, default='003_cracker_box')
+    parser.add_argument('--visualize', action='store_true')
     args = parser.parse_args()
 
-    env = EvaluateEnv(headless=True)
+    headless = not args.visualize
+    env = EvaluateEnv(headless=headless)
     
     # Target Object
-    sample_root = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'sample')
-    sample_obj_dir = os.path.join(sample_root, args.object)
+    uop_root = os.path.dirname( os.path.dirname( os.path.realpath(__file__)) )
+
+    example_root = os.path.join(uop_root, 'example_results')
+    sample_obj_dir = os.path.join(example_root, args.object)
     result_dir = os.path.join(sample_obj_dir, 'result')
     object_model = os.path.join(sample_obj_dir, "model.ttm")
     

@@ -133,13 +133,10 @@ dmypy.json
 # custom files
 # _temp/
 uop-download/
-models/*
-!models/unzip_data.sh
-!models/download_ycb_dataset.py
-!models/download_uop_sim_dataset.py
-!models/download_uop_sim_dataset.sh
-!models/uop_data_for_evaluation.tree
-sample
+
+models/
+example_results/
+
 uop_data
 
 

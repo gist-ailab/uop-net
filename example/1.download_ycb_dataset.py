@@ -6,13 +6,44 @@
 # Modified to work with Python 3 by Sebastian Castro, 2020
 
 import os
-import argparse
+import sys
 import json
+import urllib
 from urllib.request import Request, urlopen
 
 
+# Define an output folder
+output_directory = os.path.join(os.path.dirname( os.path.dirname(os.path.realpath(__file__))), "models", "ycb")
+
+# Define a list of objects to download from
+# http://ycb-benchmarks.s3-website-us-east-1.amazonaws.com/
+# objects_to_download = "all"
+objects_to_download = ["002_master_chef_can"]
+# objects_to_download = ["001_chips_can", 
+#                        "002_master_chef_can",
+#                        "003_cracker_box",
+#                        "004_sugar_box"]
+
+# You can edit this list to only download certain kinds of files.
+# 'berkeley_rgbd' contains all of the depth maps and images from the Carmines.
+# 'berkeley_rgb_highres' contains all of the high-res images from the Canon cameras.
+# 'berkeley_processed' contains all of the segmented point clouds and textured meshes.
+# 'google_16k' contains google meshes with 16k vertices.
+# 'google_64k' contains google meshes with 64k vertices.
+# 'google_512k' contains google meshes with 512k vertices.
+# See the website for more details.
+#files_to_download = ["berkeley_rgbd", "berkeley_rgb_highres", "berkeley_processed", "google_16k", "google_64k", "google_512k"]
+files_to_download = ["berkeley_processed", "google_16k"]
+
+# Extract all files from the downloaded .tgz, and remove .tgz files.
+# If false, will just download all .tgz files to output_directory
+extract = True
+
 base_url = "http://ycb-benchmarks.s3-website-us-east-1.amazonaws.com/data/"
 objects_url = "https://ycb-benchmarks.s3.amazonaws.com/data/objects.json"
+
+if not os.path.exists(output_directory):
+    os.makedirs(output_directory)
 
 
 def fetch_objects(url):
@@ -73,52 +104,6 @@ def check_url(url):
 
 
 if __name__ == "__main__":
-
-    parser = argparse.ArgumentParser()
-    parser.add_argument('--object-dir', type=str, 
-                        default='models/')
-    args = parser.parse_args()
-
-    # Define an output folder
-    output_directory = os.path.join(f"{args.object_dir}", "ycb")
-
-    # Define a list of objects to download from
-    # http://ycb-benchmarks.s3-website-us-east-1.amazonaws.com/
-    objects_to_download = "all"
-    # objects_to_download = ["001_chips_can", 
-    #                        "002_master_chef_can",
-    #                        "003_cracker_box",
-    #                        "004_sugar_box"]
-
-    # You can edit this list to only download certain kinds of files.
-    # 'berkeley_rgbd' contains all of the depth maps and images from the Carmines.
-    # 'berkeley_rgb_highres' contains all of the high-res images from the Canon cameras.
-    # 'berkeley_processed' contains all of the segmented point clouds and textured meshes.
-    # 'google_16k' contains google meshes with 16k vertices.
-    # 'google_64k' contains google meshes with 64k vertices.
-    # 'google_512k' contains google meshes with 512k vertices.
-    # See the website for more details.
-    # files_to_download = [
-    #     "berkeley_rgbd", 
-    #     "berkeley_rgb_highres", 
-    #     "berkeley_processed", 
-    #     "google_16k", 
-    #     "google_64k", 
-    #     "google_512k"
-    # ]
-    files_to_download = [
-        "berkeley_processed", 
-        "google_16k"
-    ]
-
-    # Extract all files from the downloaded .tgz, and remove .tgz files.
-    # If false, will just download all .tgz files to output_directory
-    extract = True
-
-
-
-    if not os.path.exists(output_directory):
-        os.makedirs(output_directory)
 
     # Grab all the object information
     objects = fetch_objects(objects_url)
