@@ -86,7 +86,7 @@ This repository contains official implementation of following paper:
     <tr>
       <!-- 2 -->
       <td align="center" ><img src="-.png" align="center" width="80%"></td>
-      <th colspan="3" align="center"><img src="img src=resources/demo/002_master_chef_can.gif" width="80%"></th>
+      <th colspan="3" align="center"><img src="resources/demo/002_master_chef_can.gif" width="80%"></th>
       <!-- <td><img src="resources/demo/whole.gif" width="80%"></td>
       <td><img src="resources/demo/label.gif" align="center" align="center" width="80%"></td>
       <td><img src="resources/demo/partial.gif" align="center" width="80%"></td> -->
