@@ -149,7 +149,7 @@ If you want to training yourself please follow the instruction [here](./setups/u
       </tr>
       <tr>
         <!-- 2 -->
-        <td colspan="2" align="center" ><img src="resources/inference/whole.gif" align="center" width="70%"></td>
+        <td colspan="2" align="center" ><img src="resources/inference/002_master_chef_can.png" align="center" width="70%"></td>
         <td colspan="3" align="center"><img src="resources/inference/002_master_chef_can.gif" width="100%"></td>
         <!-- <td><img src="resources/demo/whole.gif" width="80%"></td>
         <td><img src="resources/demo/label.gif" align="center" align="center" width="80%"></td>
@@ -161,7 +161,7 @@ If you want to training yourself please follow the instruction [here](./setups/u
       </tr>
       <tr>
         <!-- 4 -->
-        <td colspan="5"><img src="resources/inference/partial_inference.png" align="center" width="100%"></td>
+        <td colspan="5"><img src="resources/inference/partial_inference.png" align="center" width="100%">　　</td>
       </tr>
       <tr>
         <td colspan="1" align="center"><b>　Partial　</b></td>
