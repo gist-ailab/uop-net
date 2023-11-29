@@ -164,8 +164,8 @@ If you want to training yourself please follow the instruction [here](./setups/u
         <td colspan="5"><img src="resources/inference/partial_inference.png" align="center" width="100%"></td>
       </tr>
       <tr>
-        <td colspan="1" align="center"><b>Partial</b></td>
-        <td colspan="1" align="center"><b>UOP-Net</b></td>
+        <td colspan="1" align="center"><b>　Partial　</b></td>
+        <td colspan="1" align="center"><b>　UOP-Net　</b></td>
         <td colspan="1" align="center"><b>RPF</b></td>
         <td colspan="1" align="center"><b>CHSA</b></td>
         <td colspan="1" align="center"><b>BBF</b></td>
