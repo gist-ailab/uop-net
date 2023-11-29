@@ -159,16 +159,16 @@ If you want to training yourself please follow the instruction [here](./setups/u
   <table align="center">
     <thead>
       <tr>
-        <th colspan="5"><b>Sample Inferences Result Visualization</b></th>
+        <th colspan="5"><b><center>Sample Inferences Result Visualization</center></b></th>
       </tr>
     </thead>
     <tbody>
       <tr>
         <!-- 1 -->
-        <th colspan="2" align="center"><b>　Object　</b></th>
-        <th colspan="1" align="center"><b>Whole Points</b></th>
-        <th colspan="1" align="center"><b>Stable Label</b></th>
-        <th colspan="1" align="center"><b>Partial Points</b></th>
+        <th colspan="2" align="center"><b><center>　Object　</center></b></th>
+        <th colspan="1" align="center"><b><center>Whole Points</center></b></th>
+        <th colspan="1" align="center"><b><center>Stable Label</center></b></th>
+        <th colspan="1" align="center"><b><center>Partial Points</center></b></th>
       </tr>
       <tr>
         <!-- 2 -->
@@ -187,11 +187,11 @@ If you want to training yourself please follow the instruction [here](./setups/u
         <td colspan="5"><img src="resources/inference/partial_inference.png" align="center" width="100%">　　</td>
       </tr>
       <tr>
-        <td colspan="1" align="center"><b>Partial Points</b></td>
-        <td colspan="1" align="center"><b>　UOP-Net　</b></td>
-        <td colspan="1" align="center"><b>RPF</b></td>
-        <td colspan="1" align="center"><b>CHSA</b></td>
-        <td colspan="1" align="center"><b>BBF</b></td>
+        <td colspan="1" align="center"><b><center>Partial Points</center></b></td>
+        <td colspan="1" align="center"><b><center>　UOP-Net　</center></b></td>
+        <td colspan="1" align="center"><b><center>RPF</center></b></td>
+        <td colspan="1" align="center"><b><center>CHSA</center></b></td>
+        <td colspan="1" align="center"><b><center>BBF</center></b></td>
       </tr>
     </tbody>
   </table>
@@ -204,27 +204,29 @@ If you want to training yourself please follow the instruction [here](./setups/u
 
 <br>
 
-<p align="center">
-  <table>
-    <thead>
-      <tr>
-        <th colspan="5"><b>Partial View Points & Inference Result</b></th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <th colspan="5" align="center"><img src="resources/inference/partial_2sec.gif" width="100%"></th>
-      </tr>
-      <tr>
-        <th colspan="1" align="center"><b>Partial</b></th>
-        <th colspan="1" align="center"><b>UOP-Net</b></th>
-        <th colspan="1" align="center"><b>　RPF　</b></th>
-        <th colspan="1" align="center"><b>　CHSA　</b></th>
-        <th colspan="1" align="center"><b>　BBF　</b></th>
-      </tr>
-    </tbody>
-  </table>
-</p>
+<center>
+  <p align="center">
+    <table align="center">
+      <thead>
+        <tr>
+          <th colspan="5" align="center"><b><center>Partial View Points & Inference Result</center></b></th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <th colspan="5" align="center"><img src="resources/inference/partial_2sec.gif" width="100%"></th>
+        </tr>
+        <tr>
+          <th colspan="1" align="center"><b><center>Partial</center></b></th>
+          <th colspan="1" align="center"><b><center>UOP-Net</center></b></th>
+          <th colspan="1" align="center"><b><center>　RPF　</center></b></th>
+          <th colspan="1" align="center"><b><center>　CHSA　</center></b></th>
+          <th colspan="1" align="center"><b><center>　BBF　</center></b></th>
+        </tr>
+      </tbody>
+    </table>
+  </p>
+</center>
 
 <br>
 <br>
