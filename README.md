@@ -142,14 +142,14 @@ If you want to training yourself please follow the instruction [here](./setups/u
     <tbody>
       <tr>
         <!-- 1 -->
-        <th colspan="2" align="center"><b>　　Object　　</b></th>
+        <th colspan="2" align="center"><b>　Object　</b></th>
         <th colspan="1" align="center"><b>Whole Points</b></th>
         <th colspan="1" align="center"><b>Stable Label</b></th>
         <th colspan="1" align="center"><b>Partial Points</b></th>
       </tr>
       <tr>
         <!-- 2 -->
-        <td colspan="2" align="center" ><img src="resources/inference/002_master_chef_can.png" align="center" width="100%"></td>
+        <td colspan="2" align="center" ><img src="resources/inference/002_master_chef_can.png" align="center" width="80%"></td>
         <td colspan="3" align="center"><img src="resources/inference/002_master_chef_can.gif" width="100%"></td>
         <!-- <td><img src="resources/demo/whole.gif" width="80%"></td>
         <td><img src="resources/demo/label.gif" align="center" align="center" width="80%"></td>
@@ -164,7 +164,7 @@ If you want to training yourself please follow the instruction [here](./setups/u
         <td colspan="5"><img src="resources/inference/partial_inference.png" align="center" width="100%">　　</td>
       </tr>
       <tr>
-        <td colspan="1" align="center"><b>　Partial　</b></td>
+        <td colspan="1" align="center"><b>Partial Points</b></td>
         <td colspan="1" align="center"><b>　UOP-Net　</b></td>
         <td colspan="1" align="center"><b>RPF</b></td>
         <td colspan="1" align="center"><b>CHSA</b></td>
