@@ -140,38 +140,40 @@ If you want to training yourself please follow the instruction [here](./setups/u
 <br>
 
 <!-- Prototype Table #1 -->
-<table>
-  <thead>
-    <tr>
-      <th colspan="4"><b>Prototype Table #1</b></th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <!-- 1 -->
-      <td><b>Object</b></td>
-      <td><b>Whole Points</b></td>
-      <td><b>Stable Label</b></td>
-      <td><b>Partial Points</b></td>
-    </tr>
-    <tr>
-      <!-- 2 -->
-      <td align="center" ><img src="-.png" align="center" width="80%"></td>
-      <th colspan="3" align="center"><img src="resources/demo/002_master_chef_can.gif" width="100%"></th>
-      <!-- <td><img src="resources/demo/whole.gif" width="80%"></td>
-      <td><img src="resources/demo/label.gif" align="center" align="center" width="80%"></td>
-      <td><img src="resources/demo/partial.gif" align="center" width="80%"></td> -->
-    </tr>
-    <tr>
-      <!-- 3 -->
-      <th colspan="4"><b>Inference Result</b></th>
-    </tr>
-    <tr>
-      <!-- 4 -->
-      <th colspan="4"><img src="-.png" align="center" width="40%"></th>
-    </tr>
-  </tbody>
-</table>
+<p align="center">
+  <table>
+    <thead>
+      <tr>
+        <th colspan="4"><b>Prototype Table #1</b></th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <!-- 1 -->
+        <td><b>Object</b></td>
+        <td><b>Whole Points</b></td>
+        <td><b>Stable Label</b></td>
+        <td><b>Partial Points</b></td>
+      </tr>
+      <tr>
+        <!-- 2 -->
+        <td align="center" ><img src="-.png" align="center" width="80%"></td>
+        <th colspan="3" align="center"><img src="resources/demo/002_master_chef_can.gif" width="100%"></th>
+        <!-- <td><img src="resources/demo/whole.gif" width="80%"></td>
+        <td><img src="resources/demo/label.gif" align="center" align="center" width="80%"></td>
+        <td><img src="resources/demo/partial.gif" align="center" width="80%"></td> -->
+      </tr>
+      <tr>
+        <!-- 3 -->
+        <th colspan="4"><b>Inference Result</b></th>
+      </tr>
+      <tr>
+        <!-- 4 -->
+        <th colspan="4"><img src="-.png" align="center" width="40%"></th>
+      </tr>
+    </tbody>
+  </table>
+</p>
 
 <br>
 
@@ -180,10 +182,37 @@ If you want to training yourself please follow the instruction [here](./setups/u
 
 <br>
 
-| **Partial View & Inference results** |||||
-| :-: |
-| <img width="625" src="resources/inference/partial_2sec.gif"> |||||
-| Partial | UOP-Net | RPF | CHSA | BBF |
+<p align="center">
+  <table>
+    <thead>
+      <tr>
+        <th colspan="5"><b>Partial View Points</b></th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <!-- 1 -->
+        <th colspan="5" align="center"><img src="resources/inference/partial_2sec.gif" width="100%"></th>
+        <!-- <td><img src="resources/demo/whole.gif" width="80%"></td>
+        <td><img src="resources/demo/label.gif" align="center" align="center" width="80%"></td>
+        <td><img src="resources/demo/partial.gif" align="center" width="80%"></td> -->
+      </tr>
+      <tr>
+        <!-- 3 -->
+        <th colspan="1" align="center"><b>Partial</b></th>
+        <th colspan="1" align="center"><b>UOP-Net</b></th>
+        <th colspan="1" align="center"><b>　RPF　</b></th>
+        <th colspan="1" align="center"><b>　CHSA　</b></th>
+        <th colspan="1" align="center"><b>　BBF　</b></th>
+      </tr>
+      <tr>
+        <!-- 4 -->
+        <th colspan="5"><b>Inference Result</b></th>
+      </tr>
+    </tbody>
+  </table>
+</p>
+
 
 
 <br>
