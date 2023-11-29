@@ -32,12 +32,18 @@ This repository contains official implementation of following paper:
 ---
 
 ## Environment Setting
-<!-- checked -->
 * Please follow instruction in [setups/install.md](setups/install.md)
 
-## Fast view our overall pipeline
+<br>
 
+## Fast view our overall pipeline
 * Please follow instruction in [setups/example.md](setups/example.md)
+<p align="center">
+  <img src="resources/uop_figure/UOP-pipline.png" align="center" width="100%">
+</p>
+
+<br>
+<br>
 
 ## Download Data
 
