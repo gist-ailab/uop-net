@@ -49,12 +49,14 @@ This repository contains official implementation of following paper:
 
 #### Evaluation Data
 
-You can download evaluation data [here](https://drive.google.com/file/d/19mmLYNT_2reMV7C7Z8pEWwgjBulVobCG/view?usp=drive_link)
-
-- 63 YCB data with 100 partial sampled point cloud which was used for test and evaluate
+- The *UOP-Sim* contains 63 YCB object datas for evaluation with 100 partial sampled points on each objects. these evaluation set was used for test and evaluate.
 - You can inference and evaluate code after download this data
+- *UOP-Sim* Evaluation data can be download this google drive [link](https://drive.google.com/file/d/19mmLYNT_2reMV7C7Z8pEWwgjBulVobCG/view?usp=drive_link) or run the [0.download_uop_sim_dataset.sh](./example/0.download_uop_sim_dataset.sh) command.
+```shell
+sh ./example/0.download_uop_sim_dataset.sh
+```
 
-##### File tree
+##### Evaluation Data File tree
 
 ```shell
 └── uop_data
@@ -75,11 +77,11 @@ You can download evaluation data [here](https://drive.google.com/file/d/19mmLYNT
 ```
 
 #### Whole Data
-You can download UOP-Sim dataset [here](https://drive.google.com/file/d/11yvzrLgIbv8e3Yy2gyCG0k2QMHepeGa0/view?usp=drive_link)
+You can download *UOP-Sim* dataset [here](https://drive.google.com/file/d/11yvzrLgIbv8e3Yy2gyCG0k2QMHepeGa0/view?usp=drive_link)
 
 ## Generate Data (optional)
 
-If you want to generate UOP-Sim data yourself. Please follow the instruction in [setups/data_generation.md](./setups/data_generation.md)
+If you want to generate *UOP-Sim* data yourself. Please follow the instruction in [setups/data_generation.md](./setups/data_generation.md)
 
 
 ## Inference and Evaluate
