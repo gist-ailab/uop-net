@@ -3,18 +3,17 @@
 <br>
 <br>
 
-<!-- TODO : add icons -->
 <!-- add icons - projectpage / youtube / code / dataset link / AILAB hompage -->
-<!-- TODO : add main concept image -->
 
+<body>
 <p align="center">
   <img src="resources/uop_figure/UOP-Sim.gif" align="center" width="100%">
   <h1 align="center">
     <strong>Learning to Place Unseen Objects Stably using a Large-scale Simulation</strong>
   </h1>
 </p>
+
 <center>
-  <br>
   <a href="mailto:sangjun7@gm.gist.ac.kr">Sangjun Noh</a>
   <sup>*</sup> &nbsp; &nbsp; &nbsp; &nbsp;
   <a href="mailto:raeyo@gm.gist.ac.kr">Raeyoung Kang</a>
@@ -38,15 +37,16 @@
 
 <center>
   <a href="https://arxiv.org/abs/2303.08387" target='_blank'>
-    <img src="https://img.shields.io/badge/Paper-arxiv.org-black">
+    <img src="https://img.shields.io/badge/Paper-arxiv-black">
   </a> &nbsp; &nbsp; &nbsp; &nbsp;
   <a href="https://gistailab.github.io/uop/" target='_blank'>
-    <img src="https://img.shields.io/badge/Project-github.io-white">
+    <img src="https://img.shields.io/badge/Project-github-white">
   </a> &nbsp; &nbsp; &nbsp; &nbsp;
-  <a href="" target='_blank'>
-    <img src="https://youtu.be/08F4jxSEL7A">
+  <a href="https://youtu.be/08F4jxSEL7A" target='_blank'>
+    <img src="https://img.shields.io/badge/Presentation-Youtube-red">
   </a>
 </center>
+</body>
 
 <br>
 <br>
