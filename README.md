@@ -39,7 +39,7 @@ This repository contains official implementation of following paper:
 ## Fast view our overall pipeline
 * Please follow instruction in [setups/example.md](setups/example.md)
 <p align="center">
-  <img src="resources/uop_figure/UOP-pipline.png" align="center" width="100%">
+  <img src="resources/uop_figure/UOP-pipeline.png" align="center" width="100%">
 </p>
 
 <br>
