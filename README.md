@@ -128,48 +128,47 @@ If you want to training yourself please follow the instruction [here](./setups/u
 <br>
 <br>
 
-## Experiment Inferences
-- experiment Inferences images will be upload.
-
-<br>
-<br>
-
-### Partial View Generation
-- experiment Inferences images will be upload.
-
-<br>
+## Inferences Result
+- This is the UOP-Net and other methods Inferences images. Partial points are observed like follow [Partial View Generation](#partial-view-generation)
 
 <!-- Prototype Table #1 -->
 <p align="center">
   <table align="center">
     <thead>
       <tr>
-        <th colspan="4"><b>Prototype Table #1</b></th>
+        <th colspan="5"><b>Sample Inferences Result Visualization</b></th>
       </tr>
     </thead>
     <tbody>
       <tr>
         <!-- 1 -->
-        <td><b>Object</b></td>
-        <td><b>Whole Points</b></td>
-        <td><b>Stable Label</b></td>
-        <td><b>Partial Points</b></td>
+        <th colspan="2" align="center"><b>　　Object　　</b></th>
+        <th colspan="1" align="center"><b>Whole Points</b></th>
+        <th colspan="1" align="center"><b>Stable Label</b></th>
+        <th colspan="1" align="center"><b>Partial Points</b></th>
       </tr>
       <tr>
         <!-- 2 -->
-        <td align="center" ><img src="-.png" align="center" width="80%"></td>
-        <th colspan="3" align="center"><img src="resources/demo/002_master_chef_can.gif" width="100%"></th>
+        <td colspan="2" align="center" ><img src="-.png" align="center" width="80%"></td>
+        <th colspan="3" align="center"><img src="resources/inference/002_master_chef_can.gif" width="100%"></th>
         <!-- <td><img src="resources/demo/whole.gif" width="80%"></td>
         <td><img src="resources/demo/label.gif" align="center" align="center" width="80%"></td>
         <td><img src="resources/demo/partial.gif" align="center" width="80%"></td> -->
       </tr>
       <tr>
         <!-- 3 -->
-        <th colspan="4"><b>Inference Result</b></th>
+        <th colspan="5"><b>Inference Result</b></th>
       </tr>
       <tr>
         <!-- 4 -->
-        <th colspan="4"><img src="-.png" align="center" width="40%"></th>
+        <th colspan="5"><img src="resources/inference/partial_inference.png" align="center" width="100%"></th>
+      </tr>
+      <tr>
+        <th colspan="1" align="center"><b>Partial</b></th>
+        <th colspan="1" align="center"><b>UOP-Net</b></th>
+        <th colspan="1" align="center"><b>　RPF　</b></th>
+        <th colspan="1" align="center"><b>　CHSA　</b></th>
+        <th colspan="1" align="center"><b>　BBF　</b></th>
       </tr>
     </tbody>
   </table>
