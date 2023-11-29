@@ -111,20 +111,6 @@ We propose pretrained model weight inside our repository.
 
 If you want to training yourself please follow the instruction [here](./setups/uopnet.md#training)
 
-
-### ToDo
-
-- [ ] update Experiment Tables
-- [ ] update Experiment Inferences
-- [ ] update Experiment Demo
-
-
-<br>
-<br>
-
-## Experiment Tables
-- experiment table will be upload.
-
 <br>
 <br>
 
@@ -206,13 +192,6 @@ If you want to training yourself please follow the instruction [here](./setups/u
 <br>
 <br>
 
-## Experiment Demo
-- experiment demo images will be upload.
-
-<br>
-<br>
-<br>
-<br>
 
 ---
 
