@@ -54,6 +54,7 @@ This repository contains official implementation of following paper:
 - *UOP-Sim* Evaluation data can be download this google drive [link](https://drive.google.com/file/d/19mmLYNT_2reMV7C7Z8pEWwgjBulVobCG/view?usp=drive_link) or run the [0.download_uop_sim_dataset.sh](./example/0.download_uop_sim_dataset.sh) command.
 ```shell
 sh ./example/0.download_uop_sim_dataset.sh
+# output : uop_data_for_evaluation.zip 
 ```
 
 ##### Evaluation Data File tree
@@ -79,10 +80,15 @@ sh ./example/0.download_uop_sim_dataset.sh
 #### Whole Data
 You can download *UOP-Sim* dataset [here](https://drive.google.com/file/d/11yvzrLgIbv8e3Yy2gyCG0k2QMHepeGa0/view?usp=drive_link)
 
+<br>
+<br>
+
 ## Generate Data (optional)
 
 If you want to generate *UOP-Sim* data yourself. Please follow the instruction in [setups/data_generation.md](./setups/data_generation.md)
 
+<br>
+<br>
 
 ## Inference and Evaluate
 
@@ -95,6 +101,9 @@ or run the combined script below (you have to change path of uop data inside [pa
 ```shell
 sh ./partial_evaluate.sh
 ```
+
+<br>
+<br>
 
 ## Training (optional)
 
@@ -122,6 +131,7 @@ If you want to training yourself please follow the instruction [here](./setups/u
 ## Experiment Inferences
 - experiment Inferences images will be upload.
 
+<br>
 <br>
 
 ### Partial View Generation
@@ -185,11 +195,6 @@ If you want to training yourself please follow the instruction [here](./setups/u
 <br>
 <br>
 <br>
-<br>
-<br>
-<br>
-<br>
-
 
 ---
 
