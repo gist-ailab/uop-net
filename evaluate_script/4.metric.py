@@ -20,6 +20,7 @@ rotation(deg)    | {:<5.2f} | {:<5.2f} | {:<5.2f} | {:<5.2f}
 translation(cm)  | {:<5.2f} | {:<5.2f} | {:<5.2f} | {:<5.2f}
 l2norm           | {:<5.2f} | {:<5.2f} | {:<5.2f} | {:<5.2f}
 Success(<10deg)  | {:<5.2f} | {:<5.2f} | {:<5.2f} | {:<5.2f}
+Success(/infer)  | {:<5.2f} | {:<5.2f} | {:<5.2f} | {:<5.2f}
 -----------------------------------------------------------------
 """
 
@@ -108,13 +109,14 @@ if __name__=="__main__":
         obj_name_list.sort()
         
         rows = obj_name_list
-        cols = ["rotation", "translation", "l2norm", "Success Rate(<10deg)"]
+        cols = ["rotation", "translation", "l2norm", "Success Rate(<10deg)", "Success Rate(/infer)"]
         data = np.zeros((len(rows), len(cols)))
 
         for i, obj_name in enumerate(obj_name_list):
             for j, col in enumerate(cols[:3]):
                 data[i, j] = np.mean(evaluation_result[method][obj_name][col])
             data[i, 3] = np.sum(np.array(evaluation_result[method][obj_name]['rotation']) < 10) / args.trial
+            data[i, 4] = np.sum(np.array(evaluation_result[method][obj_name]['rotation']) < 10) / np.sum(evaluation_result[method][obj_name]['infer'])
         df = pd.DataFrame(data, columns=cols, index=rows)
         df.to_csv(save_path)
         compare_result[method] = {
@@ -122,6 +124,7 @@ if __name__=="__main__":
             "translation": np.mean(data[:, 1]),
             "l2norm": np.mean(data[:, 2]),
             "success": np.mean(data[:, 3]),
+            "success/infer": np.mean(data[:, 4]),
         }
 
     # print result of each method
@@ -130,5 +133,6 @@ if __name__=="__main__":
                             *[compare_result[method]['rotation'] for method in module_list.keys()],
                             *[compare_result[method]['translation']*100 for method in module_list.keys()],
                             *[compare_result[method]['l2norm'] for method in module_list.keys()],
-                            *[compare_result[method]['success']*100 for method in module_list.keys()]))
+                            *[compare_result[method]['success']*100 for method in module_list.keys()],
+                            *[compare_result[method]['success/infer']*100 for method in module_list.keys()]))
 
