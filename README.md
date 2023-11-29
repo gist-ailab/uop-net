@@ -13,6 +13,40 @@
     <strong>Learning to Place Unseen Objects Stably using a Large-scale Simulation</strong>
   </h1>
 </p>
+<center>
+  <br>
+  <a href="mailto:sangjun7@gm.gist.ac.kr">Sangjun Noh</a>
+  <sup>*</sup> &nbsp; &nbsp; &nbsp; &nbsp;
+  <a href="mailto:raeyo@gm.gist.ac.kr">Raeyoung Kang</a>
+  <sup>*</sup> &nbsp; &nbsp; &nbsp; &nbsp;
+  <a href="mailto:ailab.ktw@gm.gist.ac.kr">Taewon Kim</a>
+  <sup>*</sup> &nbsp; &nbsp;
+  <br>
+  <a href="mailto:shback@gm.gist.ac.kr">Seunghyeok Back</a> &nbsp; &nbsp;
+  <a href="mailto:bakseongho@gm.gist.ac.kr">Seongho Bak</a> &nbsp; &nbsp;
+  <a href="mailto:kyoobinlee@gist.ac.kr">Kyoobin Lee</a> &nbsp; &nbsp;
+  <sup>†</sup>
+  <br>
+  <br>
+  GIST AILAB
+  <br>
+  <sup>*</sup>These authors contributed equally to the paper
+  <sup>†</sup>Corresponding author
+</center>
+
+<br>
+
+<center>
+  <a href="https://arxiv.org/abs/2303.08387" target='_blank'>
+    <img src="https://img.shields.io/badge/Paper-arxiv.org-black">
+  </a> &nbsp; &nbsp; &nbsp; &nbsp;
+  <a href="https://gistailab.github.io/uop/" target='_blank'>
+    <img src="https://img.shields.io/badge/Project-github.io-white">
+  </a> &nbsp; &nbsp; &nbsp; &nbsp;
+  <a href="" target='_blank'>
+    <img src="https://youtu.be/08F4jxSEL7A">
+  </a>
+</center>
 
 <br>
 <br>
