@@ -166,9 +166,9 @@ If you want to training yourself please follow the instruction [here](./setups/u
       <tr>
         <th colspan="1" align="center"><b>Partial</b></th>
         <th colspan="1" align="center"><b>UOP-Net</b></th>
-        <th colspan="1" align="center"><b>　RPF　</b></th>
-        <th colspan="1" align="center"><b>　CHSA　</b></th>
-        <th colspan="1" align="center"><b>　BBF　</b></th>
+        <th colspan="1" align="center"><b>RPF</b></th>
+        <th colspan="1" align="center"><b>CHSA</b></th>
+        <th colspan="1" align="center"><b>BBF</b></th>
       </tr>
     </tbody>
   </table>
