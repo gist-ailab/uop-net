@@ -142,10 +142,10 @@ If you want to training yourself please follow the instruction [here](./setups/u
     <tbody>
       <tr>
         <!-- 1 -->
-        <th colspan="2" align="center"><b>　　Object　　</b></th>
-        <th colspan="1" align="center"><b>Whole Points</b></th>
-        <th colspan="1" align="center"><b>Stable Label</b></th>
-        <th colspan="1" align="center"><b>Partial Points</b></th>
+        <th colspan="1.25" align="center"><b>　　Object　　</b></th>
+        <th colspan="1.25" align="center"><b>Whole Points</b></th>
+        <th colspan="1.25" align="center"><b>Stable Label</b></th>
+        <th colspan="1.25" align="center"><b>Partial Points</b></th>
       </tr>
       <tr>
         <!-- 2 -->
