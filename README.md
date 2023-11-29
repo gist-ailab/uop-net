@@ -176,13 +176,14 @@ If you want to training yourself please follow the instruction [here](./setups/u
 <br>
 
 ### Partial View Generation
-- This is visualization of our partial points generation sequence(gif image).
+- This is visualization of our partial points generation sequence(gif image) and inference results at each partial points
 
 <br>
 
-| [**Object**](-) |
-| :-:             |
-| <img width="128" src="-.png"> |
+| **Partial View & Inference results** |||||
+| :-: |
+| <img width="625" src="resources/inference/partial_2sec.gif"> |||||
+| Partial | UOP-Net | RPF | CHSA | BBF |
 
 
 <br>
