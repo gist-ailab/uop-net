@@ -46,7 +46,7 @@ This repository contains official implementation of following paper:
 You can download evaluation data [here](https://drive.google.com/file/d/19mmLYNT_2reMV7C7Z8pEWwgjBulVobCG/view?usp=drive_link)
 
 - 63 YCB data with 100 partial sampled point cloud which was used for test and evaluate
-- You can inference and evaluate code after download this data
+- You can run inference and evaluate code after download this data
 
 ##### File tree
 
@@ -69,7 +69,7 @@ You can download evaluation data [here](https://drive.google.com/file/d/19mmLYNT
 ```
 
 #### Whole Data
-You can download UOP-Sim dataset [here](https://drive.google.com/file/d/11yvzrLgIbv8e3Yy2gyCG0k2QMHepeGa0/view?usp=drive_link)
+You can download whole UOP-Sim dataset [here](https://drive.google.com/file/d/11yvzrLgIbv8e3Yy2gyCG0k2QMHepeGa0/view?usp=drive_link)
 
 ## Generate Data (optional)
 
@@ -82,11 +82,48 @@ To place objects with placement modules; UOP(ours), RPF, CHSA, BBF
 
 you should follow step by step instruction in [setups/uopnet.md](./setups/uopnet.md#inference)
 
-or run the combined script below (you have to change path of uop data inside [partial_evaluate.sh](./partial_evaluate.sh))
+or run the combined script below. 
 
 ```shell
-sh ./partial_evaluate.sh
+sh ./partial_evaluate.sh 'path/to/uop_data(ex.~/uop_data)' process_num(ex.16)
 ```
+
+#### Result
+
+After all processes, you can get below table.
+
+All metrics are the results of measuring the object's movement until it stops after placeing it at the table (in simulation).
+
+```shell
+-----------------------------------------------------------------
+Module           | UOP   | RPF   | CHSA  | BBF  
+rotation(deg)    | 6.93  | 24.26 | 37.56 | 44.02
+translation(cm)  | 0.58  | 2.84  | 5.45  | 6.21 
+l2norm           | 0.19  | 0.63  | 0.97  | 1.13 
+Success(<10deg)  | 69.46 | 60.87 | 42.29 | 30.40
+Success(/infer)  | 85.05 | 60.87 | 42.29 | 30.40
+-----------------------------------------------------------------
+```
+
+- ```rotation``` : rotation of object
+- ```translation``` : translation of object
+- ```l2norm``` : transform matrix differnce(l2norm)
+- ```Success(<10deg)```: success rate of placement for all trial, rotation error lower than 10 deg.
+- ```Success(/infer)```: success rate of placement for inferenced trial, rotation error lower than 10 deg.
+
+#### Visualize inference results
+
+You can visualize inference result of each module with matplotlib
+
+```shell
+python example/visualize_inference_result.py --exp_file path/to/inference_result/endwith.pkl --module uop
+```
+- ```--exp_file``` : pkl file of inference result of each module, after inference the result saved at each object directory(ex. ~/uop_data/ycb/002_master_chef_can/partial_eval/uop/0.pkl)
+- ```--module``` : module name of each placement module
+  - uop : (ours)
+  - trimesh : Convex Hull Stability Analysis(CHSA)
+  - primitive : Bonding Box Fitting(BBF)
+  - ransac : Ransac Plane Fitting(RPF)
 
 ## Training (optional)
 
