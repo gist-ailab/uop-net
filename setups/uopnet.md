@@ -8,11 +8,11 @@ python uop_net/run.py --shapenet_root $ROOT --threednet_root $ROOT --ckp_root $R
 - ```--threednet_root``` : directory of UOP-Sim (3DNet)
 - ```--ckp_root``` : root for saving UOP-Net checkpoint
 
-- other arguments
-  - points_shape : which shape wants to train (whole or partial)
-  - stab_scale & plane scale : Loss scaling factor (default: 10, 1)
-  - detla_d & delta_v : parameters for Plane Loss (default: 1.5, 0.5)
-  - epochs, batch_size, num_workers : hyper paramerters for training UOP-Net (default: 1,000, 16, 4)
+- Other Arguments
+  - ```--points_shape``` : which shape wants to train (whole or partial)
+  - ```--stab_scale & plane scale``` : Loss scaling factor (default: 10, 1)
+  - ```--detla_d & delta_v``` : parameters for Plane Loss (default: 1.5, 0.5)
+  - ```--epochs, batch_size, num_workers``` : hyper paramerters for training UOP-Net (default: 1,000, 16, 4)
 
 
 
