@@ -4,13 +4,13 @@ from torch.utils.data.dataset import random_split
 from data.uop_sim import UOPSim, MergeDataset
 
 
-def load_data(opt):
+def load_data(args):
     """
     root_1 : Custom ShapeNet root
     root_2 : Custom 3DNet root
     """
-    root_1 = opt.config['base']['data']['shapenet_root']
-    root_2 = opt.config['base']['data']['3dnet_root']
+    root_1 = args.shapenet_root
+    root_2 = args.threednet_root
 
     root_list = [root_1, root_2]
     dataset_list = []
