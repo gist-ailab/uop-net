@@ -23,6 +23,7 @@ conda activate uop_net
 # install python requirements 
 pip install --upgrade pip setuptools wheel
 pip install trimesh plotly pyyaml open3d point_cloud_utils natsort tqdm scipy
+pip install warmup-scheduler
 ```
 
 ```shell
