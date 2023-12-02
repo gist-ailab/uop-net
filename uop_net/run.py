@@ -20,7 +20,7 @@ from warmup_scheduler import GradualWarmupScheduler
 
 
 
-def train(args):
+def train(args, device):
     """
     get arguments from parser for training UOP-Net
     """
@@ -41,21 +41,15 @@ def train(args):
     tr_loader = DataLoader(tr_data,
                            batch_size=args.batch_size,
                            num_workers=args.num_workers,
-                           shuffle=True)
+                           shuffle=True,
+                           pin_memory=True,
+                           drop_last=True)
     val_loader = DataLoader(val_data,
                             batch_size=args.batch_size,
                             num_workers=args.num_workers,
                             shuffle=False)
 
     lr = args.lr
-
-    optimizer = optim.Adam(model_params, lr=lr, betas=(0.9, 0.999), weight_decay=1e-4)
-
-    scheduler = optim.lr_scheduler.CosineAnnealingLR(optimizer, T_max=50, eta_min=0)
-    scheduler_warmup = GradualWarmupScheduler(optimizer, multiplier=1, total_epoch=5, after_scheduler=scheduler)
-
-
-
 
     """
     load UOP-Net
@@ -64,6 +58,12 @@ def train(args):
     model_params = model.parameters()
 
     model = model.to(device)
+
+    optimizer = optim.Adam(model_params, lr=lr, betas=(0.9, 0.999), weight_decay=1e-4)
+
+    scheduler = optim.lr_scheduler.CosineAnnealingLR(optimizer, T_max=50, eta_min=0)
+    scheduler_warmup = GradualWarmupScheduler(optimizer, multiplier=1, total_epoch=5, after_scheduler=scheduler)
+
 
     """
     load Losses
@@ -97,7 +97,7 @@ def train(args):
 
             loss += loss_stab * stab_scale
             loss += loss_plane * plane_scale
-            print(">>>>>epoch : {} || nll loss : {} || dis loss : {} || total loss : {}".format(epoch, loss_stab, loss_d, loss))
+            print(">>>>>epoch : {} || nll loss : {} || dis loss : {} || total loss : {}".format(epoch, loss_stab, loss_plane, loss))
 
             optimizer.zero_grad()
             loss.backward()
@@ -120,13 +120,13 @@ def train(args):
 
                     val_loss = 0.0
                     feat, logits, embedded = model(points)
-                    val_loss_n = criterion["nll"](logits, labels)
-                    val_loss_d = criterion["dis"](embedded, masks, size)
+                    val_loss_stab = criterion["nll"](logits, labels)
+                    val_loss_plane = criterion["dis"](embedded, masks, size)
 
-                    val_loss += val_loss_n
-                    val_loss += val_loss_d
+                    val_loss += val_loss_stab
+                    val_loss += val_loss_plane
                     overall_val_loss.append(val_loss)
-                    print(">>>>>epoch : {} || val nll loss : {} || val dis loss : {} || total val loss : {}".format(epoch, val_loss_n, val_loss_d, val_loss))
+                    print(">>>>>epoch : {} || val nll loss : {} || val dis loss : {} || total val loss : {}".format(epoch, val_loss_stab, val_loss_plane, val_loss))
                 
             if (sum(overall_val_loss)/(len(overall_val_loss))) < best_loss:
                 ckp_dir = os.path.join(ckp_path, str(backbone_type)+"_"+str(stab_scale)+"_"+str(plane_scale))
@@ -147,7 +147,7 @@ def train(args):
 if __name__ == "__main__":
 
     parser = argparse.ArgumentParser()
-    parser.add_argument("--points_shape", type=str, default="partial",
+    parser.add_argument("--points_shape", type=str, default="whole",
                         help="points shape should be in [whole, partial]")
     parser.add_argument("--backbone_type", type=str, default="dgcnn",
                         help="backbone type should be in [pointnet, dgcnn]")
@@ -160,8 +160,8 @@ if __name__ == "__main__":
     parser.add_argument("--delta_d", type=float, default=1.5, help="delta_d for plane loss")
     parser.add_argument("--delta_v", type=float, default=0.5, help="delta_v for plane loss")
     parser.add_argument("--epochs", type=int, default=1000, help="epochs for training")
-    parser.add_argument("--batch_size", type=int, default=16, help="batch size for training")
-    parser.add_argument("--num_workers", type=int, default=4, help="num workers for training")
+    parser.add_argument("--batch_size", default=16, help="batch size for training")
+    parser.add_argument("--num_workers", default=4, help="num workers for training")
     
 
     args = parser.parse_args()
@@ -170,3 +170,5 @@ if __name__ == "__main__":
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     
     train(args, device)
+
+
