@@ -14,23 +14,20 @@
 
 <div style="text-align:center">
   <a href="mailto:sangjun7@gm.gist.ac.kr">Sangjun Noh</a>
-  <sup>*</sup>
-  &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
+  <sup>*</sup> &nbsp; &nbsp;
   <a href="mailto:raeyo@gm.gist.ac.kr">Raeyoung Kang</a>
-  <sup>*</sup>
-  &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
+  <sup>*</sup> &nbsp; &nbsp;
   <a href="mailto:ailab.ktw@gm.gist.ac.kr">Taewon Kim</a>
-  <sup>*</sup>
-  <br>
+  <sup>*</sup> &nbsp; &nbsp;
   <a href="mailto:shback@gm.gist.ac.kr">Seunghyeok Back</a>
-  &nbsp; &nbsp; &nbsp; &nbsp;
+  &nbsp; &nbsp;
   <a href="mailto:bakseongho@gm.gist.ac.kr">Seongho Bak</a>
-  &nbsp; &nbsp; &nbsp; &nbsp;
+  &nbsp; &nbsp;
   <a href="mailto:kyoobinlee@gist.ac.kr">Kyoobin Lee</a>
   <sup>†</sup>
   <br>
   <br>
-  GIST AILAB
+  <center>GIST AILAB</center>
   <br>
   * These authors contributed equally to the paper
   &nbsp;
@@ -43,11 +40,11 @@
   <a href="https://arxiv.org/abs/2303.08387" target='_blank'>
     <img src="https://img.shields.io/badge/Paper-arxiv-black">
   </a>
-  &nbsp; &nbsp; &nbsp; &nbsp;
+  &nbsp; &nbsp;
   <a href="https://gistailab.github.io/uop/" target='_blank'>
     <img src="https://img.shields.io/badge/Project-github-white">
   </a>
-  &nbsp; &nbsp; &nbsp; &nbsp;
+  &nbsp; &nbsp;
   <a href="https://youtu.be/08F4jxSEL7A" target='_blank'>
     <img src="https://img.shields.io/badge/Presentation-Youtube-red">
   </a>
