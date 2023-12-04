@@ -44,20 +44,20 @@ def calculate_placement_transform(plane_model, plane_center, points_centroid, pl
   
   place_axis = np.array([0, 0, -1])
 
-  # for case that normal vector is parallel or anti-parallel to place_axis
-  if np.linalg.norm(np.cross(normal, place_axis)) < 1e-9:
-    if np.dot(normal, place_axis) > 0:
-      return np.eye(3)
-    else:
-      return np.diag([-1, 1, -1]) # flip z-axis
-  else:
-    cnt_axis = np.cross(normal, place_axis)
-    cnt_axis = cnt_axis / (np.linalg.norm(cnt_axis)+1e-9)
-    dot_product = np.dot(normal, place_axis)/(np.linalg.norm(normal)*np.linalg.norm(place_axis))
-    angle = np.arccos(dot_product)
-    rotation = R.from_rotvec(angle*cnt_axis)
+  # # for case that normal vector is parallel or anti-parallel to place_axis
+  # if np.linalg.norm(np.cross(normal, place_axis)) < 1e-9:
+  #   if np.dot(normal, place_axis) > 0:
+  #     return np.eye(3)
+  #   else:
+  #     return np.diag([-1, 1, -1]) # flip z-axis
+  # else:
+  cnt_axis = np.cross(normal, place_axis)
+  cnt_axis = cnt_axis / (np.linalg.norm(cnt_axis)+1e-9)
+  dot_product = np.dot(normal, place_axis)/(np.linalg.norm(normal)*np.linalg.norm(place_axis))
+  angle = np.arccos(dot_product)
+  rotation = R.from_rotvec(angle*cnt_axis)
     
-    return rotation.as_matrix()
+  return rotation.as_matrix()
 
 def calculate_transform_from_normal(normal, plane_center, points_centroid):
   # normal vector

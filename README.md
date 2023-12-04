@@ -48,7 +48,7 @@
 
 This repository contains official implementation of following paper:
 
-> **Learning to Place Objects Stably using a Large-scale Simulation** <br>
+> **Learning to Place Unseen Objects Stably using a Large-scale Simulation** <br>
 > 
 > *We introduce the Unseen Object Placement (UOP) approach, combining UOP-Sim, a diverse dataset for various object shapes, with UOP-Net, a point cloud segmentation method for detecting stable planes from partial observation.* <br>
 [Click here for website and paper.](https://gistailab.github.io/uop/)
@@ -80,7 +80,7 @@ This repository contains official implementation of following paper:
 
 - The *UOP-Sim* contains 63 YCB object datas for evaluation with 100 partial sampled points on each objects. these evaluation set was used for test and evaluate.
 - You can run inference and evaluate code after download this data
-- *UOP-Sim* Evaluation data can be download this google drive [link](https://drive.google.com/file/d/19mmLYNT_2reMV7C7Z8pEWwgjBulVobCG/view?usp=drive_link) or run the [0.download_uop_sim_dataset.sh](./example/0.download_uop_sim_dataset.sh) command.
+- *UOP-Sim* Evaluation data can be download this google drive [link](https://drive.google.com/file/d/113Cq2ibVQlqqZSMm4DBzsxPkZFoW2YPy/view?usp=sharing) or run the [0.download_uop_sim_dataset.sh](./example/0.download_uop_sim_dataset.sh) command.
 ```shell
 sh ./example/0.download_uop_sim_dataset.sh
 # output : uop_data_for_evaluation.zip 
@@ -139,12 +139,12 @@ All metrics are the results of measuring the object's movement until it stops af
 
 ```shell
 -----------------------------------------------------------------
-Module           | UOP   | RPF   | CHSA  | BBF  
-rotation(deg)    | 6.93  | 24.26 | 37.56 | 44.02
-translation(cm)  | 0.58  | 2.84  | 5.45  | 6.21 
-l2norm           | 0.19  | 0.63  | 0.97  | 1.13 
-Success(<10deg)  | 69.46 | 60.87 | 42.29 | 30.40
-Success(/infer)  | 85.05 | 60.87 | 42.29 | 30.40
+Module           | UOP   | RPF   | CHSA  | BBF   
+rotation(deg)    | 3.98  | 26.13 | 39.28 | 45.05 
+translation(cm)  | 0.39  | 3.24  | 5.78  | 6.44  
+l2norm           | 0.11  | 0.67  | 1.01  | 1.15  
+Success(<10deg)  | 73.32 | 62.37 | 42.06 | 30.03 
+Success(/infer)  | 90.08 | 62.37 | 42.06 | 30.03 
 -----------------------------------------------------------------
 ```
 
