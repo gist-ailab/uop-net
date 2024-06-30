@@ -44,7 +44,7 @@
 
 This repository contains official implementation of following paper:
 
-> **[Learning to Place Unseen Objects Stably using a Large-scale Simulation](https://ieeexplore.ieee.org/document/10417128)** (IEEE Robotics and Automation Letters, RA-L) <br>
+> **[Learning to Place Unseen Objects Stably using a Large-scale Simulation](https://ieeexplore.ieee.org/document/10417128)** (IEEE Robotics and Automation Letters, RA-L + IROS 2024) <br>
 > 
 > *Object placement is a fundamental task for robots, yet it remains challenging for partially observed objects. Existing methods for object placement have limitations, such as the requirement for a complete 3D model of the object or the inability to handle complex shapes and novel objects that restrict the applicability of robots in the real world. Herein, we focus on addressing the U nseen O bject P lacement ( UOP ) problem. We tackled the UOP problem using two methods: (1) UOP-Sim, a large-scale dataset to accommodate various shapes and novel objects, and (2) UOP-Net, a point cloud segmentation-based approach that directly detects the most stable plane from partial point clouds. Our UOP approach enables robots to place objects stably, even when the object's shape and properties are not fully known, thus providing a promising solution for object placement in various environments. We verify our approach through simulation and real-world robot experiments, demonstrating state-of-the-art performance for placing single-view and partial objects.* <br>
 
